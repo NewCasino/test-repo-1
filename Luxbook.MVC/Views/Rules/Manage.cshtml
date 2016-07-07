@@ -1,0 +1,93 @@
+﻿@model Luxbook.MVC.ViewModels.Rules.ManageViewModel
+
+@{
+    ViewBag.Title = "Manage";
+}
+<form>
+
+    <div id="CNT" class="WD">
+        <div class="LST GAP">
+            <table cellpadding="3">
+                <colgroup>
+                    <col width="50">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="60">
+                    <col width="50">
+                </colgroup>
+                <thead>
+                <tr>
+                    <td colspan="10" class="FT RN MED">Alert rules management</td>
+                </tr>
+                <tr>
+                    <th class="TT">Rule #</th>
+                    <th class="TT">Rule Type</th>
+                    <th class="TT">Name</th>
+                    <th class="TT">Checked property</th>
+                    <th class="TT">Comparison type</th>
+                    <th class="TT">Target property/value</th>
+                    <th class="TT">Category</th>
+                    <th class="TT">Date Created</th>
+                    <th class="TT">Enabled</th>
+                    <th class="TT"></th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: rules">
+                <tr>
+                    <td data-bind="text: RuleId"></td>
+                    <td data-bind="text: Type"></td>
+                    <td data-bind="text: Name"></td>
+                    <td data-bind="text: PropertyName"></td>
+                    <td data-bind="text: ComparisonType"></td>
+                    <td>
+                        <span data-bind="text: TargetValue"></span> <span data-bind="text:TargetProperty"></span></td>
+                    <td data-bind="text: Category"></td>
+                    <td data-bind="text: $parent.fixDate(DateCreated)"></td>
+                    <td>
+                        <input type="checkbox" data-bind="checked: Enabled"/>
+                    </td>
+                    <td>
+                        <a data-bind="attr: {href: 'edit/' + RuleId }">Edit</a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="EDT" style="margin-top: 15px">
+            @Html.ActionLink("Add new rule", Mvc.Rules.Actions.Add(), new {@class = "btn btn-default"}) <button type="submit" class="btn btn-success" disabled>Save</button>
+        </div>
+
+    </div>
+</form>
+
+
+@section Script {
+
+    <script>
+        function AlertsViewModel() {
+            var self = this;
+
+            self.rules = @Html.Raw(Json.Encode(Model.Rules));
+
+            self.successMessage = ko.observable();
+            self.errorMessage = ko.observable();
+
+            self.fixDate = function(date) {
+                var m = moment(parseInt(date.replace(/\/Date\((.*?)\)\//gi, "$1")));
+
+                return m.format("dddd, MMMM Do YYYY, h:mm:ss a");
+
+            };
+        };
+
+        var viewModel = new AlertsViewModel();
+        console.log(viewModel);
+        ko.applyBindings(viewModel);
+    </script>
+}

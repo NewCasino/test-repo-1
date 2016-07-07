@@ -1,0 +1,318 @@
+﻿@model Luxbook.MVC.ViewModels.Staking.StakingIndexViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = Mvc.Shared.Views._NoBootstrapLayout;
+    var markets = new[] { "NSW", "QLD", "STAB" };
+}
+
+<div id="CNT" style="left: 15px; width: 1200px">
+
+
+    <form method="post">
+
+        <table class="STK">
+            @for (var stakingGroupIndex = 0; stakingGroupIndex < Model.StakingGroups.Count; stakingGroupIndex++)
+            {
+                var group = Model.StakingGroups[stakingGroupIndex];
+                <tr>
+                    <td class=TT colspan=4>
+                        @if (group.GroupName == "Australian")
+                        {
+                            <img class=FLG src="/img/AU.jpg" />
+                            @:Australian <button id="btn-copy-au">Copy Racing values to Greyhounds and Harness</button>
+            }
+                        else
+                        {
+                            <img class=FLG src="/img/UN.jpg" />
+                            @:Internationals <button id="btn-copy-int">Copy Racing values to Greyhounds and Harness</button>
+            }
+                    </td>
+                </tr>
+                <tr>
+                    @for (var marketIndex = 0; marketIndex < markets.Length; marketIndex++)
+                    {
+                        var market = markets[marketIndex];
+                        <td>
+                            <div class="LST @(market == "STAB" ? "VIC" : market)">
+                                <table cellspacing=0>
+                                    <col>
+                                    <col width=80>
+                                    <col width=75>
+                                    <col width=75>
+                                    <tr><th colspan=4 class=TT><img src="/img/R.png" />@market Tote
+                                    <tr class=SML>
+                                        <th>Pool </th>
+                                        <th>Takeout $</th>
+                                        <th>EXP Min % </th>
+                                        <th>
+                                            Takeout %
+                                        </th>
+                                    </tr>
+
+
+                                    @{
+                                        var startingIndex = marketIndex == 0 ? 0 : marketIndex * 8;
+                                    }
+                                    @for (var stakingIndex = startingIndex; stakingIndex < startingIndex + 7; stakingIndex++)
+                                    {
+                                        <tr>
+                                            <td class="RN">
+                                                <label>
+                                                    @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Pool_Tck)<span>@Model.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].PoolName</span>
+                                                </label>
+                                            </td>
+                                            <td>@Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Tko_Amt)</td>
+                                            <td>@Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Exp_Tck) @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Exp_Min)</td>
+                                            <td>
+                                                @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Tko_Tck) @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Tko_Pct)
+                                                @Html.HiddenFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[stakingIndex].Staking_Id)
+
+                                            </td>
+                                        </tr>
+                                    }
+                                    @{ var specialStakingIndex = startingIndex + 7; }
+                                    <tr height="50">
+                                        <td class="RI NRB">
+
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[specialStakingIndex].Tko_Pct, 0) <span>Always round UP</span>
+                                            </label><br>
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[specialStakingIndex].Tko_Pct, 1) <span>Always round DOWN</span>
+                                            </label>
+                                            @Html.HiddenFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[specialStakingIndex].Staking_Id)
+                                        </td>
+                                        <td class="RI NRB" colspan="3">
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[specialStakingIndex].Tko_Pct, 2) <span>Round UP if &cent; &#8805; </span>
+                                            </label> @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[specialStakingIndex].Tko_Amt, new { @class = "cNM(this, 99, 1)" }) <br><label>
+                                                @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].RacingStakings[specialStakingIndex].Tko_Tck) <span>Maintain min. Bet of 50&cent;</span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                                        }
+                </tr>
+                <tr>
+                    @for (var marketIndex = 0; marketIndex < markets.Length; marketIndex++)
+                    {
+                        var market = markets[marketIndex];
+                        <td>
+                            <div class="LST @(market == "STAB" ? "VIC" : market)">
+                                <table cellspacing=0>
+                                    <col>
+                                    <col width=80>
+                                    <col width=75>
+                                    <col width=75>
+                                    <tr><th colspan=4 class=TT><img src="/img/G.png" />@market Tote
+                                    <tr class=SML>
+                                        <th>Pool </th>
+                                        <th>Takeout $</th>
+                                        <th>EXP Min % </th>
+                                        <th>
+                                            Takeout %
+                                        </th>
+                                    </tr>
+
+
+                                    @{
+                                        var startingIndex = marketIndex == 0 ? 0 : marketIndex * 8;
+                                    }
+                                    @for (var stakingIndex = startingIndex; stakingIndex < startingIndex + 7; stakingIndex++)
+                                    {
+                                        <tr>
+                                            <td class="RN">
+                                                <label>
+                                                    @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Pool_Tck)<span>@Model.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].PoolName</span>
+                                                </label>
+                                            </td>
+                                            <td>@Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Tko_Amt)</td>
+                                            <td>@Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Exp_Tck) @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Exp_Min)</td>
+                                            <td>
+                                                @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Tko_Tck) @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Tko_Pct)
+                                                @Html.HiddenFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[stakingIndex].Staking_Id)
+
+                                            </td>
+                                        </tr>
+                                    }
+                                    @{ var specialStakingIndex = startingIndex + 7; }
+                                    <tr height="50">
+                                        <td class="RI NRB">
+
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[specialStakingIndex].Tko_Pct, 0) <span>Always round UP</span>
+                                            </label><br>
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[specialStakingIndex].Tko_Pct, 1) <span>Always round DOWN</span>
+                                            </label>
+                                            @Html.HiddenFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[specialStakingIndex].Staking_Id)
+                                        </td>
+                                        <td class="RI NRB" colspan="3">
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[specialStakingIndex].Tko_Pct, 2) <span>Round UP if &cent; &#8805; </span>
+                                            </label> @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[specialStakingIndex].Tko_Amt, new { @class = "cNM(this, 99, 1)" }) <br><label>
+                                                @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].GreyhoundStakings[specialStakingIndex].Tko_Tck) <span>Maintain min. Bet of 50&cent;</span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                                        }
+                </tr>
+                <tr>
+                    @for (var marketIndex = 0; marketIndex < markets.Length; marketIndex++)
+                    {
+                        var market = markets[marketIndex];
+                        <td>
+                            <div class="LST @(market == "STAB" ? "VIC" : market)">
+                                <table cellspacing=0>
+                                    <col>
+                                    <col width=80>
+                                    <col width=75>
+                                    <col width=75>
+                                    <tr><th colspan=4 class=TT><img src="/img/H.png" />@market Tote
+                                    <tr class=SML>
+                                        <th>Pool </th>
+                                        <th>Takeout $</th>
+                                        <th>EXP Min % </th>
+                                        <th>
+                                            Takeout %
+                                        </th>
+                                    </tr>
+
+
+                                    @{
+                                        var startingIndex = marketIndex == 0 ? 0 : marketIndex * 8;
+                                    }
+                                    @for (var stakingIndex = startingIndex; stakingIndex < startingIndex + 7; stakingIndex++)
+                                    {
+                                        <tr>
+                                            <td class="RN">
+                                                <label>
+                                                    @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Pool_Tck)<span>@Model.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].PoolName</span>
+                                                </label>
+                                            </td>
+                                            <td>@Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Tko_Amt)</td>
+                                            <td>@Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Exp_Tck) @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Exp_Min)</td>
+                                            <td>
+                                                @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Tko_Tck) @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Tko_Pct)
+                                                @Html.HiddenFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[stakingIndex].Staking_Id)
+
+                                            </td>
+                                        </tr>
+                                    }
+                                    @{ var specialStakingIndex = startingIndex + 7; }
+                                    <tr height="50">
+                                        <td class="RI NRB">
+
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[specialStakingIndex].Tko_Pct, 0) <span>Always round UP</span>
+                                            </label><br>
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[specialStakingIndex].Tko_Pct, 1) <span>Always round DOWN</span>
+                                            </label>
+                                            @Html.HiddenFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[specialStakingIndex].Staking_Id)
+                                        </td>
+                                        <td class="RI NRB" colspan="3">
+                                            <label>
+                                                @Html.RadioButtonFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[specialStakingIndex].Tko_Pct, 2) <span>Round UP if &cent; &#8805; </span>
+                                            </label> @Html.TextBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[specialStakingIndex].Tko_Amt, new { @class = "cNM(this, 99, 1)" }) <br><label>
+                                                @Html.CheckBoxFor(m => m.StakingGroups[stakingGroupIndex].HarnessStakings[specialStakingIndex].Tko_Tck) <span>Maintain min. Bet of 50&cent;</span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                                        }
+                </tr>
+                                        }
+
+        </table>
+        <div class="EDT" style="margin-top: 15px">
+            <input type="reset" value="Undo"> <input type="submit" name="FCMD" value="Save">
+        </div>
+    </form><br>
+</div>
+
+@section script{
+    <script type="text/javascript">
+        if (!String.format) {
+            String.format = function (format) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                return format.replace(/{(\d+)}/g, function (match, number) {
+                    return typeof args[number] != 'undefined'
+                        ? args[number]
+                        : match;
+                });
+            };
+        }
+
+        $("#btn-copy-au").click(function (e) {
+            copyRacingToGreysAndHarness(e, 0);
+        });
+
+        $("#btn-copy-int").click(function (e) {
+            copyRacingToGreysAndHarness(e, 1);
+        });
+
+        function copyRacingToGreysAndHarness(event, stakingGroupIndex) {
+            @*
+                StakingGroup 0 = Australian section     1 = Internationals
+            Each race type has 8 pools. Pools 1-7 = win/place etc.
+            Pool 8 is the special Pool Id 99 which holds the rounding and min bet instructions
+
+            RacingStakings holds racing stakings, and GreyhoundStakings holds.. greyhound stakings. Yes?
+
+            To copy values, we will copy all 24 RacingStakings into GreyhoundStakings and HarnessStakings.
+            All the property names are the name e.g. Tko_Amt
+
+            If we ever refactor the names then we'll need to change this as well!
+        **@
+
+            @* 0 == Greyhound/Racing/Harness 1 == pool INDEX (0-23) 2 == property name (e.g. tko_amt) *@
+            var toteFormat = "#StakingGroups_" + stakingGroupIndex + "__{0}Stakings_{1}__{2}";
+            var numberOfPools = 24;
+            var columnNames = ["Tko_Amt", "Exp_Min", "Tko_Pct"];
+            var tickColumns = ["Exp_Tck", "Tko_Tck", "Pool_Tck"];
+            var raceTypes = ["Greyhound", "Harness"];
+
+            // prevent form submission
+            event.preventDefault();
+
+            for (var raceTypeIndex = 0; raceTypeIndex < raceTypes.length; raceTypeIndex++) {
+                var raceType = raceTypes[raceTypeIndex];
+                for (var index = 0; index < numberOfPools; index++) {
+
+                    // Go through all input text columns that we can just copy the values
+                    for (var columnIndex = 0; columnIndex < columnNames.length; columnIndex++) {
+                        $(String.format(toteFormat, raceType, index, columnNames[columnIndex])).val($(String.format(toteFormat, "Racing", index, columnNames[columnIndex])).val());
+                    }
+
+                    // These are all tick columns that requires prop()
+                    for (var columnIndex = 0; columnIndex < tickColumns.length; columnIndex++) {
+                        $(String.format(toteFormat, raceType, index, tickColumns[columnIndex])).prop("checked", $(String.format(toteFormat, "Racing", index, tickColumns[columnIndex])).prop("checked"));
+
+
+                    }
+
+                    var findCheckedRadioFormat = "[name='StakingGroups[" + stakingGroupIndex + "].{0}Stakings[{1}].{2}']";
+
+                    // if this is special Pool ID == 99
+                    if (index === 7 || index === 15 || index === 23) {
+
+                        @* Find which radio button is checked in racing and check the corresponding greyhound/harness one! *@
+                        var selected = $(String.format(findCheckedRadioFormat + ":checked", "Racing", index, "Tko_Pct"));
+                        if (selected.length > 0) {
+                            $(String.format(findCheckedRadioFormat + "[value='{3}']", raceType, index, "Tko_Pct", selected.val())).prop("checked", true);
+                        }
+                    }
+                }
+            }
+
+        }
+    </script>
+}

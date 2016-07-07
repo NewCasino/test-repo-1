@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/global.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    @RenderSection("head", false)
+</head>
+<body>
+
+    <div class="container body-content">
+
+        <div class="alert alert-success" style="display: none;" data-bind="text: successMessage, visible: successMessage"></div>
+        <div class="alert alert-danger" style="display: none;" data-bind="text: errorMessage, visible: errorMessage"></div>
+        @RenderBody()
+
+    </div>
+    <script src="~/Scripts/knockout-3.3.0.js"></script>
+    <script src="~/Scripts/knockout.viewmodel.2.0.3.min.js"></script>
+    <script src="~/Scripts/knockout.validation.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/config.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
+
+    @RenderSection("script", false)
+</body>
+</html>

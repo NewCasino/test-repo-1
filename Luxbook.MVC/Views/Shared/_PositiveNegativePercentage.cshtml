@@ -1,0 +1,23 @@
+﻿@using System.Globalization
+@model decimal?
+@{
+    var provider = new NumberFormatInfo();
+    provider.NumberNegativePattern = 0;
+
+}
+
+@if (Model.HasValue)
+{
+    if (Model >= 0)
+    {
+        <font class="PSV">@Model.Value.ToString("P1")</font>
+
+    }
+    else
+    {
+        <font class="NEG">
+            @Model.Value.ToString("P1")
+        </font>
+
+    }
+}

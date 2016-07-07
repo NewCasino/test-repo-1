@@ -1,0 +1,247 @@
+﻿@using Luxbook.MVC.Models
+@model Luxbook.MVC.ViewModels.Liability.LiabilityIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="alert alert-success" id="loading-msg" data-bind="visible: liabilities().length == 0">Loading...</div>
+
+<div id="CNT" class="WD">
+
+    <div class="panel panel-info">
+        <div class="panel-heading">Filters</div>
+        <div class="panel-body">
+            <fieldset>
+                <div class="row col-sm-6">
+
+                    <div class="form-group col-sm-3">
+                        <p class="help-block">Filter alerts for the race types</p>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="G" data-bind="checked: meetingTypes" /> <img src="/img/G.png" />
+                            </label>
+
+                            <label>
+                                <input type="checkbox" value="H" data-bind="checked: meetingTypes" /> <img src="/img/H.png" />
+                            </label>
+
+                            <label>
+                                <input type="checkbox" value="R" data-bind="checked: meetingTypes" /> <img src="/img/R.png" />
+
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-5">
+                        <label for="raceStart">Only races starting between </label> <input id="raceStart" type="text" data-bind="value: raceStartFilter" size="3" /> and <input id="raceStartEnd" type="text" data-bind="value: raceEndStartTimeFilter" size="3" /> minutes
+                    </div>
+                    <div class="form-group col-sm-5">
+                        <label>Win liability over -$</label> <input id="winLiabilityFilter" type="text" data-bind="value: winLiabilityFilter" size="3" /> and place liability over -$<input id="placeLiabilityFilter" type="text" data-bind="value: placeLiabilityFilter" size="3" />
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+    <div class="LST GAP" >
+        <table cellpadding="3" class="table table-hover table-striped">
+           
+
+            <thead>
+                <tr>
+                    <td colspan="4" class="FT RN MED"> Liabilities (<span data-bind="text: filterAlerts().length"></span>/<span data-bind="text: liabilities().length"></span>)</td>
+                </tr>
+                <tr>                    
+                    <th class="TT">Race</th>
+                    <th class="TT">Runner</th>
+                    <th class="TT">Liability</th>
+                    <th class="TT">Starts in</th>
+                </tr>
+            </thead>
+            <tbody  data-bind="foreach: filterAlerts(liabilities())">
+                <tr>                    
+                    <td class="RN">
+                     <img data-bind="attr: {src: Venue_Meeting_Image }"/>    <a data-bind=" attr: { href: Url }" target="_blank"><span data-bind="text: Venue"></span> (<span data-bind="text: Event_No"></span>) </a>
+                    </td>
+                    <td class="RN"> <span data-bind="text: Runner_No"></span> - <span data-bind="text: Runner_Name"></span></td>
+                    <td class="RN"> $<span data-bind="text: Win_Liability"> </span> ($<span data-bind="text: Place_Liability"></span>) </td>
+                    <td class="RN"><span data-bind="text: Start_Time_Humanized"></span></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+@section Script {
+
+    <script>
+        top.setTitle("Liabilities Overview");
+
+        function AlertsViewModel() {
+            var self = this;
+
+            self.errorMessage = ko.observable();
+            self.successMessage = ko.observable();
+            self.liabilities = ko.observableArray();
+
+            self.raceStartFilter = ko.observable(0);
+            self.raceStartFilter.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.winLiabilityFilter = ko.observable(0);
+            self.winLiabilityFilter.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.placeLiabilityFilter = ko.observable(0);
+            self.placeLiabilityFilter.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.raceEndStartTimeFilter = ko.observable(@Model.RaceEndStartTimeFilter);
+            self.raceEndStartTimeFilter.subscribe(function() {
+                self.updatePreference();
+            });
+
+
+            //self.meetingTypes = ko.observableArray(@Html.Raw(Json.Encode(Model.MeetingTypes)));
+            self.meetingTypes = ko.observableArray(["R", "H", "G" ]);
+            self.meetingTypes.subscribe(function() {
+                self.updatePreference();
+            });
+
+            self.showInfinity = ko.observable(false);
+            self.alertCount = ko.computed(function() {
+                return self.liabilities().length;
+            });
+            self.init = function() {
+                self.load();
+                window.setInterval(self.load, 7000);
+            };
+
+            // Applies user filters to alerts
+            self.filterAlerts = function(alerts) {
+                return ko.utils.arrayFilter(alerts, function(item) {
+
+                    if (!self.showInfinity() && item.Win_Liability === null) {
+                        return false;
+                    }
+                    var winLiabilityFilter = self.winLiabilityFilter();
+                    if (winLiabilityFilter !== null && winLiabilityFilter !== '') {
+                        winLiabilityFilter = -winLiabilityFilter;
+                        if (item.Win_Liability > winLiabilityFilter) {
+                            return false;
+                        }
+                    }
+
+                    var placeLiabilityFilter = self.placeLiabilityFilter();
+                    if (placeLiabilityFilter !== null && placeLiabilityFilter !== '') {
+                        placeLiabilityFilter = -placeLiabilityFilter;
+                        if (item.Place_Liability > placeLiabilityFilter) {
+                            return false;
+                        }
+                    }
+
+                    var matchedMeeting = ko.utils.arrayFirst(self.meetingTypes(), function(type) {
+                        return item.Meeting_Type === type;
+                    });
+
+                    if (!matchedMeeting || matchedMeeting.length === 0) {
+                        return false;
+                    }
+
+                    var raceStart = self.raceStartFilter();
+                    var minutesToRace = item.Start_Time_Actual.diff(moment(), 'minutes');
+
+                    console.log(raceStart);
+                    if (raceStart !== null && raceStart !== '') {
+                        if (minutesToRace < raceStart) {
+                            return false;
+                        }
+                    }
+
+                    var raceEnd = self.raceEndStartTimeFilter();
+                    if (raceEnd !== null && raceEnd !== '') {
+                        if (minutesToRace > raceEnd) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+            };
+
+            self.load = function() {
+                $.ajax({
+                    type: "GET",
+                    url: "GetAll",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        var liabilities = [];
+                        for (var i = 0; i < data.length; i++) {
+                            liabilities.push(new AlertViewModel(data[i]));
+                        }
+                        self.liabilities(liabilities);
+                        console.log(self.liabilities());
+                        $("#loading-msg").html("There are no alerts at the moment");
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+
+
+            self.updatePreference = function() {
+                return;
+                var trader = { gameTypes: self.meetingTypes().join(), raceStartTimeFilter: self.raceStartFilter(), raceEndStartTimeFilter: self.raceEndStartTimeFilter() };
+                $.ajax({
+                    type: "POST",
+                    url: "UpdatePreferences",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(trader),
+                    success: function(data) {
+                        console.log('update preference: ' + data);
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+        };
+
+        function AlertViewModel(viewModel) {
+            var self = this;
+
+            self.Meeting_Id = viewModel.Meeting_Id;
+            self.Runner_No = viewModel.Runner_No;
+            self.Runner_Name = viewModel.Runner_Name;
+            self.Meeting_Type = viewModel.Meeting_Type;
+            self.Event_No = viewModel.Event_No;
+            self.Venue = viewModel.Venue;
+            self.Win_Liability = viewModel.Win_Liability;
+            self.Place_Liability = viewModel.Place_Liability;
+
+            self.Start_Time_Humanized = viewModel.Start_Time_Humanized;
+            self.Start_Time_Actual = fixDate(viewModel.Start_Time);
+
+            self.Venue_Meeting_Image = "/img/" + self.Meeting_Type + '.png';
+
+            self.Url = "../../?redirect=MM/PM1.aspx%3fTargetRace=" + self.Meeting_Id + "_" + self.Event_No + '%26HighlightNo=' + self.Runner_No;
+        };
+
+
+        var viewModel = new AlertsViewModel();
+        viewModel.init();
+        ko.applyBindings(viewModel);
+
+    </script>
+}

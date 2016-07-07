@@ -1,0 +1,224 @@
+﻿@using Luxbook.MVC.ViewModels.Reports
+@model Luxbook.MVC.ViewModels.Reports.ReportsMonthlyViewModel
+@{
+    ViewBag.Title = "MonthlyHorses";
+    Layout = Mvc.Shared.Views._NoBootstrapLayout;
+    var firstMonth = Model.ReportsMonthly.FirstOrDefault();
+    var secondMonth = Model.ReportsMonthly.Skip(1).FirstOrDefault();
+    var thirdMonth = Model.ReportsMonthly.Skip(2).FirstOrDefault();
+}
+<div class="MTG">
+    <div class="VNU" style="font-size: 21px">Pari-Mutuel Market Monthly Trading Report</div>
+    <div class="STS ST3">BY BET TYPE @Model.RaceTypes</div>
+    <div class="VD1" style="top: 30px">@DateTime.Today.ToString("dddd dd-MM-yyyy ")</div>
+    <div class="VD2">Created at: @DateTime.Now</div>
+</div>
+
+
+<form method="post" id="ctl00">
+    <div class="LST">
+        <table>
+            <colgroup>
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="90">
+
+            </colgroup>
+            <tbody>
+                <tr>
+                    @foreach (var monthlyReport in Model.ReportsMonthly)
+                    {
+                        <th colspan="5">
+                            <h3>@monthlyReport.StartDateOfReports.ToString("MMMM yyyy")</h3>
+                        </th>
+                    }
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <th>Trade</th>
+                    <th>Profit</th>
+                    <th>Rebates</th>
+                    <th>Yield % (excl rebates)</th>
+                    <th>Date</th>
+                    <th>Trade</th>
+                    <th>Profit</th>
+                    <th>Rebates</th>
+                    <th>Yield % (excl rebates)</th>
+                    <th>Date</th>
+                    <th>Trade</th>
+                    <th>Profit</th>
+                    <th>Rebates</th>
+                    <th>
+                        Yield % (excl rebates)
+                        <!-- each row of data (31 days) -->
+
+                    </th>
+                </tr>
+                @for (int i = 0; i < 31; i++)
+            {
+                DailyReport first, second, third;
+                string firstDate = null, secondDate = null, thirdDate = null;
+                decimal? firstTrade = null, secondTrade = null, thirdTrade = null;
+                decimal? firstProfit = null, secondProfit = null, thirdProfit = null;
+                decimal? firstRebates = null, secondRebates = null, thirdRebates = null;
+                decimal? firstYield = null, secondYield = null, thirdYield = null;
+                if (firstMonth != null && firstMonth.Reports.Count > i)
+                {
+                    first = firstMonth.Reports[i];
+                    firstDate = first.ReportDate.ToString("ddd dd");
+                    firstProfit = first.Profit;
+                    firstRebates = first.Rebates;
+                    firstTrade = first.Trade;
+                    firstYield = first.Yield;
+                }
+                if (secondMonth != null && secondMonth.Reports.Count > i)
+                {
+                    second = secondMonth.Reports[i];
+                    secondDate = second.ReportDate.ToString("ddd dd");
+                    secondProfit = second.Profit;
+                    secondRebates = second.Rebates;
+                    secondTrade = second.Trade;
+                    secondYield = second.Yield;
+                }
+                if (thirdMonth != null && thirdMonth.Reports.Count > i)
+                {
+                    third = thirdMonth.Reports[i];
+                    thirdDate = third.ReportDate.ToString("ddd dd");
+                    thirdProfit = third.Profit;
+                    thirdRebates = third.Rebates;
+                    thirdTrade = third.Trade;
+                    thirdYield = third.Yield;
+                }
+
+                <tr>
+                    <td class="HN">
+                        @firstDate
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(firstTrade))
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(firstProfit))
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(firstRebates))
+                    </td>
+                    <td class="NMC">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativePercentage, new ViewDataDictionary(firstYield))
+                    </td>
+                    <td class="HN">
+                        @secondDate
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(secondTrade))
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(secondProfit))
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(secondRebates))
+                    </td>
+                    <td class="NMC">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativePercentage, new ViewDataDictionary(secondYield))
+                    </td>
+                    <td class="HN">
+                        @thirdDate
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(thirdTrade))
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(thirdProfit))
+                    </td>
+                    <td class="NM">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, new ViewDataDictionary(thirdRebates))
+                    </td>
+                    <td class="NMC">
+                        @Html.Partial(Mvc.Shared.Views._PositiveNegativePercentage, new ViewDataDictionary(thirdYield))
+                    </td>
+                </tr>
+                }
+
+                <tr>
+                    <td colspan="15" class="SPT"></td>
+                </tr>
+                <tr class="TOT" height="25">
+                    @{
+                        var firstMonthTrades = firstMonth.Reports.Sum(x => x.Trade);
+                        var secondMonthTrades = secondMonth.Reports.Sum(x => x.Trade);
+                        var thirdMonthTrades = thirdMonth.Reports.Sum(x => x.Trade);
+                    }
+                    <td class="TFN">
+                        <b>Monthly Totals</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, firstMonthTrades)</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, firstMonth.Reports.Sum(x => x.Profit))</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, firstMonth.Reports.Sum(x => x.Rebates))</b>
+                    </td>
+                    <td class="NMC">
+                        @if (firstMonthTrades.GetValueOrDefault() != 0)
+                        {
+                            <b>@Html.Partial(Mvc.Shared.Views._PositiveNegativePercentage, firstMonth.Reports.Sum(x => x.Profit) / firstMonthTrades)</b>
+                        }
+                    </td>
+                    <td>
+                        <!-- -->
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, secondMonthTrades)</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, secondMonth.Reports.Sum(x => x.Profit))</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, secondMonth.Reports.Sum(x => x.Rebates))</b>
+                    </td>
+                    <td class="NMC">
+                        @if (secondMonthTrades.GetValueOrDefault() != 0)
+                        {
+                            <b>@Html.Partial(Mvc.Shared.Views._PositiveNegativePercentage, secondMonth.Reports.Sum(x => x.Profit) / secondMonthTrades)</b>
+                        }
+                    </td>
+                    <td>
+                        <!-- -->
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, thirdMonthTrades)</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, thirdMonth.Reports.Sum(x => x.Profit))</b>
+                    </td>
+                    <td class="NM">
+                        <b>$ @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, thirdMonth.Reports.Sum(x => x.Rebates))</b>
+                    </td>
+                    <td class="NMC">
+                        @if (thirdMonthTrades.GetValueOrDefault() != 0)
+                        {
+                            <b>@Html.Partial(Mvc.Shared.Views._PositiveNegativePercentage, thirdMonth.Reports.Sum(x => x.Profit) / thirdMonthTrades)</b>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="12" height="12" class="SCR"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</form>

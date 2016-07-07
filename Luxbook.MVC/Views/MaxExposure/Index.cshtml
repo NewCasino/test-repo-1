@@ -1,0 +1,287 @@
+﻿@model Luxbook.MVC.ViewModels.MaxExposure.MaxExposureIndexViewModel
+@{
+    Layout = Mvc.Shared.Views._NoBootstrapLayout;
+    ViewBag.Title = "Index";
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<div class="alert alert-danger" style="display: none;" data-bind="text: errorMessage, visible: errorMessage"></div>
+
+<form id="frmExposure" method="POST">
+    <table width=1100 cellpadding=0>
+        <td valign=top rowspan=3 width=210>
+
+            <div class="LST GAP" style="width: 450px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan="4" class="TT" style="text-align: center;">
+                                Default Limits
+                            </th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>
+                                <img src="/img/R.png" />
+                            </th>
+                            <th>
+                                <img src="/img/H.png" />
+                            </th>
+                            <th>
+                                <img src="/img/G.png" />
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>Default exposure</td>
+                            <td>$@Html.TextBoxFor(m => m.MaximumExposures.DefaultThoroughbred, new { style = "width: 50px" })</td>
+                            <td>$@Html.TextBoxFor(m => m.MaximumExposures.DefaultHarness, new { style = "width: 50px" })</td>
+                            <td>$@Html.TextBoxFor(m => m.MaximumExposures.DefaultGreyhound, new { style = "width: 50px" })</td>
+                        </tr>
+                        <tr>
+                            <td>Maximum exposure</td>
+                            <td>$@Html.TextBoxFor(m => m.MaximumExposures.MaximumThoroughbred, new { style = "width: 50px" })</td>
+                            <td>$@Html.TextBoxFor(m => m.MaximumExposures.MaximumHarness, new { style = "width: 50px" })</td>
+                            <td>$@Html.TextBoxFor(m => m.MaximumExposures.MaximumGreyhound, new { style = "width: 50px" })</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="LST GAP" style="width: 450px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan="2" class="TT" style="text-align: center;">
+                                Weighted Coefficients
+                            </th>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td>
+                                Region
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.WeightedCoefficientsList.Region)
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                Rank &amp; Confidence Level
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.WeightedCoefficientsList.RankAndConfidence)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Price band Coefficients
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.WeightedCoefficientsList.PriceBand)
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                Runner expectation (+/-)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.WeightedCoefficientsList.RunnerExpectation)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="LST GAP" style="width: 450px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                Code &amp; Region &mu;
+                            </th>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                <img src="/img/R.png" />
+                            </th>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                <img src="/img/H.png" />
+
+                            </th>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                <img src="/img/G.png" />
+
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                Metro
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.MetroThoroughbred)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.MetroHarness)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.MetroGreyhound)
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                Provincial
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.ProvincialThoroughbred)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.ProvincialHarness)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.ProvincialGreyhound)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Country
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.CountryThoroughbred)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.CountryHarness)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.CodeAndRegionMean.CountryGreyhound)
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="LST GAP" style="width: 450px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                Rank &amp; Confidence &mu;
+                            </th>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                1
+                            </th>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                2
+
+                            </th>
+                            <th colspan="1" class="TT" style="text-align: center;">
+                                3
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                A
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceARank1)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceARank2)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceARank3)
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                B
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceBRank1)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceBRank2)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceBRank3)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                C
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceCRank1)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceCRank2)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceCRank3)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                D
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceDRank1)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceDRank2)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.RankAndConfidenceMean.ConfidenceDRank3)
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td width="15"></td>
+        <td valign="top">
+
+            <div class="LST GAP" style="width: 450px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan="2" class="TT" style="text-align: center;">
+                                Price Band Coefficients
+                            </th>
+                        </tr>
+                        <Tr>
+                            <th>Price Band</th>
+                            <th>&mu; (coefficient)</th>
+                        </Tr>
+                        @for (var index = 0; index < Model.PriceBandCoefficients.Count; index++)
+            {
+                            <tr>
+                                <td>
+                                    @Model.PriceBandCoefficients[index].PriceBand (@Model.PriceBandCoefficients[index].ActualPrice)
+                                    @Html.HiddenFor(m => m.PriceBandCoefficients[index].PriceBand)
+                                    @Html.HiddenFor(m => m.PriceBandCoefficients[index].ActualPrice)
+                                </td>
+                                <td>@Html.TextBoxFor(m => m.PriceBandCoefficients[index].Coefficient)</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </td>
+    </table>
+    <div class="EDT">
+        <input type="reset" value="Undo">
+        <input type="submit" name="FCMD" value="Save">
+    </div>
+</form>

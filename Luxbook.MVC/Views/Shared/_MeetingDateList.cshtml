@@ -1,0 +1,35 @@
+﻿@model Luxbook.MVC.ViewModels.Reports.MeetingDatesViewModel
+
+
+<div id=VNT style="width:150px">
+    <table>
+        <tr height=21>
+            <td>
+                <table>
+                    <td width=4>
+                    <td width=33>Meeting Date
+                </table>
+        <tr>
+    </table>
+</div>
+<div id=VNL style="width: 150px">
+    <table>
+        <col width=45>
+        <col>
+
+        @foreach (var date in Model.Dates)
+        {
+            <tr class="clickable-row" data-href="@string.Format(Model.UrlFormat, date.ToString("yyyy-MM-dd"))">
+                <td>&nbsp;@date.ToString("ddd")
+                <td>@date.ToString("dd MMM yyyy")
+            </tr>
+        }
+    </table>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.document.location = $(this).data("href");
+        });
+    });
+</script>

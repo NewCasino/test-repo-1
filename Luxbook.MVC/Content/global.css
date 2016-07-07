@@ -1,0 +1,386 @@
+html, body {	height:100%; -webkit-user-select:none }
+
+body, table, form {	margin:0; padding:0; font-size:12px; font-family:tahoma, helvetica }
+button {	margin:0 }
+iframe[name=vrtPOST] {	display:none }
+
+#CLG {	position:fixed; top:2px; left:5px }
+
+#ACC {	position:fixed; font-size:18px; color:#555; top:11px; right:10px; cursor:default }
+
+#TTL {	position:fixed; height:45px; top:0; left:0; width:100%; cursor:default;
+	padding-left:195px; font:25px/45px century gothic, futura; white-space:nowrap;
+	color:#000; background:#ddd; border-bottom:1px solid #888; text-shadow:1px 1px 3px rgba(0,0,0,.3) }
+
+#MNU {	position:fixed; top:46px; margin:0; padding:0; height:25px; list-style:none; float:left; 
+	white-space:nowrap; background:#555; color:#eee; width:100%; box-shadow:0 3px 4px rgba(0,0,0,.5);
+	background:-moz-linear-gradient(#888, #222); background:-webkit-linear-gradient(#888, #222) }
+#MNU > li {	width:120px; display:inline-block; font-weight:bold; text-align:center; cursor:pointer;
+	margin-top:2px; padding:3px 0 5px; position:relative; text-shadow:1px 1px 2px rgba(0,0,0,.5) }
+#MNU > li:first-child {	margin-left:20px }
+#MNU > li:hover {	border-radius:9px 9px 0 0; box-shadow:3px 3px 3px rgba(0,0,0,.6); color:#b03; background:#ddd; text-shadow:none }
+#MNU > li:hover > ul {	left:0; text-shadow:none }
+
+#MNU > li > ul {	margin:0; padding:0; width:inherit; left:-999px; list-style:none; color:#000; background:#ddd;
+	position:absolute; margin-top:5px; border-radius:0 0 9px 9px; box-shadow:inherit }
+#MNU > li > ul > li {	font-weight:normal; text-align:left; padding:5px 10px; cursor:pointer; position:relative }
+#MNU > li > ul > li:hover {	color:#fc3; background:#444;
+	background:-moz-linear-gradient(#555, #222); background:-webkit-linear-gradient(#555, #222) }
+#MNU > li > ul > li:last-child {	border-radius:inherit }
+#MNU hr {	width:114px; height:2px; border:0; margin:1px auto; background:rgba(0,0,0,.1) }
+
+
+#DTL {	position:fixed; top:70px; right:0; bottom:0; left:0 }
+#DTL iframe {	width:100%; height:100%; border:0 }
+
+#VNT {	position:fixed; top:6px; bottom:5px; left:5px; width:280px; box-shadow:1px 1px 3px rgba(0,0,0,.4);
+	color:#fff; background:#777; border:1px solid #777; border-radius:10px; white-space:nowrap }
+#VNT table {	border-spacing:0; width:100% } #VNT td { padding:0; text-shadow:1px 1px 2px rgba(0,0,0,.5) }
+#VNT img {	vertical-align:top }
+
+#VNL {	position:fixed; top:26px; bottom:20px; left:6px; width:280px; overflow-y:scroll;
+	background:#fffefd; border-top:1px solid #777; border-bottom:1px solid #777 }
+#VNL table {	cursor:pointer; width:100%; border-spacing:0; font-size:11px; table-layout:fixed; white-space:nowrap }
+#VNL tr {	background:-moz-linear-gradient(#fff, #ddd); background:-webkit-linear-gradient(#fff, #ddd) }
+#VNL tr:hover td {	color:white; background:-moz-linear-gradient(#567, #234); background:-webkit-linear-gradient(#567, #234) }
+#VNL td {	border-bottom:1px solid #ccc; height:18px; padding:2px; text-overflow:ellipsis; overflow:hidden }
+#VNL td:first-child {	font-weight:bold }
+#VNL img {	vertical-align:top }
+#VNL td:nth-child(2) img, .FLG {	border-radius:5px; box-shadow:1px 0 2px rgba(0,0,0,.5) }
+
+#VNL tr.CLK {	background:-moz-linear-gradient(#abc, #789); background:-webkit-linear-gradient(#abc, #789) }
+#VNL tr.CLK[style] {	background:#da3!important }
+
+#VNL td.ALR:after {	content:""; position:absolute; right:42px; width:8px; height:8px; margin-top:2px;
+	border:1px solid rgba(0,0,0,.3); border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,.3) }
+#VNL td.CR:after {	background:#c33 }
+#VNL td.CY:after {	background:#fb3 }
+#VNL td.CG:after {	background:#5c3 }
+
+#VNL tr.MTD {	background:#eed; font-size:12px;
+	background:-webkit-linear-gradient(#ffe, #ddc 50%, #bba 50%, #ccb) }
+#VNL tr.MTD td {	border-bottom-color:#555 }
+
+#VNL tr:hover td.SPT,
+#VNL td.SPT {	background:#fff; border-bottom-color:#555; height:10px; cursor:default;
+	background:-webkit-linear-gradient(#333, #fff 40%) }
+#VNL tbody:last-child td.SPT:last-child { border-bottom:0 }
+
+#STV {	position:fixed; left:5px; bottom:5px; background:#000; display:inline-block; border:1px solid #000; box-shadow:2px 2px 5px rgba(0,0,0,.4) }
+#STV ol {	position:absolute; list-style:none; margin:0 0 0 12px; padding:0; top:-16px; text-shadow:none }
+#STV ol > li {	cursor:pointer; display:inline-block; font:bold 12px/15px tahoma, helvetica; text-align:center; width:43px; color:#333; background:#aaa;
+	margin:0 3px 0 0; padding:0 15px; xborder:1px solid black; border-radius:8px 8px 0 0; box-shadow:2px 0px 2px rgba(0,0,0,.4) }
+#STV ol > li:hover {	background:#fa0; color:#000 } #STV ol > li.HL { background:#000; color:#fa0 }
+#STV embed, #STV iframe {	border:0; vertical-align:top }
+#STV div {	font-size:11px; height:20px; border-top:1px solid #000; background:-webkit-linear-gradient(#888,#666 50%,#444 50%,#333) }
+#STV ul {	float:right; display:inline-block; list-style:none; margin:2px 1px; padding:0; color:#ddd }
+#STV ul > li {	cursor:pointer; display:inline-block; font:14px/16px times; text-align:center;
+	width:22px; border-radius:5px; text-shadow:1px 1px 1px rgba(0,0,0,.5) }
+#STV ul > li:hover {	background:rgba(0,0,0,.5) }
+#STV button {	cursor:pointer; margin:2px 1px; padding:0 5px; font:11px/14px tahoma, helvetica; border:1px solid rgba(0,0,0,.5);
+	height:16px; border-radius:5px; background:rgba(255,255,255,.4); box-shadow:0 1px 2px rgba(0,0,0,.5) }
+#STV button:hover {	background:rgba(255,255,255,.8) !important; border-color:#000 }
+#STV select {	-webkit-appearance:button; width:185px; font:bold 11px tahoma, helvetica; padding:0; background:#fa0;
+	margin:1px; border-radius:5px; border:1px solid rgba(0,0,0,.5); box-shadow:0 1px 2px rgba(0,0,0,.5) }
+#STV select option {	background:#222; color:#ddd }
+#STV button:focus, #STV select:focus { outline:0 }
+
+#CNT {	position:absolute; top:6px; left:293px; right:5px; bottom:0; white-space:nowrap }
+#CNT.WD {	left:5px }
+#CNT #C1 {	position:absolute; top:0; right:450px; left:0; bottom:0; padding:0 5px 5px 0; overflow:auto }
+#CNT #C2 {	position:absolute; top:0; width:450px; right:-5px; bottom:0; padding:0 5px 5px 0; overflow-y:scroll }
+
+#GPH {	position:absolute; left:258px; border:1px solid #000; background:#fff;
+	z-index:1; border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,.5) }
+
+#CBL {	position:absolute; right:3px; width:270px; background:#fff; padding:3px 4px 5px;
+	z-index:1; border:1px solid #000; border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,.5) }
+
+.ST0 {	font-weight:bold; color:#d00 } .MTG .ST0 { color:#f77 }
+.ST1 {	font-weight:bold; color:#070 } .MTG .ST1 { color:#7d7 }
+.ST2 {	color:#f82 }
+.ST3 {	color:#d5f }
+.ST4 {	font-weight:bold; color:#d5f }
+
+.RD {	color:#d00 }
+.GR {	color:#060 }
+.LM {	color:#690 }
+.BL {	color:#06d }
+.CN {	color:#0bd }
+.GY {	color:#666 }
+.OR {	color:#e70 }
+.PK {	color:#d69 }
+.PR {	color:#96d }
+
+.bBL {	background:#f0f7ff !important }
+.bPK {	background:#fff0f7 !important }
+
+.xRD {	color:#fff; background:#d00; padding:0 3px; border-radius:0 4px }
+.xPR {	color:#fff; background:#85c; padding:0 3px; border-radius:0 4px }
+
+.BIG {	font-size:20px !important }
+.MED {	font-size:18px !important }
+.SML {	font-size:11px !important }
+
+.NEG {	color:#b00 }
+.PSV {	padding-right:5px }
+
+.MTG {	height:50px; color:#fc3; background:#444; border:1px solid #333; margin-bottom:3px; cursor:default;
+	border-radius:10px; overflow:hidden; box-shadow:1px 1px 3px rgba(0,0,0,.3); position:relative }
+.MTG.FXD {	background:#dfb }
+.MTG .VNU {	position:absolute; top:2px; left:7px; font:20px trebuchet ms; text-shadow:1px 1px 2px rgba(0,0,0,.5) }
+.MTG .VNU img {	position:relative; top:1px; -webkit-filter:invert(1) }
+.MTG .VNU span {	padding:0 8px; color:#000; background:#aaa; border-radius:5px; box-shadow:1px 1px 3px rgba(0,0,0,.5) }
+.MTG .VD1 {	position:absolute; top:24px; left:7px; color:#fea }
+.MTG .VD1 img {	position:relative; top:3px; border-radius:5px; box-shadow:1px 1px 3px #432 }
+.MTG .VD2 {	position:absolute; top:30px; right:10px; color:#fea }
+.MTG .STS {	position:absolute; top:2px; right:10px; font-size:21px; text-shadow:1px 1px 2px rgba(0,0,0,.3) }
+
+.LST {	overflow:hidden; cursor:default; border:1px solid #777; border-radius:10px; box-shadow:1px 1px 3px rgba(0,0,0,.4) }
+.LST.GAP {	margin-top:15px }	.LST.GAPb { margin-bottom:15px }
+.LST table {	width:100%; border-spacing:0;table-layout: fixed; margin-bottom: 0px; }
+.LST th {	color:#fff; background:#777; font-weight:normal; text-shadow:1px 1px 2px rgba(0,0,0,.5); overflow:hidden;
+	border-bottom:1px solid #aaa; border-right:1px solid #aaa }
+.LST th.TT {	font:bold 16px trebuchet ms }
+
+.LST.HST th {	color:#000; background:#ecf }	.LST.HST th.TT { background:#e8f }
+.LST.VIC th {	color:#000; background:#ffd0d8 }	.LST.VIC th.TT { background:#f56 }
+.LST.NSW th {	color:#000; background:#def }	.LST.NSW th.TT { background:#acf }
+.LST.QLD th {	color:#000; background:#dfd }	.LST.QLD th.TT { background:#afa }
+
+.LST th.FT {	background:#d6cbc0 }
+.LST th.FD {	background:#cbd6c0 }
+
+.LST td {	text-align:center; overflow:hidden; border-bottom:1px solid #aaa; border-right:1px solid #ccc }
+.LST tr:last-child td,
+.LST tr:last-child tr,
+.LST .LR {	border-bottom-width:0 }
+.LST th:last-child,
+.LST td:last-child,
+.LST .NRB {	border-right-width:0 }
+.LST .FRB {	border-right-width:1px !important }
+
+.LST tr {	background:-moz-linear-gradient(#fff, #ddd); background:-webkit-linear-gradient(#fff, #ddd) }
+.LST.HL tr:hover {	background:#fffce0 }
+
+.LST tr.WNR td {	background:#ff8; font-weight:bold }
+.LST tr.WNR td:first-child {	background:#fff }
+.LST tr.HIDESCR {	display:none }
+#SCRBTN  {  -webkit-appearance:none; font:10px/16px tahoma, helvetica;   position:relative; bottom:-18px; 
+	margin:0 1px; cursor:pointer; color:#fff; border:1px solid #444; border-radius:5px; background:#666;  width:90px;
+	box-shadow:-1px -1px 2px rgba(0,0,0,.2) inset, 1px 1px 2px rgba(255,255,255,.5) inset }	
+	
+.LST td.PRE {	white-space:pre }
+.LST td.PRE1 {	white-space:pre; font:12px consolas, courier new }
+.LST td.SPT {	height:3px !important; padding:0;
+	background:-moz-linear-gradient(#ccc, #888); background:-webkit-linear-gradient(#ccc, #888) }
+.LST td.HS {	font:bold 16px trebuchet ms; background:rgba(0,0,0,.12) }
+.LST td.HL {	background:#fc6!important } .LST td.HL .INV { font-weight:bold }
+.LST td.F2 {	background:#8df }
+.LST td.RI {	text-align:left; padding:0 0 0 3px; position:relative ;  white-space:normal}
+.LST td.RI img {	float:left; height:27px; margin:0 3px 0 -3px }
+.LST td.RN {	text-align:left; padding-left:10px }
+.LST td.RI div {	font-size:10px; color:#555; text-overflow:ellipsis; overflow:hidden }
+.LST td.RI.S {	text-decoration:line-through; color:#777; background:#fff }
+.LST td.RI.LS {	text-decoration:line-through; color:#f00; background:#fff }
+.LST td.SCR {	background:#fff }
+.LST td.NM {	text-align:right; padding-right:5px }
+.LST td.NMC {	text-align:center; padding-right:5px }
+
+.LST td.RI > p {	position:absolute; top:6px; right:3px; margin:0; opacity:.8 }
+.LST td.RI > p i {	display:inline-block; width:8px; height:8px; margin-left:3px; border-radius:50%;
+	border:1px solid rgba(0,0,0,.5); box-shadow:1px 1px 2px rgba(0,0,0,.3) }
+.LST td.RI > p i.S1 {	background:#f00 }
+.LST td.RI > p i.S2 {	background:#fa0 }
+.LST td.RI > p i.S3 {	background:#5d0 }
+.LST td.WRP {white-space:normal}
+
+.LST td.HN {	background:rgba(255,230,0,.3); font-weight:bold }
+.LST td.HX {	background:#ffafaf; font-weight:bold }
+.LST td.HN i, .LST td.HX i {	float:right; font-weight:normal; font-style:normal; margin-right:2px }
+.LST td.HN input, .LST td.HX input { margin:0 -2px 0 -1px; vertical-align:bottom; opacity:.8 }
+
+.LST td.PD {	background:#efa !important }
+.LST td.PE {	background:#df8 !important }
+.LST td.PF {	background:#cf6 !important }
+
+.PLS td {	color:#ddd }
+.PLS td.P1, .PLS td.P2, .PLS td.P4, .PLS td.P5, .PLS td.P6 {
+	background:#bf7; color:#000; font-weight:bold }
+.PLS td.P3 {	background:#f77; color:#000; font-weight:bold }
+
+.LST tr.TOT, .LST tr.TOT td {	background:#fff }
+.LST tr.TOT td.TFN {	font-weight:bold; text-align:left; padding-left:8px; background:#f0f0f0 }
+.LST tr.TOT td.TCN {	font-weight:bold; background:#f0f0f0 }
+.LST td.BBB {	border-bottom:1px solid #777 !important }
+
+.LST td.BET {	background:rgba(0,80,255,.12) }
+.LST td.EAT {	background:rgba(255,0,0,.12) }
+.LST td     {}
+.LST td.FV {	background:rgba(0,64,128,.1) }
+.LST td.FF {	background:rgba(0,0,0,.12) }
+.LST td.FD {	background:rgba(0,128,0,.12) }
+.LST td.FT {	background:rgba(128,64,0,.12) }
+.LST td.FW {	background:rgba(128,0,64,.12) }
+.LST td.LMT {	font-weight:bold; color:#f00}
+.LST div.RKSML { 	font-size:9px !important  }
+
+.LST input[type=text] {	width:31px; margin:0; text-align:center; font:13px tahoma, helvetica } .LST input.W50 { width:60px }
+.LST input[type=number] {	width:40px; margin:0; text-align:right; font:13px tahoma, helvetica }
+.LST input[type=num] {	width:25px; margin:0; text-align:center; font:13px tahoma, helvetica }
+.LST input[type=file] {	width:100%; font:13px tahoma, helvetica; border:1px solid #ccc; background:#fff }
+.LST input[type=submit] {	width:100%; height:24px; font:11px tahoma, helvetica; padding:3px; background:#eee; border:1px solid #888;
+	border-radius:5px; background:-webkit-linear-gradient(#fff, #ccc) }
+.LST input[type=submit]:hover {	border:2px solid #0c7; padding:2px }
+
+.LST input[disabled], .LST input[disabled]:hover { background:#fafafa; border:1px solid #ddd; color:#bbb; cursor:default; padding:3px }
+
+.LST select {	height:22px; font:12px tahoma, helvetica }
+.LST select.TRD {	width:50px }
+.LST select.CMT {	width:56px }
+.LST input.FBLD {	width:30px }
+
+.LST .SIP input[type=text], .SIP input[type=number],
+.LST .SIP select {	width:100%; height:100%; font-size:12px; background:none;
+	padding:0; margin:0; border:0; -webkit-appearance:none }
+.LST .SIP textarea {	width:95%; height:100%; font:12px tahoma, helvetica; margin:0; padding:5px }
+
+.BET var, .EAT var {	font-style:normal; float:left; margin-left:3px; font-weight:bold; font-size:14px }
+.BET em, .EAT em {	font-style:normal; float:right; margin:7px 3px 0 0; font-size:16px }
+.LST u, .RTG u {	text-decoration:none; font-size:10px }
+
+.LST .INV {	font-weight:normal; font-size:9px; color:#6f6860; text-align:right } .LST .INV span { float:left }
+.LST .IVH {	font-weight:normal; font-size:9px; text-align:right; background:#3d0; padding-right:3px; border-radius:0 4px }
+
+.LST td.FXD {	position:relative }
+.LST td.FXD.HL1 {	background:rgba(255,150,0,.25) }
+.LST td.FXD.HL2 {	background:rgba(255,25,0,.25) }
+.LST td.FXD.FMR:after {	content:""; position:absolute; bottom:1px; height:2px; left:1px; right:1px; background:rgba(255,100,0,.5) }
+.LST td.FXD.WOW:before {	content:""; position:absolute; top:1px; left:1px; height:5px; width:5px;
+	background:rgba(255,0,0,.6); border-radius:2px; box-shadow:1px 1px 1px rgba(0,0,0,.3) }
+.LST td.FXD.BOB:before {	content:""; position:absolute; top:1px; left:1px; height:5px; width:5px;
+	background:rgba(0,100,200,.6); border-radius:2px; box-shadow:1px 1px 1px rgba(0,0,0,.3) }
+
+.LST td.PIG {	border-right:0; padding:0; vertical-align:middle } .LST td.PIG+td { border-right:0 }
+.LST td.PIG div {	width:18px; height:22px; background:url(/img/wpg.png) }
+
+.LST td.XPG {	border-right:0 } .LST td.XPG+td { padding:0; vertical-align:middle }
+.LST td.XPG+td div {	width:18px; height:22px; background:url(/img/xpg.png) }
+
+/* XT prices display -TBC */
+.XT_DVP {	margin-top:15px;  margin-bottom:15px; border:1px solid #000; border-radius:7px}
+
+
+#SMP {	padding-top:0; padding-bottom:0 } #SMP tr { height:138px }
+
+#SPD {	position:relative; background:url(/img/BG.png); padding:0 }
+#SPD:before {	position:absolute; top:0; left:0; background:#ccc; width:89px; height:17px;
+	content:"Speed Map "; font-weight:bold; border-radius:0 0 9px; box-shadow:-1px -1px 3px rgba(0,0,0,.3) inset }
+#SPD div {	position:absolute; width:32px; height:22px; font:bold 12px/19px trebuchet ms; color:#fff;
+	background:url(/img/SPH.png); border-radius:7px; box-shadow:1px 0 3px rgba(0,0,0,.5) }
+#SPD div.W {	background:url(/img/SPW.png); color:#fff }
+#SPD div.P {	background:url(/img/SPP.png); color:#fff }
+
+#SPG {	position:relative; background:url(/img/BG.png); padding:0 }
+#SPG:before {	position:absolute; top:0; left:0; background:#ccc; width:89px; height:17px;
+	content:"Early Speed"; font-weight:bold; border-radius:0 0 9px; box-shadow:-1px -1px 3px rgba(0,0,0,.3) inset }
+#SPG div {	position:absolute; width:37px; height:13px; font:bold 15px/13px trebuchet ms; color:#fff;
+	background:rgba(255,255,255,.5) 0 -2px no-repeat; text-align:right; padding-right:3px;
+	border-radius:7px; border:1px solid rgba(0,0,0,.5); box-shadow:1px 0 3px rgba(0,0,0,.5);
+	text-shadow:1px 1px 2px #000, -1px 1px 2px #000, 1px -1px 2px #000, -1px -1px 2px #000 }
+#SPG div.W {	background-color:rgba(150,250,0,.8) }
+#SPG div.P {	background-color:rgba(200,250,150,.7) }
+
+#tdPLTM {	font-weight:bold }
+
+
+.TPR {	background:rgba(10,50,30,.4); margin-top:3px; padding:3px 0; border-radius:10px;
+	overflow:hidden; box-shadow:1px 1px 6px rgba(0,0,0,.6) inset }
+.TPR table {	width:100% } .TPR table table { background:#fff }
+.TPR td {	height:26px }
+.TPR td.GRP {	background:rgba(0,0,0,.3) }
+.TPR td.RDV td {	height:auto; font:11px/13px tahoma, helvetica }
+.TPR tr.GPM th {	background:#555 }
+.TPR tr.GFX th {	background:#df8 }
+.TPR .TFN {	font-weight:bold; background:#f4f4f4 }
+
+.STK {	background:rgba(10,50,30,.4); border-radius:10px; margin-top:10px;
+	box-shadow:1px 1px 6px rgba(0,0,0,.6) inset; border-spacing:5px }
+.STK td.TT {	font:18px trebuchet ms; padding:5px 7px; border-radius:7px; box-shadow:1px 1px 5px #000;
+	background:#ffe; background:-webkit-linear-gradient(#ffe, #ddc 50%, #bba 50%, #ccb) }
+.STK td.TT img {	position:relative; top:2px }
+
+.FX {	table-layout:fixed }
+.LNK, label {	cursor:pointer }
+.NA {	font-style:normal; color:rgba(0,0,0,.3) }
+
+.EDT {	position:relative; background:#b03; border:1px solid #801; padding:10px; margin:5px 0; overflow:hidden;
+	cursor:default; border-radius:10px; box-shadow:1px 1px 5px rgba(0,0,0,.6); text-align:center }
+.EDT input {	padding:4px 50px; cursor:pointer }
+.EDT #divDSP {	position:absolute; top:13px; left:10px; padding:6px; width:165px; background:rgba(0,0,0,.1); border-radius:8px }
+.EDT #divNET {	position:absolute; top:13px; right:10px; padding:6px; width:200px; background:rgba(0,0,0,.1); border-radius:8px; text-align:left }
+.EDT #ttNET {	font:18px/12px tahoma, helvetica; float:right }
+.EDT .FXG {	position:absolute; top:5px; right:5px; padding:5px; background:rgba(0,0,0,.1); border-radius:8px }
+.EDT .FXG input {	padding:4px 28px }
+
+/* PM page Event func buttons & clock */
+.TED {	position:absolute; top:10px;  left:380px; width:300px; padding:5px; text-align:center;
+	background:rgba(255,255,255,.3); border-radius:7px; box-shadow:1px 1px 4px rgba(0,0,0,.3) inset }
+.TED input[type=button], .TED input[type=submit] { -webkit-appearance:none; font:12px/16px tahoma, helvetica;
+	padding:2px 10px; margin:0 1px; cursor:pointer; color:#fff; background:#666; border:1px solid #444; border-radius:5px;
+	box-shadow:-1px -1px 2px rgba(0,0,0,.2) inset, 1px 1px 2px rgba(255,255,255,.5) inset }
+.TED input[type=button]:hover, .TED input[type=submit]:hover { background:#888 }
+.TED #divDSP {	width:110px; padding:3px; text-align:center; display:inline-block; background:rgba(255,255,255,.3); border-radius:5px }  /* clock */
+
+/* Race list buttons  */
+.RACEBTN {	position:absolute; top:10px; left:700px; width:450px; padding:5px; text-align:center;
+	background:rgba(255,255,255,.3); border-radius:7px; box-shadow:1px 1px 4px rgba(0,0,0,.3) inset }		/* frame wrapper*/
+.RACEBTN input[type=button] {  -webkit-appearance:none; font:12px/16px tahoma, helvetica;  
+	padding:2px 10px; margin:0 1px; cursor:pointer; color:#fff; border:1px solid #444; border-radius:5px; background:#666;
+	box-shadow:-1px -1px 2px rgba(0,0,0,.2) inset, 1px 1px 2px rgba(255,255,255,.5) inset }			/* buttons*/
+.RACEBTN input[type=button]:hover { background:#888 }
+#BTNACT {  -webkit-appearance:none; font:12px/16px tahoma, helvetica;  
+	padding:2px 10px; margin:0 1px; cursor:pointer; color:#fff; border:1px solid #444; border-radius:5px; background:#66CCFF;
+	box-shadow:-1px -1px 2px rgba(0,0,0,.2) inset, 1px 1px 2px rgba(255,255,255,.5) inset }			/* Active race buttons*/
+
+/* FSI indicator lights */
+.FSI { position:absolute; top:10px;  left:1170px; width:150px; }  /*  background-color: Grey; */
+.FSI button {	padding:1px 1px; border:1px solid #444; border-radius: 25%;  color: Black; height:18px; text-align: center; width:25px; }
+		
+/* Risk filter buttons*/
+.RISKFTR {	background:rgba(10,50,30,.4); margin-top:3px; padding:3px 0; border-radius:10px; 
+	overflow:hidden; box-shadow:1px 1px 6px rgba(0,0,0,.6) inset }
+.RISKFTR table {	width:100% } .TPR table table { background:#fff }
+.RISKFTR td {	font-weight:bold;  text-align:center; height:26px }
+.RISKFTR input[type=button] {  -webkit-appearance:none; font:12px/16px tahoma, helvetica;  
+	padding:2px 10px; margin:0 1px; cursor:pointer; color:#fff; border:1px solid #444; border-radius:5px; background:#666; float: left; width:80px;
+	box-shadow:-1px -1px 2px rgba(0,0,0,.2) inset, 1px 1px 2px rgba(255,255,255,.5) inset }			/* buttons*/
+#SEL { background:#BBB}
+	
+#TDG td {	vertical-align:top; padding:3px }
+#TDG pre {	margin-top:3px; font:15px trebuchet ms; padding:5px 10px; width:310px; background:#f8f8f8;
+	border-radius:8px; box-shadow:1px 1px 6px rgba(0,0,0,.6) inset }
+#TDG pre.CTB {	width:220px }
+#TDG.XTC pre {	width:305px }
+
+#TDG .ODR {	width:100%; table-layout:fixed; border-collapse:collapse }
+#TDG .ODR th, #TDG .ODR td.LF {	padding:0; text-align:left }
+#TDG .ODR td {	padding:0; text-align:right }
+#TDG .ODR .CT {	text-align:center }
+#TDG .ODR tr.HD {	background:rgba(0,40,0,.2); font-size:11px }
+#TDG .ODR tr.HD th {	color:#030; padding:2px; text-align:center }
+#TDG .ODR tr.HD th:first-child {	border-radius:8px 0 0 8px }
+#TDG .ODR tr.HD th:last-child {	border-radius:0 8px 8px 0 }
+#TDG .ODR tr.WNR * {	background:#df5; border-top:1px solid #bd3; border-bottom:1px solid #bd3; padding:1px 0 }
+#TDG .ODR tr.PCR * {	background:#efb; border-top:1px solid #cd8; border-bottom:1px solid #cd8; padding:1px 0 }
+#TDG .ODR tr.BN th {	font-size:9px; color:#888; font-weight:normal }
+#TDG .ODR tr.BN td {	font-size:9px; color:#888; padding-right:7px }
+
+P.DBG {	background:#fed; border:2px solid #fa3; border-radius:8px; margin:5px 0; padding:8px }
+
+:checked + span {
+    font-weight: bold;
+}
+:checked + input + span {
+    font-weight: bold;
+}

@@ -1,0 +1,129 @@
+﻿@model Luxbook.MVC.ViewModels.TradeManagement.TradeManagementAddAccountViewModel
+@{
+    ViewBag.Title = "Add";
+}
+
+
+<div class="panel panel-info">
+    <div class="panel-heading">Add new trading account</div>
+    <div class="panel-body">
+
+        <form class="form-horizontal" id="form-add">
+            <fieldset>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="textinput">Username</label>
+                    <div class="col-md-4">
+                        <input data-bind="value: account.username" id="textinput" name="textinput" type="text" placeholder="Username" class="form-control input-md">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="textinput">Password</label>
+                    <div class="col-md-4">
+                        <input data-bind="value: account.password" id="textinput" name="textinput" type="password" placeholder="" class="form-control input-md">
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="textinput">Agency</label>
+                    <div class="col-md-4">
+                        <input data-bind="value: account.agency" id="textinput" name="textinput" type="text" placeholder="Agency (e.g. TAB, BetFair)" class="form-control input-md">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="textinput">Jurisdiction</label>
+                    <div class="col-md-4">
+                        <select data-bind="options: jurisdictions, optionsText: 'Text', optionsValue: 'Value', value: account.jurisdiction, optionsCaption: 'Choose agency'" class="form-control input-md" ></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="textinput">Activate?</label>
+                    <div class="col-md-4">
+                        <input type="checkbox" value="1" data-bind="checked: account.is_Active"/>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="save"></label>
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back", Mvc.TradeManagement.Actions.Accounts(), new { @class = "btn btn-default" })
+                        <button id="save" type="submit" name="save" class="btn btn-success">Save</button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+
+@section Script {
+
+    <script>
+        top.setTitle("Trading Accounts Management");
+        
+        function AccountsViewModel() {
+            var self = this;
+
+            self.account = new AccountViewModel();
+
+            // List of possible options for our dropdown lists
+            self.jurisdictions = @Html.Raw(Json.Encode(Model.Jurisdictions));
+
+            self.successMessage = ko.observable();
+            self.errorMessage = ko.observable();
+
+            self.init = function() {
+               
+            };
+
+
+        };
+
+        function AccountViewModel() {
+            var self = this;
+
+            self.username              = ko.observable();
+            self.password              = ko.observable();
+            self.agency                = ko.observable();
+            self.jurisdiction          = ko.observable();
+            self.balance               = ko.observable();
+            self.is_Active              = ko.observable(true);
+        };
+
+        var viewModel = new AccountsViewModel();
+        viewModel.init();
+        ko.applyBindings(viewModel);
+
+        $("#form-add").submit(function() {
+            viewModel.successMessage(null);
+            viewModel.errorMessage(null);
+            console.log(ko.toJS(viewModel.rule));
+            $.ajax({
+                type: "POST",
+                url: "AddAccount",
+                data: JSON.stringify(ko.toJS(viewModel.account)),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    if (data.Success === true) {
+                        viewModel.successMessage(data.Message);
+                    } else {
+                        viewModel.errorMessage(data.Message);
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                    viewModel.errorMessage(data.responseText);
+
+                }
+            });
+          
+
+            return false;
+        });
+    </script>
+}

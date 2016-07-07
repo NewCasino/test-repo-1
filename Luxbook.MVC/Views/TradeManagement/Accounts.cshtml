@@ -1,0 +1,186 @@
+﻿@using Luxbook.MVC.Models
+@model Luxbook.MVC.ViewModels.TradeManagement.TradeManagementAccountsViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="CNT" class="WD">
+    <div class="EDT" style="margin-top: 30px;">
+        <div data-bind="visible: tradeEnabled()">
+            <span style="color: white;">Trader is currently enabled.</span>
+            <a class="btn btn-danger" data-bind="click: function() {toggleTrade(false);}">Disable</a>
+        </div>
+        <div data-bind="visible: !tradeEnabled()">
+            <span style="color: white;">Trader is currently disabled.</span>
+            <a class="btn btn-success" data-bind="click: function() {toggleTrade(true);}">Enable</a>
+        </div>
+    </div>
+
+    <div class="LST GAP">
+        <table cellpadding="3" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <td colspan="6" class="FT RN MED"> Trading Accounts (<span data-bind="text: accounts().length"></span>)</td>
+                </tr>
+                <tr>
+                    <th class="TT">Account</th>
+                    <th class="TT">Agency</th>
+                    <th class="TT">Jurisdiction</th>
+                    <th class="TT">Balance</th>
+                    <th class="TT">Active?</th>
+                    <th class="TT"></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: accounts">
+                <tr>
+                    <td class="RN">
+                        <span data-bind="text: username"></span>
+                    </td>
+                    <td class="RN">
+                        <span data-bind="text: agency"></span>
+                    </td>
+                    <td class="RN">
+                        <select data-bind="options: $root.jurisdictions, optionsText: 'Text', optionsValue: 'Value', value: jurisdiction, disable: true"></select>
+                    </td>
+                    <td class="RN">
+                        <span data-bind="text: formatCurrency(balance)"></span>
+                    </td>
+                    <td class="RN">
+                        <span data-bind="text: isActive"></span>
+                    </td>
+                    <td class="RN">
+
+                        <a data-bind="attr: {href: 'EditAccount/' + eventTradingAccountId }" class="btn btn-primary">Edit</a>
+                        <button data-bind="click: function(data) { $root.deleteAccount(data); }" class="btn btn-danger">Delete</button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="EDT" style="margin-top: 15px">
+        <a class="btn btn-default" href="/Luxbook.MVC/TradeManagement/AddAccount">Add new account</a>
+    </div>
+</div>
+
+
+@section Script {
+    <script>
+        var formatCurrency = function(value) {
+            value = ko.utils.unwrapObservable(value);
+
+            toks = value.toFixed(2).replace('-', '').split('.');
+            var display = '$' + $.map(toks[0].split('').reverse(), function(elm, i) {
+                return [(i % 3 === 0 && i > 0 ? ',' : ''), elm];
+            }).reverse().join('') + '.' + toks[1];
+
+            return value < 0 ? '-' + display : display;
+        };
+
+        top.setTitle("Trading Accounts Management");
+
+
+        function AccountsViewModel() {
+            var self = this;
+
+            self.accounts = ko.observableArray();
+            self.jurisdictions = @Html.Raw(Json.Encode(Model.Jurisdictions));
+            self.successMessage = ko.observable();
+            self.errorMessage = ko.observable();
+            self.tradeEnabled = ko.observable(@Model.TradeEnabled.ToString().ToLower());
+
+            self.init = function() {
+                self.load();
+            };
+
+            self.load = function() {
+                $.ajax({
+                    type: "GET",
+                    url: "GetAllAccounts",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        var accounts = [];
+                        for (var i = 0; i < data.length; i++) {
+                            accounts.push(new AccountViewModel(data[i]));
+                        }
+                        self.accounts(accounts);
+                        console.log(self.accounts());
+                        $("#loading-msg").html("There are no alerts at the moment");
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+
+            self.toggleTrade = function(enable) {
+                $.ajax({
+                    type: "GET",
+                    url: "ToggleTrade",
+                    contentType: "application/json; charset=utf-8",
+                    data: { "tradeEnabled": enable },
+                    success: function(data) {
+                        if (data.Success === true) {
+                            viewModel.successMessage(data.Message);
+                            viewModel.tradeEnabled(enable);
+                        } else {
+                            viewModel.errorMessage(data.Message);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+
+            self.deleteAccount = function(account) {
+                console.log('account:');
+                console.log(account);
+                $.ajax({
+                    type: "POST",
+                    url: "DeleteAccount",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(ko.toJS(account)),
+                    success: function(data) {
+                        if (data.Success === true) {
+                            viewModel.successMessage(data.Message);
+                            self.accounts.remove(account);
+                        } else {
+                            viewModel.errorMessage(data.Message);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+
+        };
+
+        function AccountViewModel(viewModel) {
+            var self = this;
+
+            self.eventTradingAccountId = viewModel.Event_Trading_Account_Id;
+            self.username = ko.observable(viewModel.Username);
+            self.password = ko.observable(viewModel.Password);
+            self.agency = ko.observable(viewModel.Agency);
+            self.jurisdiction = ko.observable(viewModel.Jurisdiction);
+            self.balance = ko.observable(viewModel.Balance);
+            self.isActive = ko.observable(viewModel.Is_Active);
+            self.date_Created = ko.observable(viewModel.Date_Created);
+        };
+
+        var viewModel = new AccountsViewModel();
+        viewModel.init();
+        ko.applyBindings(viewModel);
+    </script>
+}

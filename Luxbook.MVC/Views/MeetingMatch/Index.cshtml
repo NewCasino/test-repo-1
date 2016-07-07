@@ -1,0 +1,172 @@
+﻿@model Luxbook.MVC.ViewModels.MeetingMatch.MeetingMatchIndexViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = Mvc.Shared.Views._NoBootstrapLayout;
+}
+
+@section head{
+    <style>
+        /*#venue-table tr td:nth-child(4) {
+            width: 10%;
+        }
+        #venue-table tr td:nth-child(5) {
+            width: 10%;
+        }
+        #venue-table tr td:nth-child(6) {
+            width: 10%;
+        }
+        #venue-table tr td:nth-child(9) {
+            width: 10%;
+        }
+        #venue-table tr td:nth-child(10) {
+            width: 10%;
+        }
+            */
+    </style>
+}
+<div id="CNT" style="left: 10px; margin-right: 10px;">
+    <form method="POST" data-bind="submit: submit">
+
+        <div class="EDT" style="color: white;">
+            <label> Show all <input type="radio" name="filter" value="false" data-bind="checked: filterUnknowns" /></label>
+            <label>Show only unknown Types <input type="radio" value="true" name="filter" data-bind="checked: filterUnknowns" /></label>   &nbsp;&nbsp;&nbsp;
+            <label>Search by venue <input type="text" data-bind="value: searchText" placeholder="Venue name" /></label>
+        </div>
+        <div class="LST">
+
+            <table id="venue-table" class="table table-striped">
+                <colgroup>
+                    <col width="150px" />
+                    <col width="70px" />
+                    <col width="150px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="70px" />
+                    <col width="150px">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="TT" colspan="12">Venues </th>
+                    </tr>
+                    <tr>
+                        <th>OCTS Code</th>
+                        <th>Race Type</th>
+                        <th>Venue Name</th>
+                        <th>Betfair</th>
+                        <th>State</th>
+                        <th>Country</th>
+                        <th>Region</th>
+                        <th>Rank</th>
+                        <th>Gcode</th>
+                        <th>GTFav</th>
+                        <th>GTX Code</th>
+                        <th><span title="Separate names with a : ">Alternate names</span></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: filteredVenues">
+                    <tr>
+                        <td data-bind="text: Code"></td>
+                        <td><select data-bind="options: $root.raceTypes, value: Type"></select></td>
+                        <td><input type="text" style="width:120px" data-bind="value: Venue" /></td>
+                        <td><input type="text" data-bind="value: Betfair" /></td>
+                        <td><input type="text" data-bind="value: State" /></td>
+                        <td><input type="text" data-bind="value: Country" /></td>
+                        <td><select data-bind="options: $root.regions, value: Region"></select></td>
+                        <td><select data-bind="options: $root.ranks, value: Rank"></select></td>
+                        <td><input type="text" data-bind="value: GCode" /></td>
+                        <td><input type="text" data-bind="value: GTFav" /></td>
+                        <td><input type="text" data-bind="value: GtxCode" /></td>
+                        <td><input type="text" style="width:120px" data-bind="value: Alt_Venue" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="EDT">
+            <input type="reset" value="Undo">
+            <input type="submit" name="FCMD" value="Update">
+        </div>
+    </form>
+
+</div>
+
+
+@section script{
+    <script type="text/javascript">
+        top.setTitle("Venue management");
+
+        function VenuesViewModel() {
+            var self = this;
+
+            self.filterUnknowns = ko.observable('true');
+            self.venues = ko.mapping.fromJS(@Html.Raw(Json.Encode(Model.Venues)));
+
+            self.raceTypes = @Html.Raw(Json.Encode(Model.RaceTypes));
+            self.ranks = @Html.Raw(Json.Encode(Model.Ranks));
+            self.regions = @Html.Raw(Json.Encode(Model.Regions));
+            self.successMessage = ko.observable();
+            self.errorMessage = ko.observable();
+            self.searchText = ko.observable();
+
+            self.filterNames = function(venues) {
+                if (self.searchText()) {
+
+                    return ko.utils.arrayFilter(venues, function(venue) {
+                        return venue.Venue().toUpperCase().indexOf(self.searchText().toUpperCase()) > -1;
+                    });
+                }
+
+                return venues;
+            }
+
+            self.filteredVenues = ko.computed(function() {
+                if (self.filterUnknowns() == 'true') {
+                    var filtered = ko.utils.arrayFilter(self.venues(), function(venue) {
+                        return venue.ServerType() == '?';
+                    });
+
+                    return self.filterNames(filtered);
+                }
+
+                return self.filterNames(self.venues());
+            });
+
+
+
+
+            self.init = function() {
+
+            };
+
+            self.submit = function() {
+                console.log(ko.viewmodel.toModel(self.venues));
+                $.ajax({
+                    type: "POST",
+                    data: JSON.stringify(ko.viewmodel.toModel(self.filteredVenues)),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.Success === true) {
+                            alert("Success: " +data.Message);
+                        } else {
+                            alert("Failed: "+data.Message);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        viewModel.errorMessage(data.responseText);
+
+                    }
+                });
+            }
+        };
+
+        var viewModel = new VenuesViewModel();
+        viewModel.init();
+        ko.applyBindings(viewModel);
+    </script>
+}

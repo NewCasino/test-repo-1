@@ -1,0 +1,250 @@
+﻿@using System.Linq
+@using System.Web.Mvc.Html
+@using Luxbook.MVC.Common
+@using Luxbook.MVC.Extensions
+@model Luxbook.MVC.ViewModels.Reports.ReportsTypeViewModel
+@{
+    ViewBag.Title = "Type";
+    Layout = Mvc.Shared.Views._NoBootstrapLayout;
+
+}
+
+@section script{
+    <script type="text/javascript">
+        top.setTitle("Trading Report (Bet Type on @Model.RaceType.ToString())"); curVNL = "";
+
+    </script>
+}
+
+@Html.Partial(Mvc.Shared.Views._MeetingDateList, Model.MeetingDates)
+
+@if (Model.Meetings.Any())
+{
+
+    <div id="CNT" style="left: 165px">
+
+        <div class="MTG">
+            <div class="VNU" style="font-size: 21px">Pari-Mutuel Market Trading Daily Report</div>
+            <div class="STS ST2">BY POOL (@Model.RaceType.ToString().ToUpper())</div>
+            <div class="VD1" style="top: 30px">@Model.MeetingDate.ToString("D")</div>
+            <div class="VD2">Created at: @DateTime.Now.ToString("dd MMM yyyy hh:mm:ss tt")</div>
+        </div>
+
+        <form method=post target=vrtPOST autocomplete=off>
+            <input name=DT type=hidden value="= DT ">
+            <div class=LST>
+                <table>
+                    <col width=45>
+                    <col width=65>
+                    <col width=120>
+                    <col>
+                    <col width=110>
+                    <col width=80>
+                    <col width=110>
+                    <col width=110>
+
+                    <col width=110>
+                    <col width=80>
+                    <col width=110>
+                    <col width=110>
+                    <col width=110>
+                    <col width=80>
+                    <col width=110>
+                    <col width=110>
+
+                    <tr>
+                        <th rowspan=2>Race</th>
+                        <th rowspan=2>Trader</th>
+                        <th rowspan=2>Observation</th>
+                        <th rowspan=2>Comments</th>
+                        <th colspan=4>WIN-PLA</th>
+                        <th colspan=4>Exotics</th>
+                        <th colspan=4>
+                            Overall
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Trade</th>
+                        <th>Rebate</th>
+                        <th>Payout</th>
+                        <th>Profit</th>
+                        <th>Trade</th>
+                        <th>Rebate</th>
+                        <th>Payout</th>
+                        <th>Profit</th>
+                        <th>Trade</th>
+                        <th>Rebate</th>
+                        <th>Payout</th>
+                        <th>Profit</th>
+                    </tr>
+                    @for (var meetingIndex = 0; meetingIndex < Model.Meetings.Count; meetingIndex++)
+                    {
+                        var meeting = Model.Meetings[meetingIndex];
+
+                        <tr height="28">
+                            <td class="RN HS" colspan="16"><img class="FLG" src="/img/@(meeting.CountryCode).jpg" align="absmiddle"> <img src="/img/@(meeting.RaceTypeCode).png" align="absmiddle"> &nbsp;@meeting.Name.ToTitleCase()</td>
+                        </tr>
+                        for (var raceIndex = 0; raceIndex < Model.Meetings[meetingIndex].Races.Count; raceIndex++)
+                        {
+                            var race = Model.Meetings[meetingIndex].Races[raceIndex];
+                            if (race.RaceStatus != Enums.RaceStatus.Done)
+                            {
+                                <tr><td class="HN">@race.Number</td><td colspan="3" class="RI" height="18">@race.RaceStatus</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            }
+                            else
+                            {
+
+                                <tr>
+                                    <td class="HN">@race.Number</td>
+                                    <td class="SIP">
+                                        @Html.DropDownListFor(m => Model.Meetings[meetingIndex].Races[raceIndex].Trader, Model.Traders, "")
+                                    </td>
+                                    <td class="SIP">
+                                        @Html.DropDownListFor(m => m.Meetings[meetingIndex].Races[raceIndex].Observation, Model.Observations, "")
+                                    </td>
+                                    <td class="SIP">
+                                        @Html.TextBoxFor(m => m.Meetings[meetingIndex].Races[raceIndex].Comments, new { maxlength = "30" })
+                                    </td>
+
+
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.WinPlace.Trade)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.WinPlace.Rebate)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.WinPlace.Payout)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.WinPlace.Profit)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Exotics.Trade)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Exotics.Rebate)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Exotics.Payout)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Exotics.Profit)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Overall.Trade)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Overall.Rebate)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Overall.Payout)
+                                    </td>
+                                    <td class="NM">
+                                        @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, race.Overall.Profit)
+                                    </td>
+                                </tr>
+                            }
+
+                        }
+
+                        <tr>
+                            <td colspan="16" class="SPT"></td>
+                        </tr>
+                        <tr class="TOT" height="25">
+                            <td class="TFN" colspan="4">
+                                <b>Total Trades on @meeting.Name.ToTitleCase()</b>
+                            </td>
+                            <td class="NM">
+                                <b>
+                                    @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.WinPlace.Trade))
+                                </b>
+                            </td>
+                            <td class="NM">
+                                @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.WinPlace.Rebate))
+                            </td>
+                            <td class="NM">
+                                @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.WinPlace.Payout))
+                            </td>
+                            <td class="FD NM">
+                                <b>
+                                    @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.WinPlace.Profit))
+                                </b>
+                            </td>
+
+                            <td class="NM">
+                                <b>
+                                    @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Exotics.Trade))
+                                </b>
+                            </td>
+                            <td class="NM">
+                                @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Exotics.Rebate))
+                            </td>
+                            <td class="NM">
+                                @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Exotics.Payout))
+                            </td>
+                            <td class="FD NM">
+                                <b>
+                                    @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Exotics.Profit))
+                                </b>
+                            </td>
+
+                            <td class="NM">
+                                <b>
+                                    @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Overall.Trade))
+                                </b>
+                            </td>
+                            <td class="NM">
+                                @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Overall.Rebate))
+                            </td>
+                            <td class="NM">
+                                @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Overall.Payout))
+                            </td>
+                            <td class="FD NM">
+                                <b>
+                                    @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, meeting.Races.Where(x => x.RaceStatus == Enums.RaceStatus.Done).Sum(x => x.Overall.Profit))
+                                </b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="16" height="12" class="SCR"></td>
+                        </tr>
+                    }
+
+
+                    <tr height=28>
+                        <td class="RN HS" colspan=16>
+                            Overall Trades on @Model.MeetingDate.ToString("dddd, dd MMMM yyyy")
+
+                    <tr class=TOT height=37>
+                        <td class=TFN colspan=4>
+                            Total Daily Trades By Pool
+
+                        <td class=NM><b> @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.WinPlaceTrades) </b></td>
+                        <td class=NM>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.WinPlaceRebates)</td>
+                        <td class=NM>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.WinPlacePayout)</td>
+                        <td class="FT NM">
+                            <b>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.WinPlaceProfit)</b>
+                        </td>
+
+                        <td class=NM><b> @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.ExoticsTrades) </b></td>
+                        <td class=NM>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.ExoticsRebates)</td>
+                        <td class=NM>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.ExoticsPayout)</td>
+                        <td class="FT NM">
+                            <b>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.ExoticsProfit)</b>
+                        </td>
+
+                        <td class=NM><b> @Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.OverallTrades) </b></td>
+                        <td class=NM>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.OverallRebates)</td>
+                        <td class=NM>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.OverallPayout)</td>
+                        <td class="FT NM">
+                            <b>@Html.Partial(Mvc.Shared.Views._PositiveNegativeMoney, Model.OverallProfit)</b>
+                        </td>
+
+                    <tr><td colspan=16 height=12 class=SCR>
+                </table>
+
+            </div>
+        </form>
+    </div>
+}

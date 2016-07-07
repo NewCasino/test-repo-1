@@ -1,0 +1,230 @@
+﻿@model Luxbook.MVC.ViewModels.Rules.EditViewModel
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="panel panel-info">
+    <div class="panel-heading">Edit Rule</div>
+    <div class="panel-body">
+
+        <form class="form-horizontal" id="form-edit">
+            <fieldset>
+
+
+                <!-- Text input-->
+                <div class="form-group" data-bind="validationElement: rule.Name">
+                    <label class="col-md-4 control-label" for="textinput">Name</label>
+                    <div class="col-md-4">
+                        <input data-bind="value: rule.Name" id="textinput" name="textinput" type="text" placeholder="Rule name" class="form-control input-md">
+                    </div>
+                </div>
+
+                <!-- Multiple Radios -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="radios">Rule type</label>
+                    <div class="col-md-4" data-bind="foreach: ruleTypes">
+                        <div class="radio">
+                            <label data-bind="attr: { for: 'radio' + $data.Value }" for="radios-0">
+                                <input type="radio" name="radios" id="radios-0" value="1" checked="checked" data-bind=" attr: { value: $data.Value, id: 'radio'  + $data.Value }, checked: $root.rule.Type">
+                                <span data-bind="text: $data.Text"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="category">Category</label>
+                    <div class="col-md-4">
+                        <select id="category" name="category" class="form-control" data-bind="options: ruleCategories, optionsText: 'Text', optionsValue: 'Value', value: rule.Category"></select>
+                        <span class="help-block">Alerts are grouped by rule categories</span>
+
+                    </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="checkedProperty">Checked Property</label>
+                    <div class="col-md-4">
+                        <select id="checkedProperty" name="checkedProperty" class="form-control" data-bind="options: sourceProperties, optionsText: 'Text', optionsValue: 'Value',  value: rule.PropertyName"></select>
+                        <span class="help-block">This selection is cleared when the rule type is changed, as different properties apply to different rule types</span>
+                    </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="comparisonType">Comparison type</label>
+                    <div class="col-md-4">
+                        <select id="comparisonType" name="comparisonType" class="form-control" data-bind="options: comparisonTypes,  optionsText: 'Text', optionsValue: 'Value', value: rule.ComparisonType"></select>
+                        <span class="help-block">Fixed value means it is always compared to a chosen fixed number. Compare against target property means you will specify another property to compare against</span>
+
+                    </div>
+                </div>
+
+                <div class="form-group" data-bind="validationElement: rule.ComparisonOperator">
+                    <label class="col-md-4 control-label" for="comparisonType">Comparison operator</label>
+                    <div class="col-md-4">
+                        <select id="comparisonOperator" name="comparisonOperator" class="form-control" data-bind="options: comparisonOperators, optionsText: 'Text', optionsValue: 'Value',  value: rule.ComparisonOperator, optionsCaption: 'Choose an operator'"></select>
+                        <span class="help-block">Choose the operator that we will use to compare the property and the fixed value/target property with</span>
+
+                    </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group" data-bind="visible: rule.ComparisonType() === 'CompareAgainstTargetProperty'">
+                    <label class="col-md-4 control-label" for="targetProperty">Target property</label>
+                    <div class="col-md-4">
+                        <select id="targetProperty" name="targetProperty" class="form-control" data-bind="options: targetProperties, optionsText: 'Text', optionsValue: 'Value',  value: rule.TargetProperty"></select>
+                        <span class="help-block">This selection is cleared when the rule type is changed, as different properties apply to different rule types</span>
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group" data-bind="visible: rule.ComparisonType() === 'FixedValue', validationElement: rule.TargetValue">
+                    <label class="col-md-4 control-label" for="targetValue">Target value</label>
+                    <div class="col-md-4">
+                        <input id="rule.targetValue" name="targetValue" type="text" placeholder="1.2345" class="form-control input-md" data-bind="value: rule.TargetValue">
+
+                        <span class="help-block">A fixed value to compare Checked Property against. Must be decimal.</span>
+                    </div>
+                </div>
+
+                <!-- Multiple Checkboxes (inline) -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="enabled"></label>
+                    <div class="col-md-4">
+                        <label class="checkbox-inline" for="enabled-0">
+                            <input data-bind="checked: rule.Enabled" type="checkbox" name="enabled" id="enabled-0" value="1">
+                            Enabled
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="save"></label>
+                    <div class="col-md-4">
+                       @Html.ActionLink("Back", Mvc.Rules.Actions.Manage(), new { @class="btn btn-default"})
+                        <button id="save" type="submit" name="save" class="btn btn-success">Save</button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+
+@section Script {
+
+    <script>
+        function AlertsViewModel() {
+            var self = this;
+
+            self.rule = ko.viewmodel.fromModel(@Html.Raw(Json.Encode(Model.Rule)));
+
+            self.sourceProperties = ko.observable();
+            self.targetProperties = ko.observable();
+
+            // List of possible options for our dropdown lists
+            self.eventProperties = @Html.Raw(Json.Encode(Model.EventTargetProperties));
+            self.runnerProperties = @Html.Raw(Json.Encode(Model.RunnerTargetProperties));
+            self.ruleCategories = @Html.Raw(Json.Encode(Model.RuleCategories));
+            self.comparisonTypes = @Html.Raw(Json.Encode(Model.ComparisonTypes));
+            self.comparisonOperators = @Html.Raw(Json.Encode(Model.ComparisonOperators));
+            self.ruleTypes = @Html.Raw(Json.Encode(Model.RuleTypes));
+
+            self.successMessage = ko.observable();
+            self.errorMessage = ko.observable();
+
+            self.init = function() {
+                console.log('init');
+                // This ensures we show the correct property dropdown list for the type
+                self.switchSourceProperties(false);
+
+                // make sure when the chosen Type changes, we trigger switchSourceProperties again.
+                self.rule.Type.subscribe(function() {
+                    // update our dropdown lists to get the correct properties
+                    // and clear the property selections
+                    self.switchSourceProperties(true);
+                });
+
+                // adding validation to our observables
+
+
+                self.validationViewModel = ko.validatedObservable({
+                    targetValue: self.rule.TargetValue.extend({
+                        number: {
+                            onlyIf: self.isFixedValueRule,
+                            message: "You must enter a valid number"
+                        },
+                        required: {
+                            onlyIf: self.isFixedValueRule,
+                            message: "You must enter a target value"
+                            
+                        }
+                    }),
+                    name: self.rule.Name.extend({ required: true })
+                });
+            };
+
+            // switches the source properties to show runners or event properties
+            // if a switch is made, clear the chosen property
+            self.switchSourceProperties = function(clearSelection) {
+                if (self.rule.Type() === 'Runner') {
+                    self.sourceProperties(self.runnerProperties);
+                    self.targetProperties(self.runnerProperties);
+                } else {
+                    self.sourceProperties(self.eventProperties);
+                    self.targetProperties(self.eventProperties);
+                }
+
+                // let's clear selection
+                if (clearSelection !== false) {
+                    self.rule.PropertyName(null);
+                    self.rule.TargetProperty(null);
+                }
+            }
+
+            self.isFixedValueRule = function() {
+                return self.rule.ComparisonType() === "FixedValue";
+            };
+
+        };
+
+        var viewModel = new AlertsViewModel();
+        viewModel.init();
+        ko.applyBindings(viewModel);
+
+        $("#form-edit").submit(function() {
+            if (viewModel.validationViewModel.isValid()) {
+                viewModel.successMessage(null);
+                viewModel.errorMessage(null);
+                console.log(ko.viewmodel.toModel(viewModel.rule));
+                $.ajax({
+                    type: "POST",
+                    url: "../Edit",
+                    data: JSON.stringify(ko.viewmodel.toModel(viewModel.rule)),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.Success === true) {
+                            viewModel.successMessage(data.Message);
+                        } else {
+                            viewModel.errorMessage(data.Message);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        viewModel.errorMessage(data.responseText);
+
+                    }
+                });
+            } else {
+                viewModel.validationViewModel.errors.showAllMessages();
+            }
+
+            return false;
+        });
+    </script>
+}

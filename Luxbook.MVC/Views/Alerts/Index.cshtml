@@ -1,0 +1,329 @@
+﻿@using Luxbook.MVC.Models
+@model Luxbook.MVC.ViewModels.Alerts.IndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="alert alert-success" id="loading-msg" data-bind="visible: alertGroups().length == 0">Loading...</div>
+
+<div id="CNT" class="WD">
+
+    <div class="panel panel-info">
+        <div class="panel-heading">Filters</div>
+        <div class="panel-body">
+            <fieldset>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="form-group col-sm-3">
+                            <p class="help-block">Filter alerts for the race types</p>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" value="G" data-bind="checked: meetingTypes" /> <img src="/img/G.png" />
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" value="H" data-bind="checked: meetingTypes" /> <img src="/img/H.png" />
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" value="R" data-bind="checked: meetingTypes" /> <img src="/img/R.png" />
+
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="filterPercentage">Only show alerts exceeding</label> <input id="filterPercentage" type="text" data-bind="value: filterPercentage" size="3" /> %
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label for="raceStart">Only races starting between </label> <input id="raceStart" type="text" data-bind="value: raceStartFilter" size="3" /> and <input id="raceStartEnd" type="text" data-bind="value: raceEndStartTimeFilter" size="3" /> minutes
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group col-sm-12">
+                            <label for="filterBetfair">Only show alerts exceeding</label> $<input id="filterBetfair" type="text" data-bind="value: filterMatchedAmount" size="3" /> Betfair total match
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="LST GAP" data-bind="foreach: alertGroups">
+        <table cellpadding="3" class="table table-hover table-striped">
+            <colgroup>
+                <col>
+                <col width="30">
+            </colgroup>
+
+            <thead>
+                <tr>
+                    <td colspan="11" class="FT RN MED"> <span data-bind="text: key"></span> (<span data-bind="text: $parent.filterAlerts(value).length"></span>/<span data-bind="text: value.length"></span> alerts)</td>
+                </tr>
+                <tr>
+                    <th class="TT">Name</th>
+                    <th class="TT"></th>
+                    <th class="TT">Race</th>
+                    <th class="TT">Runner</th>
+                    <th class="TT">Current value</th>
+                    <th class="TT">Check value</th>
+                    <th class="TT">% Diff</th>
+                    <th class="TT">Betfair Total Matched</th>
+                    <th class="TT">Starts in</th>
+                    <th class="TT">Last triggered</th>
+                    <th class="TT">Acknowledgment</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: $parent.filterAlerts(value)">
+                <tr data-bind=" attr: { id: 'alert-' + Alert_Id }">
+                    <td data-bind="text: Rule_Name" class="RN"></td>
+                    <td data-bind="text: Meeting_Type" class="RN"></td>
+                    <td class="RN">
+                        <a data-bind=" attr: { href: Url }" target="_blank"><span data-bind="text: Venue"></span> (<span data-bind="text: Event_No"></span>) </a>
+                    </td>
+                    <td class="RN"> <span data-bind="text: Runner_No"></span> - <span data-bind="text: Runner_Name"></span></td>
+                    <td data-bind="text: Current_Value" class="RN"> </td>
+                    <td data-bind="text: Target_Value" class="RN"> </td>
+                    <td class="RN"> <span data-bind="text: Percentage"></span>%</td>
+                    <td class="RN"> <span data-bind="text: formatCurrency(Betfair_Total_Match)"></span></td>
+                    <td class="RN"><span data-bind="text: Start_Time_Humanized"></span></td>
+                    <td class="RN"><span data-bind="text: Last_Triggered_Humanized"></span> (<span data-bind="text: Last_Triggered_Actual"></span>) </td>
+                    <td class="RN" data-bind=" attr: { id: 'acknowledge-row-' + Alert_Id }">
+                        <button class="btn btn-sm btn-success" role="button" data-bind=" attr: { id: 'acknowledge-button-' + Alert_Id } , click: acknowledge, visible: !Acknowledged_By()">Acknowledge</button>
+                        <span data-bind="text: Acknowledged_By, visible:Acknowledged_By()"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+@section Script {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+    <script>
+        top.setTitle("Market Alerts");
+
+        function mapDictionaryToArray(dictionary) {
+            var result = [];
+            for (var key in dictionary) {
+                if (dictionary.hasOwnProperty(key)) {
+
+                    // massage all our alerts into a viewmodel
+                    var viewModels = [];
+                    for (var i = 0; i < dictionary[key].length; i++) {
+                        viewModels.push(new AlertViewModel(dictionary[key][i]));
+                    }
+
+                    result.push({ key: key, value: viewModels });
+                }
+            }
+
+            return result;
+        }
+
+        function AlertsViewModel() {
+            var self = this;
+
+
+            self.errorMessage = ko.observable();
+            self.successMessage = ko.observable();
+            self.alertGroups = ko.observableArray();
+            self.raceStartFilter = ko.observable(@Model.RaceStartTimeFilter);
+            self.raceStartFilter.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.raceEndStartTimeFilter = ko.observable(@Model.RaceEndStartTimeFilter);
+            self.raceEndStartTimeFilter.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.filterPercentage = ko.observable(@Model.PercentageFilter);
+            self.filterPercentage.subscribe(function () {
+                self.updatePreference();
+            });
+            self.filterMatchedAmount = ko.observable();
+            self.filterMatchedAmount.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.meetingTypes = ko.observableArray(@Html.Raw(Json.Encode(Model.MeetingTypes)));
+            self.meetingTypes.subscribe(function () {
+                self.updatePreference();
+            });
+
+            self.showInfinity = ko.observable(false);
+            self.alertCount = ko.computed(function () {
+                return self.alertGroups().length;
+            });
+            self.init = function () {
+                self.load();
+                window.setInterval(self.load, 15000);
+            };
+
+            // Applies user filters to alerts
+            self.filterAlerts = function (alerts) {
+                return ko.utils.arrayFilter(alerts, function (item) {
+
+
+                    if (!self.showInfinity() && item.Percentage() == Infinity) {
+                        return false;
+                    }
+
+                    if (item.Percentage() < self.filterPercentage()) {
+                        return false;
+                    }
+                    if (self.isNullOrEmpty(self.filterMatchedAmount()) === false && self.isToteOrBetFair(item) && item.Betfair_Total_Match !== null) {
+                        console.log('checking betfair ' + item.Betfair_Total_Match + ' and ' + self.filterMatchedAmount());
+                        console.log((item.Betfair_Total_Match < parseFloat(self.filterMatchedAmount())));
+                        if ((item.Betfair_Total_Match < parseFloat(self.filterMatchedAmount()))) {
+                            return false;
+
+                        }
+                    }
+
+                    var matchedMeeting = ko.utils.arrayFirst(self.meetingTypes(), function (type) {
+                        return item.Meeting_Type === type;
+                    });
+
+                    if (!matchedMeeting || matchedMeeting.length === 0) {
+                        return false;
+                    }
+
+                    var raceStart = self.raceStartFilter();
+                    var minutesToRace = item.Start_Time_Actual.diff(moment(), 'minutes');
+                    if (raceStart) {
+                        if (minutesToRace < raceStart) {
+                            return false;
+                        }
+                    }
+
+                    var raceEnd = self.raceEndStartTimeFilter();
+                    if (raceEnd) {
+                        if (minutesToRace > raceEnd) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+            };
+
+            self.isToteOrBetFair = function (item) {
+                return ((item.Target_Property && item.Target_Property.startsWith('BFR_')) || (item.Property_Name && item.Property_Name.startsWith('BFR_')));
+            };
+
+            self.isNullOrEmpty = function (item) {
+                return (item === null || item === '');
+            }
+
+
+            self.load = function () {
+                $.ajax({
+                    type: "GET",
+                    url: "GetAll",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        self.alertGroups(mapDictionaryToArray(data.AlertGroups));
+                        $("#loading-msg").html("There are no alerts at the moment");
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+
+
+            self.updatePreference = function () {
+
+                var trader = { gameTypes: self.meetingTypes().join(), minimumPercentage: self.filterPercentage(), raceStartTimeFilter: self.raceStartFilter(), raceEndStartTimeFilter: self.raceEndStartTimeFilter() };
+                $.ajax({
+                    type: "POST",
+                    url: "UpdatePreferences",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(trader),
+                    success: function (data) {
+                        console.log('update preference: ' + data);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        self.errorMessage(data.responseText);
+
+                    }
+                });
+            };
+        };
+
+        function AlertViewModel(viewModel) {
+            var self = this;
+
+            self.Alert_Id = viewModel.Alert_Id;
+            self.Rule_Name = viewModel.Rule_Name;
+            self.Runner_No = viewModel.Runner_No;
+            self.Runner_Name = viewModel.Runner_Name;
+            self.Current_Value = viewModel.Current_Value;
+            self.Target_Value = viewModel.Target_Value;
+            self.Meeting_Id = viewModel.Meeting_Id;
+            self.Meeting_Type = viewModel.Meeting_Type;
+            self.Event_No = viewModel.Event_No;
+            self.Venue = viewModel.Venue;
+            self.Acknowledged_By = ko.observable(viewModel.Acknowledged_By);
+            self.Betfair_Total_Match = viewModel.Betfair_Total_Match === 0 || viewModel.Betfair_Total_Match === null ? null : parseFloat(viewModel.Betfair_Total_Match);
+            self.Last_Triggered_Actual = fixDate(viewModel.Last_Triggered).format("h:mm:ss a");
+            self.Last_Triggered_Humanized = viewModel.Last_Triggered_Humanized;
+            self.Start_Time_Humanized = viewModel.Start_Time_Humanized;
+            self.Start_Time_Actual = fixDate(viewModel.Start_Time);
+            self.Target_Property = viewModel.Target_Property;
+            self.Property_Name = viewModel.Property_Name;
+
+            self.Url = "../../?redirect=MM/PM1.aspx%3fTargetRace=" + self.Meeting_Id + "_" + self.Event_No + '%26HighlightNo=' + self.Runner_No;
+            self.Percentage = ko.computed(function () {
+                return (((1 / self.Target_Value) - (1 / self.Current_Value)) * 100).toFixed(2);
+            });
+
+            self.formatCurrency = function (value) {
+                if (value === null) {
+                    return null;
+                }
+
+                return numeral(value).format('($ 0.00 a)');
+            };
+
+
+            self.Date_Created = viewModel.Date_Created;
+
+            self.acknowledge = function (alert) {
+                console.log(alert);
+
+                var post = { "alertId": alert.Alert_Id };
+                $.ajax({
+                    type: "POST",
+                    url: "Acknowledge",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(post),
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        alert.Acknowledged_By("You");
+
+                    },
+                    error: function (data) {
+                        console.log(data);
+
+                    }
+                });
+            };
+
+
+        };
+
+
+        var viewModel = new AlertsViewModel();
+        viewModel.init();
+        ko.applyBindings(viewModel);
+
+    </script>
+}
