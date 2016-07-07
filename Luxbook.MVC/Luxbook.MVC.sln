@@ -16,11 +16,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luxbook.MVC.Tests", "..\Lux
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalApi", "..\..\Datafeeds\DigitalApiFeed\DigitalApi\DigitalApi.csproj", "{36BC6B99-1213-42F6-8C82-E6A33D692538}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Common", "..\..\Datafeeds\LuxTrader\LuxTrader\Trading.Common\Trading.Common.csproj", "{48B9E0C0-0D89-456D-A5E6-B973263ED185}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Library", "..\..\Datafeeds\LuxTrader\LuxTrader\Trading.Library\Trading.Library.csproj", "{57F99D60-B6C2-42B1-A229-139749252889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Library.Tests", "..\..\Datafeeds\LuxTrader\LuxTrader\Trading.Library.Tests\Trading.Library.Tests.csproj", "{E94E0540-4E25-451F-981C-C9CDEC8624A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Common", "..\..\Datafeeds\LuxTrader\LuxTrader\Trading.Common\Trading.Common.csproj", "{48B9E0C0-0D89-456D-A5E6-B973263ED185}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,18 +38,14 @@ Global
 		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Release|Any CPU.Build.0 = Release|Any CPU
 		{57F99D60-B6C2-42B1-A229-139749252889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57F99D60-B6C2-42B1-A229-139749252889}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57F99D60-B6C2-42B1-A229-139749252889}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57F99D60-B6C2-42B1-A229-139749252889}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E94E0540-4E25-451F-981C-C9CDEC8624A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E94E0540-4E25-451F-981C-C9CDEC8624A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E94E0540-4E25-451F-981C-C9CDEC8624A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E94E0540-4E25-451F-981C-C9CDEC8624A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,7 +54,7 @@ Global
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://luxbettest.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -72,14 +66,11 @@ Global
 		SccProjectUniqueName3 = ..\\..\\Datafeeds\\DigitalApiFeed\\DigitalApi\\DigitalApi.csproj
 		SccProjectName3 = ../../Datafeeds/DigitalApiFeed/DigitalApi
 		SccLocalPath3 = ..\\..\\Datafeeds\\DigitalApiFeed\\DigitalApi
-		SccProjectUniqueName4 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Common\\Trading.Common.csproj
-		SccProjectName4 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Common
-		SccLocalPath4 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Common
-		SccProjectUniqueName5 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library\\Trading.Library.csproj
-		SccProjectName5 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Library
-		SccLocalPath5 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library
-		SccProjectUniqueName6 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library.Tests\\Trading.Library.Tests.csproj
-		SccProjectName6 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Library.Tests
-		SccLocalPath6 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library.Tests
+		SccProjectUniqueName4 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library\\Trading.Library.csproj
+		SccProjectName4 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Library
+		SccLocalPath4 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library
+		SccProjectUniqueName5 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Common\\Trading.Common.csproj
+		SccProjectName5 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Common
+		SccLocalPath5 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Common
 	EndGlobalSection
 EndGlobal

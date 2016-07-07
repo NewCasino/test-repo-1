@@ -94,10 +94,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <Content Include="Properties\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="packages.config" />
     <None Include="Properties\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

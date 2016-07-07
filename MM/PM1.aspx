@@ -42,9 +42,9 @@ Sub Page_Load()
 				"  REMARK=" & chkRN("REMARK") & _
 				", REGION=" & chkRN("REGION") & _
 				", RANK="   & chkR9("RANK")   & _
-				", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
+                ", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
 				WC & vbLf
-			execSQL(S)  ' 
+			execSQL(S)
 
 		Case "Update Runner"
 			execSQL("UPDATE RUNNER SET PM_TICK=CASE PM_TICK WHEN 1 THEN 0 ELSE 1 END" & WC & " AND RUNNER_NO=" & chkR9("RNR_NO"))
@@ -247,7 +247,7 @@ End Function
 					
 					<th>Risk<br>$<th>Risk<br>VWM
 					<th>MA<br><input type="checkbox" class="MA_tick" name="MATick" value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/>
-					<th>&fnof;
+                    <th>&fnof;
 					<th>BOB<th>WOW
 					
 					<!-- Dynamic Col Headers ----------------------- -->
@@ -323,10 +323,10 @@ End Function
 			If Not RS("SCR") Then   %>
 			  
 			  <!-- ' Finishing Position  --> 
-			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %>
+			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
 			  
 			  <!--      ' WISE Counter      -->
-			  <td><font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"),(If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
+			  <td><font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
 					<div class=INV>
 						<span>
 							<font color="green"><%= If(RS("WISE_DF_NO")>0, RS("WISE_DF_NO"), "" ) %></font>
@@ -386,8 +386,8 @@ End Function
 				'LBVWM
 				MktPer( 30) += getMkP(GetLiabVWM(RN))
 				'f blend
-				MktPer( 0) += If(sNS(RV("CONF_LVL")) = "", getMkP(RS("SKY_PD_T")) ,  getMkP(RS("PPDVP")))   'getMkP(RS("SKY_PD_T"))  
-				MktPer(  1 ) += 0   ' getMkP(RS("SKY_RT_T"))
+				MktPer( 0) += If(sNS(RV("CONF_LVL")) = "", getMkP(RS("SKY_PD_T")) ,  getMkP(RS("PPDVP")))   ' getMkP(RS("SKY_PD_T"))  
+				MktPer(  1 ) += 0'getMkP(RS("SKY_RT_T"))
 				
 				MktPer( 2) += getMkP(RS("FX_BOB"))  
 				MktPer( 3) += getMkP(RS("FX_WOW")) 
@@ -428,7 +428,7 @@ End Function
 				' Rolls '
 				MktPer(32) += RS("SDP_ADJ")
 				MktPer(33) += RS("SDP_ADJ_TAB")
-               
+
 				'' Actual Lux SDP Market %
 				MktPer(34) += getMkP(RS("LUX_SDP"))
 
@@ -740,7 +740,7 @@ End Function
 						<tr><th>Race Notifications
 						<tr height=115>
 						<% If  Session("LVL") < 10 Then %>							
-								<td valign=top class=RI><div class="RI" style="overflow-y:scroll; max-height: 115px"><%= sNS(RV("NOTIFICATIONS")).Replace(vbCrLf, "<br>") %></div><%
+								<td valign=top class=RI><div class="RI" style="overflow-y:scroll; max-height: 115px" ><%= sNS(RV("NOTIFICATIONS")).Replace(vbCrLf, "<br>") %></div><%
 						End If    %>
 					</table>
 				</td>
@@ -802,7 +802,6 @@ End Function
 		<div class=FSI >  
 			<%= FSI_Check %>
 		</div>		
-		
 	</form>
 
 	<%'-- Auto Trade Handling -------------------------------------------------------------------------

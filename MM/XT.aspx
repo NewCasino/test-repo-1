@@ -69,7 +69,7 @@ Sub Page_Load()
 
     If CM = "STAB" Or TA Then: T = sExotics("VIC", Nothing, RM, RV, False)
       If T <> "" Then S &= ", TXT_VIC=ISNULL(TXT_VIC,'')+" & cQS(FileTrade("VIC", RM(1), EV, RM(2), T, RM(0)) & T)
-       PlaceBatchBet(T,"VIC",EV(0), EV(1), SESSION("LID"))
+      PlaceBatchBet(T,"VIC",EV(0), EV(1), SESSION("LID"))
     End If
     If CM = "NSW"  Or TA Then: T = sExotics("NSW", Nothing, RM, RV, False)
       If T <> "" Then S &= ", TXT_NSW=ISNULL(TXT_NSW,'')+" & cQS(FileTrade("NSW", RM(1), EV, RM(2), T, RM(0)) & T)
