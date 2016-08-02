@@ -20,6 +20,7 @@ While RS.Read() %><%=
   IIf(RS("M2R") > 99, 99, IIf(RS("M2R") < -99, -99, RS("M2R"))) & vbTab  & _
   RS("NOLXB") & vbTab  & _
   RS("FX_COUNT") & vbTab  & _
+  RS("PRODUCT_ENABLEMENT_FLAG") & vbTab  & _
   vbLf %><%
   
 End While: RS.Close() %>
