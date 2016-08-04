@@ -119,13 +119,14 @@ function getRPT( x, y ) {
 }
 
 // Get Event data. Fills page with event info and runner data. Sets timer to auto refresh in 5 secs
-function getEVN( x, y, n ) {
+function getEVN( x, y, n ) {  
    if(handleTimerPause(x)){
       return;
     }
 
   if( tmrEVN ) clearTimeout(tmrEVN);
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
+  console.log('refreshing page');
   $R((n? n+".aspx": location.pathname) + "?EV=" + (x? x: curVNL + "&VM=1"), function(R) {
 
     if(handleTimerPause(x)){
@@ -410,5 +411,7 @@ function pauseTimer(){
 }
 
 function resumeTimer(){
+  console.log('unpause timer');
   timerPause  = false;
+  getEVN(curVNL);
 }
