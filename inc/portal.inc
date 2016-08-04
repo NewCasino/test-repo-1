@@ -1183,7 +1183,7 @@ Function GenerateRollDropdown(runnerRow as Object, rollColumn as string) as Stri
   Dim result as New StringBuilder
   Dim selectedColor = GetRollBackgroundColour(runnerRow(rollColumn))
 
-  result.AppendFormat("<select onchange=""updateRoll(this,'{0}',{1},{2},{3}); getEVN(curVNL);"" style=' "& selectedColor & "'>", rollColumn, runnerRow("MEETING_ID"), runnerRow("EVENT_NO"), runnerRow("RUNNER_NO"))
+  result.AppendFormat("<select  onfocus='pauseTimer();' onchange=""updateRoll(this,'{0}',{1},{2},{3}); getEVN(curVNL); resumeTimer();"" style=' "& selectedColor & "'>", rollColumn, runnerRow("MEETING_ID"), runnerRow("EVENT_NO"), runnerRow("RUNNER_NO"))
 
   For roll as Integer = -5 to 5
     Dim background = GetRollBackgroundColour(roll)
