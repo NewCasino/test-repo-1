@@ -120,22 +120,18 @@ function getRPT( x, y ) {
 
 // Get Event data. Fills page with event info and runner data. Sets timer to auto refresh in 5 secs
 function getEVN( x, y, n ) {
-  if(timerPause === true) {
-    timerPauseCount++;
-    if(timerPauseCount <= 2){
-      console.log('timer paused');
-      tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+   if(handleTimerPause(x)){
       return;
     }
-    
-    // if we exceed more than 2 rounds of refresh, we unpaause it just in case the trader accidentally paused it.
-    timerPauseCount = 0;
-    timerPause = false;
-  }
 
   if( tmrEVN ) clearTimeout(tmrEVN);
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
   $R((n? n+".aspx": location.pathname) + "?EV=" + (x? x: curVNL + "&VM=1"), function(R) {
+
+    if(handleTimerPause(x)){
+      return;
+    }
+
     if( R.substr(0,8) == "<ScRIpT>" ) eval(R.replace("<ScRIpT>","").replace("</ScRIpT>","")); else {
       R = R.replace(/SLK\_AG\=\'/g, "img src='/Jersey/AG/")
            .replace(/SLK\_UG\=\'/g, "img src='/Jersey/UG/")
@@ -151,6 +147,22 @@ function getEVN( x, y, n ) {
   }); if( x && !n ) tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
 }
 
+function handleTimerPause(x){
+   if(timerPause === true) {
+
+     timerPauseCount++;
+      if(timerPauseCount <= 3){
+        console.log('timer paused');
+        tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+        return true;
+      }
+    }
+    // if we exceed more than 2 rounds of refresh, we unpaause it just in case the trader accidentally paused it.
+    timerPauseCount = 0;
+    timerPause = false;
+
+    return false;
+}
 function vSPD( x, y ) { if(x) x.style.display = "none"; if($(y)) $(y).style.display = ""; memSPD = y }
 
 
@@ -385,6 +397,7 @@ function updateBoundary(textbox, meetingId, eventNumber, runnerNumber, boundaryT
 }
 
 function pauseTimer(){
+  console.log('pausing timer');
   timerPause = true;
 }
 
