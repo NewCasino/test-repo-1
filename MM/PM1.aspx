@@ -122,7 +122,8 @@ Function GetLiabTotal(BetType As string)
 
 	dim Tot_Liab as Double
 	'Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
-	Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
+	'Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
+	Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_TAB(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
 	if Tot_Liab <> 0 then Return FormatNumber(Tot_Liab,0,,TriState.UseDefault)
 
 End Function
