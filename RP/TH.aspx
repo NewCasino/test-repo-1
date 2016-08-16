@@ -89,7 +89,7 @@ Else
   '-- Meeting List of A Specific Date -------------------------------------------------------------
 		Dim C As String = Session("CNTL").Replace("1","AU").Replace("2","HK,JP,MO,MY,SG,UA").Replace("3","FR,IR,UK,SW,DE,FI").Replace("4","ZA").Replace("5","US,SA,CH,AR").Replace("6","NZ").Replace(",","','")
 		Dim RV As Object = getRecord("SELECT * FROM dbo.EVENT_VIEW_TH WHERE MEETING_ID IN (SELECT MEETING_ID FROM MEETING(nolock) " & _
-									"WHERE STATUS='DONE' AND MEETING_DATE='" & CDate(Secure("DT", 11)).ToString("yyy-MM-dd") & "') AND " & _
+									"WHERE MEETING_DATE='" & CDate(Secure("DT", 11)).ToString("yyy-MM-dd") & "') AND " & _
 									"TYPE IN('" & Session("GAME").Replace(",","','") & "') AND COUNTRY IN('" & C & "') ORDER BY TYPE, COUNTRY, VENUE, EVENT_NO")
 		Dim CV As String = ""
 		While RV.Read()    %>
