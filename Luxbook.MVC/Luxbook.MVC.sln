@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luxbook.MVC", "Luxbook.MVC.csproj", "{D1EEF26F-112C-4C15-841E-5C960EE3A66A}"
 EndProject
@@ -13,12 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5C0CEE
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luxbook.MVC.Tests", "..\Luxbook.MVC.Tests\Luxbook.MVC.Tests.csproj", "{02F7B7F7-99D5-45E8-A8B1-6F11C590F318}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalApi", "..\..\Datafeeds\DigitalApiFeed\DigitalApi\DigitalApi.csproj", "{36BC6B99-1213-42F6-8C82-E6A33D692538}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Library", "..\..\Datafeeds\LuxTrader\LuxTrader\Trading.Library\Trading.Library.csproj", "{57F99D60-B6C2-42B1-A229-139749252889}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Common", "..\..\Datafeeds\LuxTrader\LuxTrader\Trading.Common\Trading.Common.csproj", "{48B9E0C0-0D89-456D-A5E6-B973263ED185}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,43 +28,11 @@ Global
 		{02F7B7F7-99D5-45E8-A8B1-6F11C590F318}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02F7B7F7-99D5-45E8-A8B1-6F11C590F318}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02F7B7F7-99D5-45E8-A8B1-6F11C590F318}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36BC6B99-1213-42F6-8C82-E6A33D692538}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57F99D60-B6C2-42B1-A229-139749252889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57F99D60-B6C2-42B1-A229-139749252889}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57F99D60-B6C2-42B1-A229-139749252889}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57F99D60-B6C2-42B1-A229-139749252889}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48B9E0C0-0D89-456D-A5E6-B973263ED185}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://luxbettest.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = ..\\Luxbook.MVC.Tests\\Luxbook.MVC.Tests.csproj
-		SccProjectName1 = ../Luxbook.MVC.Tests
-		SccLocalPath1 = ..\\Luxbook.MVC.Tests
-		SccProjectUniqueName2 = Luxbook.MVC.csproj
-		SccLocalPath2 = .
-		SccProjectUniqueName3 = ..\\..\\Datafeeds\\DigitalApiFeed\\DigitalApi\\DigitalApi.csproj
-		SccProjectName3 = ../../Datafeeds/DigitalApiFeed/DigitalApi
-		SccLocalPath3 = ..\\..\\Datafeeds\\DigitalApiFeed\\DigitalApi
-		SccProjectUniqueName4 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library\\Trading.Library.csproj
-		SccProjectName4 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Library
-		SccLocalPath4 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Library
-		SccProjectUniqueName5 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Common\\Trading.Common.csproj
-		SccProjectName5 = ../../Datafeeds/LuxTrader/LuxTrader/Trading.Common
-		SccLocalPath5 = ..\\..\\Datafeeds\\LuxTrader\\LuxTrader\\Trading.Common
 	EndGlobalSection
 EndGlobal
