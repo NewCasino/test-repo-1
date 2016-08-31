@@ -102,7 +102,7 @@ End Sub
 Function GetLiabVWM(RunNo As Integer)
 
 	dim RunLbVWM as Double
-    RunLbVWM = getResult("EXEC sp_GetRunLBVWM " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & RiskProf & "'"  ,,0)
+    RunLbVWM = getResult("EXEC sp_GetRunLBVWM " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB")  ,,0)
 	
 	Return RunLbVWM		
 End Function
@@ -110,7 +110,7 @@ End Function
 Function GetLiabilitys(BetType As string, RunNo As Integer)    
 
 	dim Run_Liab as Double
-	Run_Liab = getResult("EXEC sp_GetRunLiability " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & BetType & "','" & RiskProf & "'"  ,,0)
+	Run_Liab = getResult("EXEC sp_GetRunLiability " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & BetType & "','" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB")  ,,0)
 	if Run_Liab <> 0 then 
 		Return if (Run_Liab < 0 , "<Div class=RD>" &  FormatNumber(Run_Liab,0,,TriState.UseDefault) & "</Div>", "<Div class=GR>" &  FormatNumber(Run_Liab,0,,TriState.UseDefault) & "</Div>")		'set colour of text
 	'ELSE
@@ -121,9 +121,7 @@ End Function
 Function GetLiabTotal(BetType As string) 
 
 	dim Tot_Liab as Double
-	'Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
-	'Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
-	Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_TAB(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
+	Tot_Liab = getResult("EXEC sp_GetTotalLiability " & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB"),,0)
 	if Tot_Liab <> 0 then Return FormatNumber(Tot_Liab,0,,TriState.UseDefault)
 
 End Function
