@@ -42,9 +42,9 @@ Sub Page_Load()
 				"  REMARK=" & chkRN("REMARK") & _
 				", REGION=" & chkRN("REGION") & _
 				", RANK="   & chkR9("RANK")   & _
-				", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
+                ", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
 				WC & vbLf
-			execSQL(S)  ' 
+			execSQL(S)
 
 		Case "Update Runner"
 			execSQL("UPDATE RUNNER SET PM_TICK=CASE PM_TICK WHEN 1 THEN 0 ELSE 1 END" & WC & " AND RUNNER_NO=" & chkR9("RNR_NO"))
@@ -102,7 +102,7 @@ End Sub
 Function GetLiabVWM(RunNo As Integer)
 
 	dim RunLbVWM as Double
-    RunLbVWM = getResult("EXEC sp_GetRunLBVWM " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & RiskProf & "'"  ,,0)
+    RunLbVWM = getResult("EXEC sp_GetRunLBVWM " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB")  ,,0)
 	
 	Return RunLbVWM		
 End Function
@@ -110,7 +110,7 @@ End Function
 Function GetLiabilitys(BetType As string, RunNo As Integer)    
 
 	dim Run_Liab as Double
-	Run_Liab = getResult("EXEC sp_GetRunLiability " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & BetType & "','" & RiskProf & "'"  ,,0)
+	Run_Liab = getResult("EXEC sp_GetRunLiability " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & BetType & "','" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB")  ,,0)
 	if Run_Liab <> 0 then 
 		Return if (Run_Liab < 0 , "<Div class=RD>" &  FormatNumber(Run_Liab,0,,TriState.UseDefault) & "</Div>", "<Div class=GR>" &  FormatNumber(Run_Liab,0,,TriState.UseDefault) & "</Div>")		'set colour of text
 	'ELSE
@@ -121,9 +121,7 @@ End Function
 Function GetLiabTotal(BetType As string) 
 
 	dim Tot_Liab as Double
-	'Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
-	'Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
-	Tot_Liab = getResult("SELECT FLOOR(dbo.fnGetRaceStakeTotal(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_SUN(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "')) +  FLOOR(dbo.fnGetRaceStakeTotal_TAB(" & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'))" ,,0)
+	Tot_Liab = getResult("EXEC sp_GetTotalLiability " & EV(0) & "," & EV(1) & ",'" & BetType & "','" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB"),,0)
 	if Tot_Liab <> 0 then Return FormatNumber(Tot_Liab,0,,TriState.UseDefault)
 
 End Function
@@ -249,7 +247,7 @@ End Function
 					
 					<th>Risk<br>$<th>Risk<br>VWM
 					<th>MA<br><input type="checkbox" class="MA_tick" name="MATick" value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/>
-					<th>&fnof;
+                    <th>&fnof;
 					<th>BOB<th>WOW
 					
 					<!-- Dynamic Col Headers ----------------------- -->
@@ -325,10 +323,10 @@ End Function
 			If Not RS("SCR") Then   %>
 			  
 			  <!-- ' Finishing Position  --> 
-			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %>
+			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
 			  
 			  <!--      ' WISE Counter      -->
-			  <td><font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"),(If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
+			  <td><font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
 					<div class=INV>
 						<span>
 							<font color="green"><%= If(RS("WISE_DF_NO")>0, RS("WISE_DF_NO"), "" ) %></font>
@@ -388,8 +386,8 @@ End Function
 				'LBVWM
 				MktPer( 30) += getMkP(GetLiabVWM(RN))
 				'f blend
-				MktPer( 0) += If(sNS(RV("CONF_LVL")) = "", getMkP(RS("SKY_PD_T")) ,  getMkP(RS("PPDVP")))   'getMkP(RS("SKY_PD_T"))  
-				MktPer(  1 ) += 0   ' getMkP(RS("SKY_RT_T"))
+				MktPer( 0) += If(sNS(RV("CONF_LVL")) = "", getMkP(RS("SKY_PD_T")) ,  getMkP(RS("PPDVP")))   ' getMkP(RS("SKY_PD_T"))  
+				MktPer(  1 ) += 0'getMkP(RS("SKY_RT_T"))
 				
 				MktPer( 2) += getMkP(RS("FX_BOB"))  
 				MktPer( 3) += getMkP(RS("FX_WOW")) 
@@ -430,7 +428,7 @@ End Function
 				' Rolls '
 				MktPer(32) += RS("SDP_ADJ")
 				MktPer(33) += RS("SDP_ADJ_TAB")
-               
+
 				'' Actual Lux SDP Market %
 				MktPer(34) += getMkP(RS("LUX_SDP"))
 
@@ -742,7 +740,7 @@ End Function
 						<tr><th>Race Notifications
 						<tr height=115>
 						<% If  Session("LVL") < 10 Then %>							
-								<td valign=top class=RI><div class="RI" style="overflow-y:scroll; max-height: 115px"><%= sNS(RV("NOTIFICATIONS")).Replace(vbCrLf, "<br>") %></div><%
+								<td valign=top class=RI><div class="RI" style="overflow-y:scroll; max-height: 115px" ><%= sNS(RV("NOTIFICATIONS")).Replace(vbCrLf, "<br>") %></div><%
 						End If    %>
 					</table>
 				</td>
@@ -804,7 +802,6 @@ End Function
 		<div class=FSI >  
 			<%= FSI_Check %>
 		</div>		
-		
 	</form>
 
 	<%'-- Auto Trade Handling -------------------------------------------------------------------------

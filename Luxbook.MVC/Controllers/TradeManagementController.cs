@@ -20,6 +20,12 @@
             _tradeService = tradeService;
         }
 
+        // GET: TradeManagement
+        public virtual ActionResult Index()
+        {
+            return View();
+        }
+
         public virtual ActionResult Accounts()
         {
             var accounts = _accountService.GetTradingAccounts();

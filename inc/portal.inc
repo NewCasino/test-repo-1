@@ -199,7 +199,7 @@ Sub hybridMix( Typ As String, FldNm As String, MkPr As Double, Mtg As Long, RNo 
       If sN0(RV(T & I)) > 0 AndAlso sN0(DR(RV(T & I))) > 0 Then DR("HYB") += RV(P & I) / DR(RV(T & I))
     Next: X += DR("HYB"): Next
     For I = 1 To 3: If sN0(RV(T & I)) > 0 AndAlso sN0(DR(RV(T & I))) > 0 Then: Y += RV(P & I): End If: Next
-    Y = 0.0034828 * (X * 100 / Y) - 0.39 '0.350434 
+    Y = 0.0034828 * (X * 100 / Y) - 0.40 '0.350434 
 	X = 0 
 	If Double.IsInfinity(Y) Then Y = 0
     For Each DR In DS: DR("HYB") ^= Math.Exp(Y): X += DR("HYB"): Next: X = MkPr / X
@@ -510,7 +510,7 @@ Function generatePricingColumnTote(RS as Object, Tote as String,  PriceChanges a
       CloseTime = DateTime.Parse(CloseTime).ToString("s")
     End If
     
-    Dim Html = "<td class=""" & cssClass & """  onmouseover=""drawPriceHistory(" & GetPriceChangeValueArray(PriceChange,Tote) & "," & GetPriceChangeTimelineArray(PriceChange, Tote) & "," & ScratchingsJavascript & ",this,'" & CloseTime & "')"" onmouseout=""gXX()"">" & sDiv(RS(Tote & "_TW"), RS(Tote & "_TP"))
+    Dim Html = "<td class=""" & cssClass & """  onmouseover=""drawPriceHistory(" & GetPriceChangeValueArray(PriceChange,Tote, "_TW") & "," & GetPriceChangeTimelineArray(PriceChange, Tote, "_TW") & "," & ScratchingsJavascript & ",this,'" & CloseTime & "')"" onmouseout=""gXX()"">" & sDiv(RS(Tote & "_TW"), RS(Tote & "_TP"))
 
     Return Html
 
@@ -579,7 +579,7 @@ Function GetScratchings(RunnerRow As Object)
  return RunnerRow("SCR_TIMESTAMP")
 End Function
 
-Function GetPriceChangeValueArray(PriceChanges as List(Of DataRow), AgencyName as String)
+Function GetPriceChangeValueArray(PriceChanges as List(Of DataRow), AgencyName as String, Optional ColumnPostFix as String = "_FW")
   
 
   Dim Changes As New List(Of String)
@@ -589,7 +589,7 @@ Function GetPriceChangeValueArray(PriceChanges as List(Of DataRow), AgencyName a
 
   For Each PriceChange in PriceChanges 
   
-    Dim ColumnName as String = AgencyName &"_FW"
+    Dim ColumnName as String = AgencyName & ColumnPostFix
     If PriceChange.Table.Columns.Contains(ColumnName) AndAlso Not IsDbNull(PriceChange(ColumnName)) Then
       Changes.Add(PriceChange(ColumnName))
     End If
@@ -598,7 +598,7 @@ Function GetPriceChangeValueArray(PriceChanges as List(Of DataRow), AgencyName a
   return String.Format("[{0}]",String.Join(",",Changes.ToArray()))
 End Function
 
-Function GetPriceChangeTimelineArray(PriceChanges as List(Of DataRow), AgencyName as String)
+Function GetPriceChangeTimelineArray(PriceChanges as List(Of DataRow), AgencyName as String, Optional ColumnPostFix As String = "_FW")
   Dim Changes As New List(Of String)
 
   If PriceChanges Is Nothing Then
@@ -607,7 +607,7 @@ Function GetPriceChangeTimelineArray(PriceChanges as List(Of DataRow), AgencyNam
 
   For Each PriceChange in PriceChanges 
   
-    Dim ColumnName as String = AgencyName &"_FW"
+    Dim ColumnName as String = AgencyName & ColumnPostFix
     If PriceChange.Table.Columns.Contains(ColumnName) AndAlso Not IsDbNull(PriceChange(ColumnName)) Then
       Changes.Add("'" & DateTime.Parse(PriceChange("DATE_CREATED")).ToString("s") & "'")
     End If
@@ -945,35 +945,40 @@ Function FSI_Check()
                     Case "LXP1"
                         FSItxt = "X1" : FSItitle = "SDP Gen"
                     Case "LXP2"
+						If DR("TSDIFF") < 3 Then Continue For
                         FSItxt = "X2" : FSItitle = "SDP Gen 3hr+"
                     Case "BFR"
                         FSItxt = "BF" : FSItitle = "Betfair"
                     Case "WISE"
 						If DR("TSDIFF") < 5 Then Continue For
-                        FSItxt = "WP" : FSItitle = "Bets from WP"
+                        FSItxt = "WP" : FSItitle = "Lux Betstream"
                     Case "DVP"
-                        FSItxt = "DV" : FSItitle = "DVP to WP"
+                        FSItxt = "DV" : FSItitle = "LUX DVP"
                     Case "LSP"
                         FSItxt = "LS" : FSItitle = "Lsports"
-'					Case "NSW"
-'                       FSItxt = "PN" : FSItitle = "PPG NSW"
-'					Case "VIC"
-'                       FSItxt = "PV" : FSItitle = "PPG VIC"
+					Case "SHA"
+                       FSItxt = "SH" : FSItitle = "TAB SHA"
+					Case "SUNWISE"
+                       FSItxt = "SB" : FSItitle = "SUN Betstream"
+					Case "SUN"
+                       FSItxt = "SUN" : FSItitle = "SUN DVP"
+					Case "TABDVP"
+                       FSItxt = "TAB" : FSItitle = "TAB DVP"
 					Case "PPG"
                         FSItxt = "PPG" : FSItitle = "PPG Odds"
           Case "TOP_SPORTS"
                         FSItxt = "TOP" : FSItitle = "TopSports"
           Case "TRADER"
-                        FSItxt = "TOP" : FSItitle = "Auto Trader"
-          Case "TRUSS"
-                        FSItxt = "TRS" : FSItitle = "Truss (UBet/QLD Totes)"
+                        FSItxt = "TRD" : FSItitle = "Auto Trader"
           Case "PAA"
-                        If (DateTime.Now.Hour >= 17 Or DateTime.Now.Hour <= 8) and DR("TSDIFF") > 15 Then
+                        If (DateTime.Now.Hour >= 17 Or DateTime.Now.Hour <= 9) and DR("TSDIFF") > 15 Then
 							FSItxt = "PA" : FSItitle = "PA UK"
-							If DateTime.Now.Hour = 17 Or DateTime.Now.Hour = 8 Then FSIcolor = "ORANGE"
+							If DateTime.Now.Hour = 17 Or DateTime.Now.Hour = 9 Then FSIcolor = "ORANGE"
 						Else
 							Continue For
 						End If
+          Case "TRUSS"
+                        FSItxt = "TRS" : FSItitle = "Truss (UBet/QLD Totes)"
 					Case Else
 
                         FSItxt = "?" : FSItitle = DR("LX_SYS") : FSIcolor = "ORANGE"
@@ -1033,12 +1038,13 @@ Function UsrColHeader(ColList() As String,Country as String) As String
         Dim headerHTML As String = ""
         Dim count as Integer = 0
         For Each Col As String In ColList
-            'Dim cssClass =  IIf(count Mod 2 = 1, "style=""background:-webkit-linear-gradient(#ddd, #fff); color: #000;""", "style=""background:-webkit-linear-gradient(#a6a6a6, #f2f2f2); color: #000;""")
+          '  Dim cssClass =  IIf(count Mod 2 = 1, "style=""background:-webkit-linear-gradient(#ddd, #fff); color: #000;""", "style=""background:-webkit-linear-gradient(#a6a6a6, #f2f2f2); color: #000;""")
           Dim cssClass = ""
             Dim Img As String = Col
             If ("xB1 xL1 VWM TMC LPT").Contains(Col) Then Img = "betfair"
             If ("RDBL vTRF vQIN vXCT").Contains(Col) Then Img = "TAB"
 			if Col = "SDP" Then Img = "DVP": Col = "LUX<br>SDP"
+      if Col = "RAW_SDP" Then Img = "DVP": Col = "Raw<br>SDP"
 			if Col = "TAB" Then  Col = "TAB<br>SDP"
 			if Col = "SUN" Then  Col = "SUN<br>SDP"
       if Col = "APN" AndAlso paCountries.Contains(Country) Then Col = "PA" : Img = "PA"
@@ -1077,12 +1083,12 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
 	Dim PriceCols As String = ""
   Dim count as Integer = 0
 	For Each Col As String In ColList
-       '' Dim cssClass =  IIf(count Mod 2 = 0, "odd", "even")
+        'Dim cssClass =  IIf(count Mod 2 = 0, "odd", "even")
         Dim cssClass = ""
         Select Case Col
             Case "APN"
 				PriceCols &= If(CT = "AU", sDivF(RS, RP, "APN", "AP", PriceChangeDictionary,ScratchingJavascript,CloseTime,cssClass)   ,  sDivF(RS, RP, "PAA", "AP", PriceChangeDictionary,ScratchingJavascript,CloseTime, cssClass)) 
-			Case "LXB", "QLD", "VIC", "B1Y", "LAD", "IAS", "SPB", "UNI", "TOP", "EZY" , "NZL"
+			Case "LXB", "QLD", "VIC", "B1Y", "LAD", "IAS", "SPB", "UNI", "TOP", "EZY" , "NZL", "CTI"
 				if Col = "VIC" Then  cssClass = "TAB"
 				PriceCols &= sDivF(RS, RP, Col, "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,cssClass)
             Case "CTI"
@@ -1111,6 +1117,8 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
                 PriceCols &= "<td class=""FV "  & cssClass & """ " & If(IsDBNull(RS("HST_" & Col & "H")), "", XTgraph(RS("HST_" & Col & "H"))) & ">" & sDiv(RS("HST_" & Col))
 			Case "SDP"				
          PriceCols &= sDivF(RS, RP, "LUX_SDP", "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"luxbook-grey bold", "") 
+      Case "RAW_SDP"
+         PriceCols &= sDivF(RS, RP, "SDP", "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"luxbook-grey bold", "") 
 			Case "DVP"
 				PriceCols &= "<td class='" & cssClass & "''><b>" & If (Session("LVL") = 10,"" , sFxDiv(RS("PM_DPP"))) & "</b><div class=SML>" & If (Session("LVL") = 10,"" ,sFxDiv(RS("PM_DVP"))) & "</div>"
       
@@ -1135,7 +1143,7 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
       Case "SDP_MAX_TAB"
           PriceCols &= "<td class='" & cssClass & "''>" & GenerateSdpBoundaryTextbox(RS, "SDP_MAX_TAB", "Max") & "</td>"
       Case "SDP_MIN_TAB"
-          PriceCols &= "<td class='" & cssClass & "''>" & GenerateSdpBoundaryTextbox(RS, "SDP_MIN_TAB", "Min") & "</td>"          
+          PriceCols &= "<td class='" & cssClass & "''>" & GenerateSdpBoundaryTextbox(RS, "SDP_MIN_TAB", "Min") & "</td>"         
       Case "LUX_SDP_PLACE"
           PriceCols &= sDivF(RS, RP, "LUX_SDP_PLACE", "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"luxbook-grey bold", "")
       Case "SUN_SDP_PLACE"
@@ -1180,7 +1188,7 @@ Function GenerateRollDropdown(runnerRow as Object, rollColumn as string) as Stri
   Dim result as New StringBuilder
   Dim selectedColor = GetRollBackgroundColour(runnerRow(rollColumn))
 
-  result.AppendFormat("<select onchange=""updateRoll(this,'{0}',{1},{2},{3}); getEVN(curVNL);"" style=' "& selectedColor & "'>", rollColumn, runnerRow("MEETING_ID"), runnerRow("EVENT_NO"), runnerRow("RUNNER_NO"))
+  result.AppendFormat("<select  onfocus='pauseTimer();' onchange=""updateRoll(this,'{0}',{1},{2},{3}); getEVN(curVNL); resumeTimer();"" style=' "& selectedColor & "'>", rollColumn, runnerRow("MEETING_ID"), runnerRow("EVENT_NO"), runnerRow("RUNNER_NO"))
 
   For roll as Integer = -5 to 5
     Dim background = GetRollBackgroundColour(roll)

@@ -153,7 +153,9 @@ Else  %>
 			Case "Blend": CalcBlend(EV(0), EV(1))
 			Case "Point": CalcPoint(EV(0), EV(1))
 		End Select 
-		execSQL("UPDATE EVENT SET POOL_TIME=GETDATE(), PM_POOL=" & AP & WC)
+		'execSQL("UPDATE EVENT SET POOL_TIME=GETDATE(), PM_POOL=" & AP & WC)
+		execSQL("UPDATE EVENT SET PM_POOL=" & AP & WC)
+		execSQL("UPDATE EVENT SET POOL_TIME=GETDATE()" & WC)
 		RV("POOL_TIME") = DBNow
 	End If
 	%>

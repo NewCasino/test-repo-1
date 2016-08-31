@@ -66,8 +66,12 @@
 					<hr>
 					<li onclick="MVC('Luxbook.MVC/Reports/Type','RaceType=Races&InternationalsOnly=true')">Horses(Int)- By Type</li>
 					<li onclick="MVC('Luxbook.MVC/Reports/Type','RaceType=Harness&InternationalsOnly=true')">Trots(Int)- By Type</li>
-					<hr>				
+					<hr>
+					<%	End If    %>
+					<%	If Session("LVL") < 10    %>
 					<li onclick="GO('RP/TH')">Trade History</li>
+					<%	End If    %>
+					<%	If Session("LVL") < 8    %>
 					<hr>
 					<li onclick="MVC('Luxbook.MVC/Reports/Monthly','RaceType=Races')">Monthly - Horse</li>
 					<li onclick="MVC('Luxbook.MVC/Reports/Monthly','RaceType=Harness')">Monthly - Harness</li>

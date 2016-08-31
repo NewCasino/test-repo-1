@@ -90,6 +90,7 @@ namespace Luxbook.MVC.Controllers
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public class ActionNamesClass
         {
+            public readonly string Index = "Index";
             public readonly string Accounts = "Accounts";
             public readonly string GetAllAccounts = "GetAllAccounts";
             public readonly string EditAccount = "EditAccount";
@@ -101,6 +102,7 @@ namespace Luxbook.MVC.Controllers
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public class ActionNameConstants
         {
+            public const string Index = "Index";
             public const string Accounts = "Accounts";
             public const string GetAllAccounts = "GetAllAccounts";
             public const string EditAccount = "EditAccount";
@@ -167,6 +169,17 @@ namespace Luxbook.MVC.Controllers
     public partial class T4MVC_TradeManagementController : Luxbook.MVC.Controllers.TradeManagementController
     {
         public T4MVC_TradeManagementController() : base(Dummy.Instance) { }
+
+        [NonAction]
+        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Index()
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Index);
+            IndexOverride(callInfo);
+            return callInfo;
+        }
 
         [NonAction]
         partial void AccountsOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);

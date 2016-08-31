@@ -119,23 +119,20 @@ function getRPT( x, y ) {
 }
 
 // Get Event data. Fills page with event info and runner data. Sets timer to auto refresh in 5 secs
-function getEVN( x, y, n ) {
-  if(timerPause === true) {
-    timerPauseCount++;
-    if(timerPauseCount <= 2){
-      console.log('timer paused');
-      tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+function getEVN( x, y, n ) {  
+   if(handleTimerPause(x)){
       return;
     }
-    
-    // if we exceed more than 2 rounds of refresh, we unpaause it just in case the trader accidentally paused it.
-    timerPauseCount = 0;
-    timerPause = false;
-  }
 
   if( tmrEVN ) clearTimeout(tmrEVN);
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
+  console.log('refreshing page');
   $R((n? n+".aspx": location.pathname) + "?EV=" + (x? x: curVNL + "&VM=1"), function(R) {
+
+    if(handleTimerPause(x)){
+      return;
+    }
+
     if( R.substr(0,8) == "<ScRIpT>" ) eval(R.replace("<ScRIpT>","").replace("</ScRIpT>","")); else {
       R = R.replace(/SLK\_AG\=\'/g, "img src='/Jersey/AG/")
            .replace(/SLK\_UG\=\'/g, "img src='/Jersey/UG/")
@@ -151,21 +148,45 @@ function getEVN( x, y, n ) {
   }); if( x && !n ) tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
 }
 
+function handleTimerPause(x){
+   if(timerPause === true) {
+
+     timerPauseCount++;
+      if(timerPauseCount <= 3){
+        console.log('timer paused');
+        tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+        return true;
+      }
+    }
+    // if we exceed more than 2 rounds of refresh, we unpaause it just in case the trader accidentally paused it.
+    timerPauseCount = 0;
+    timerPause = false;
+
+    return false;
+}
 function vSPD( x, y ) { if(x) x.style.display = "none"; if($(y)) $(y).style.display = ""; memSPD = y }
 
 
-//F[] defined in venues.aspx. 0=Cty 1=RType 2=MtgID 3=St_time 4=EvNo 5=venue 6=Status 7=M2R 8=MissingLXB 9=FX count 10=?
+//F[] defined in venues.aspx. 0=Cty 1=RType 2=MtgID 3=St_time 4=EvNo 5=venue 6=Status 7=M2R 8=MissingLXB 9=FX count 10= product enablement flag 11= ??
 function getVNL( G, C, FX ) {
   $R("/venues.aspx", function(R) {
     var i, j, k = 0, S = "", F;
     if( memVNL != R ) { memVNL = R; R = R.split("\n");
       var D = C.replace(/1/,"AU").replace(/2/,"HK,JP,MO,MY,SG,UA,KO").replace(/3/,"FR,IR,UK,NO,SW,DE,FI").replace(/4/,"ZA").replace(/5/,"US,SE,CH,AR,UR").replace(/6/,"NZ");
       for( i = 0; i < R.length - 1; i++ ) { F = R[i].split("\t"); F[7] = toNum(F[7]);
+        var productEnablementError = false;
+
+        if(F[10] == 2)
+        {
+          productEnablementError = true;
+          console.log('product enablement error!');
+        }
+
         if( G.indexOf(F[1]) >= 0 && D.indexOf(F[0]) >= 0 ) {
           if( curVNL == F[2] + "_" + F[4] ) j = k;
-          S += "<tr" + (curVNL == F[2] + "_" + F[4]?" class=CLK":"") + " onclick=getEVN('" + F[2] + "_" + F[4] + "',this)" + (F[10]=="!"?" style='background:#ff8'":"") + ">";
+          S += "<tr" + (curVNL == F[2] + "_" + F[4]?" class=CLK":"") + " onclick=getEVN('" + F[2] + "_" + F[4] + "',this)" + (F[11]=="!"?" style='background:#ff8'":"") + (productEnablementError ? " style='background: #99ccff' title='Enable Product msg not sent to Lux Host'" : "" ) + ">";
           S += "<td>" + sLcDt(F[3]) + "<td class=ST0>" + (F[9]>0?"F" + F[9]:"") + "<td>" + (F[0]?"<img src='/img/" + F[0] + ".jpg'>":"") + "<td><img src='/img/" + F[1] + ".png'><td>" + F[4] +
-               "<td" + (FX && F[10] && "RYG".indexOf(F[10]) > -1?" class='ALR C" + F[10] + "'":"") + ">" + F[5] ;
+               "<td" + (FX && F[11] && "RYG".indexOf(F[11]) > -1?" class='ALR C" + F[11] + "'":"") + ">" + F[5] ;
           switch( F[6].toUpperCase() ) {
             case "OPEN": S += (F[7] <-60)? "<td class=ST0>Open": (F[7] <  1)? "<td class=ST0>" + F[7] + "m":
                               (F[7] < 61 && F[8]!=1)? "<td class=ST1>" + F[7] + "m": (F[7] < 61 && F[8]==1)? "<td class=ST4>" + F[7] + "m": "<td class=ST1>Open"; break;
@@ -385,9 +406,12 @@ function updateBoundary(textbox, meetingId, eventNumber, runnerNumber, boundaryT
 }
 
 function pauseTimer(){
+  console.log('pausing timer');
   timerPause = true;
 }
 
 function resumeTimer(){
+  console.log('unpause timer');
   timerPause  = false;
+  getEVN(curVNL);
 }

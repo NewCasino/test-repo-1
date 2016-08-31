@@ -6,7 +6,7 @@ Public Type As String, EventID As String, Odds As String
 </script>
 <script type="text/javascript" src="http://p.jwpcdn.com/6/10/jwplayer.js"></script>
 <script type="text/javascript">jwplayer.key="paNMqrqOCHnKJkSCBLRmBrZRS1W+ssQse+Ts7qVOjlg=";</script>
-<script type="text/javascript" src="/js/moment.min.js"> </script>
+
 <%	Dim EV As Object = Split(EventID, "_")
 	Select Case Type.ToUpper
 
