@@ -310,6 +310,22 @@ End Sub
 						</table>
 					</div>
 					
+					<%' Product enablement
+					%>
+					<div class="LST GAP" style="width:270px">
+						<table>
+							<col><col width=60><tr><th colspan=2 class=TT>Product Enablement<%
+							RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE LIKE 'FO_ENABLE_%' ORDER BY TYPE")
+								While RS.Read%>
+									<tr>
+										<td class=RN><%= RS(2) %><td><input name=<%= RS(0) %> type=number value=<%= RS(1) %>><% 
+								End While
+							RS.Close %>
+						</table>
+					</div>
+
+					<td width=15><td valign=top>
+
 				</table>
 				
 				<div class=EDT>

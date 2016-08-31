@@ -209,7 +209,7 @@
             };
 
             self.isToteOrBetFair = function (item) {
-                return ((item.Target_Property && item.Target_Property.startsWith('BFR_')) || (item.Property_Name && item.Property_Name.startsWith('BFR_')));
+                return (item.Target_Property.startsWith('BFR_') || item.Property_Name.startsWith('BFR_'));
             };
 
             self.isNullOrEmpty = function (item) {
