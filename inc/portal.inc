@@ -1335,7 +1335,7 @@ Function PlacePayDropdown(eventData as DataRow, productName as String) as String
     selection = "0"
   End If
 
-  For I = 1 To 3
+  For I = 2 To 3
       If selection = I.ToString()
         optionList &= String.Format("<option selected>{0}</option>", I)
       Else
