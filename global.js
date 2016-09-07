@@ -405,6 +405,25 @@ function updateBoundary(textbox, meetingId, eventNumber, runnerNumber, boundaryT
                 });
 }
 
+function updatePlacePays(dropdown, meetingId, eventNumber, productName){
+  var placeData = { "placePays": dropdown.value, "product": productName , "meetingId": meetingId , "eventNumber": eventNumber };
+
+  jQuery.ajax({
+                    type: "GET",
+                    url: "/Luxbook.MVC/api/event/UpdatePlacePays",
+                    contentType: "application/json; charset=utf-8",
+                    data: placeData,       
+                    async: false,             
+                    dataType: "jsonp",
+                    success: function(data) {
+                    
+                    },
+                    error: function(data) {
+                     
+                    }
+                });
+}
+
 function pauseTimer(){
   console.log('pausing timer');
   timerPause = true;

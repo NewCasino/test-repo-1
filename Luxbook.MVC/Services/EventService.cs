@@ -27,10 +27,26 @@
         /// <param name="meetingId"></param>
         /// <param name="eventNumber"></param>
         void SetReducedStaking(int meetingId, int eventNumber);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="meetingId"></param>
+        /// <param name="eventNumber"></param>
+        /// <param name="product"></param>
+        /// <param name="places">Overrides how many places to payout, or to reset to the default calculated value</param>
+        void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
     }
 
     public class EventService : IEventService
     {
+        public enum Product
+        {
+            Sun,
+            Lux,
+            Tab
+        }
+
         private readonly IEventRepository _eventRepository;
         private readonly ICodeService _codeService;
 
@@ -70,6 +86,18 @@
         public void SetReducedStaking(int meetingId, int eventNumber)
         {
             _eventRepository.SetReducedStaking(meetingId, eventNumber);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="meetingId"></param>
+        /// <param name="eventNumber"></param>
+        /// <param name="product"></param>
+        /// <param name="places">Overrides how many places to payout, or to reset to the default calculated value</param>
+        public void UpdatePlacePays(int meetingId, int eventNumber, Product product, int? places)
+        {
+            _eventRepository.UpdatePlacePays(meetingId, eventNumber, product, places);
         }
     }
 }

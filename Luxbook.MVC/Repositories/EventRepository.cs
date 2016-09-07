@@ -6,6 +6,7 @@
     using System.Linq;
     using Infrastructure;
     using Models;
+    using Services;
 
     public interface IEventRepository
     {
@@ -19,6 +20,8 @@
         /// <param name="meetingId"></param>
         /// <param name="eventNumber"></param>
         void SetReducedStaking(int meetingId, int eventNumber);
+
+        void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
     }
 
     public class EventRepository : IEventRepository
@@ -95,6 +98,18 @@
                 meetingId,
                 eventNumber
             }, commandType: CommandType.Text);
+        }
+
+        public void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places)
+        {
+            var sql =
+                "UPDATE EVENT_TAB SET {0}_PLACE_PAYS={1} WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber";
+
+
+            sql = string.Format(sql, product.ToString(), places.HasValue ? places.Value.ToString() : "null");
+
+            _database.Execute(sql, new { meetingId, eventNumber }, commandType: CommandType.Text);
+
         }
     }
 }

@@ -31,31 +31,34 @@ namespace Luxbook.MVC.Repositories
             {
                 case "SDP_ADJ":
                     type = "Lux SDP roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX" });
                     break;
                 case "SDP_ADJ_TAB":
                     type = "TAB SDP roll";
-                    priorityColumns.Add("TAB");
+                    //priorityColumns.Add("TAB");
                     break;
                 case "PLACE_SDP_ADJ_LUX":
                     type = "Lux Place roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX" });
 
                     break;
                 case "PLACE_SDP_ADJ_TAB":
                     type = "TAB Place roll";
-                    priorityColumns.Add("TAB");
+                    //priorityColumns.Add("TAB");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rollType), rollType, "Roll type not valid");
             }
             var notification = String.Format("[{0}] {1} set {2} to {3} for runner {4}<br/>",
                 DateTime.Now.ToString("h:mm:ss tt"), currentUser, type, roll, runnerNumber);
-            var priorityUpdates = string.Join(",", priorityColumns.Select(x => $"{x}_PRIORITY_UPDATE = 1"));
-
+            string priorityUpdates = string.Empty;
+            if (priorityColumns.Any())
+            {
+                priorityUpdates = "," + string.Join(",", priorityColumns.Select(x => $"{x}_PRIORITY_UPDATE = 1"));
+            }
             var sql =
                 string.Format("UPDATE RUNNER_TAB SET {0} = @roll WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;" +
-                              "UPDATE EVENT_TAB SET NOTIFICATIONS = ISNULL(NOTIFICATIONS,'') + @notification, {1}  WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber;", rollType, priorityUpdates);
+                              "UPDATE EVENT_TAB SET NOTIFICATIONS = ISNULL(NOTIFICATIONS,'') + @notification {1}  WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber;", rollType, priorityUpdates);
             _database.Execute(sql, new
             {
                 meetingId,
@@ -76,28 +79,32 @@ namespace Luxbook.MVC.Repositories
             {
                 case "SDP_MIN":
                     type = "Lux SDP minimum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX" });
                     break;
                 case "SDP_MAX":
                     type = "Lux SDP maximum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX" });
                     break;
                 case "SDP_MIN_TAB":
                     type = "TAB SDP minimum";
-                    priorityColumns.Add("TAB");
+                    //priorityColumns.Add("TAB");
                     break;
                 case "SDP_MAX_TAB":
                     type = "TAB SDP maximum";
-                    priorityColumns.Add("TAB");
+                    //priorityColumns.Add("TAB");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boundaryType), boundaryType, "Boundary type not valid");
             }
             var notification = $"[{DateTime.Now.ToString("h:mm:ss tt")}] {currentUser} set {type} to {boundary} for runner {runnerNumber}<br/>";
-            var priorityUpdates = string.Join(",", priorityColumns.Select(x => $"{x}_PRIORITY_UPDATE = 1"));
+            string priorityUpdates = string.Empty;
+            if (priorityColumns.Any())
+            {
+                priorityUpdates = "," + string.Join(",", priorityColumns.Select(x => $"{x}_PRIORITY_UPDATE = 1"));
+            }
 
             var sql = string.Format("UPDATE RUNNER_TAB SET {0} = @boundary WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;" +
-                             "UPDATE EVENT_TAB SET NOTIFICATIONS = ISNULL(NOTIFICATIONS,'') + @notification, {1} WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber;", boundaryType, priorityUpdates);
+                             "UPDATE EVENT_TAB SET NOTIFICATIONS = ISNULL(NOTIFICATIONS,'') + @notification {1} WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber;", boundaryType, priorityUpdates);
             _database.Execute(sql, new
             {
                 meetingId,

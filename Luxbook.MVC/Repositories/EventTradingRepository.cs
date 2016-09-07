@@ -37,7 +37,7 @@
                 sql += " AND M.COUNTRY != 'AU'";
             }
            
-            sql += $" AND PAPER_TRADE = {(paperTrades ? 1 : 0)}" ;
+            sql += $" AND PAPER_TRADE = {(paperTrades ? 1 : 0)}  and [RETURN] is not null" ;
 
             return _database.Query<EventTrading>(sql, new
             {
@@ -65,7 +65,7 @@
             var sql =$@"
 				SELECT sum([return]) as [return], sum(bet_amount) as BetAmount, sum(REBATE)/100 as Rebate, jurisdiction, et.meeting_id as MeetingId, event_no as EventNumber
 				FROM Event_Trading et
-				WHERE MEETING_ID in @meetingIds AND PAPER_TRADE = {(paperTrades ? 1 : 0)}
+				WHERE MEETING_ID in @meetingIds AND PAPER_TRADE = {(paperTrades ? 1 : 0)} and [RETURN] is not null
 				GROUP BY jurisdiction, et.meeting_id, event_no
 				ORDER BY meetingid, event_no";
 
@@ -80,7 +80,7 @@
             var sql = $@"
 				SELECT sum([return]) as [return], sum(bet_amount) as BetAmount, sum(REBATE)/100 as Rebate, bet_type as BetType, et.meeting_id as MeetingId, event_no as EventNumber
 				FROM Event_Trading et
-				WHERE MEETING_ID in @meetingIds  and (PAPER_TRADE = {(paperTrades ? 1 : 0)})
+				WHERE MEETING_ID in @meetingIds  and (PAPER_TRADE = {(paperTrades ? 1 : 0)})  and [RETURN] is not null
 				GROUP BY bet_type, et.meeting_id, event_no
 				ORDER BY meeting_id, event_no";
 

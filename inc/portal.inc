@@ -1322,4 +1322,28 @@ Function XTgraph (Hist as string )
 End Function
 '----------------------------------------------------
 
+
+Function PlacePayDropdown(eventData as DataRow, productName as String) as String
+  Dim html = "<select id='pays_place_{1}' onfocus='pauseTimer();'  onblur=""updatePlacePays(this,{2},{3},'{1}');getEVN(curVNL); resumeTimer();""><option></option>{0}</select>"
+
+  Dim optionList = ""
+
+
+  Dim selection = eventData(productName & "_PLACE_PAYS")
+
+  If IsDbNull(selection) Then
+    selection = "0"
+  End If
+
+  For I = 1 To 3
+      If selection = I.ToString()
+        optionList &= String.Format("<option selected>{0}</option>", I)
+      Else
+        optionList &= String.Format("<option>{0}</option>", I)
+      End If
+  Next
+
+  return String.Format(html, optionList,productName, eventData("MEETING_ID"), eventData("EVENT_NO"))
+
+End Function
 </script>
