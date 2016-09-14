@@ -106,6 +106,9 @@
 				   
 				<li onclick="">Manager
 				<ul>
+					<%  If Session("LVL") < 10	Then	%>	
+						<li onclick="MVC('Luxbook.MVC/MeetingMatch/Index')"/> Venues	
+					<% End If %>		
 					<li onclick="GO('MG/upload')">Upload Data
 					<%  If Session("LVL") < 8	Then	%>
 						<% If Session("LUX") Then %>
@@ -124,7 +127,6 @@
 						<li onclick="GO('MG/matrix')">Var. Matrix
 						<li onclick="GO('MG/AccessLog')">Access Log
 						<li onclick="MVC('Luxbook.MVC/Rules/Manage')"/> Alert Rules
-						<li onclick="MVC('Luxbook.MVC/MeetingMatch/Index')"/> Venues
 						<%  If Session("LVL") <= 1	OrElse Session("LVL") = 5	%>
 						<li onclick="MVC('Luxbook.MVC/TradeManagement/Accounts')"/> Trading Accounts
 						<% End If %>
