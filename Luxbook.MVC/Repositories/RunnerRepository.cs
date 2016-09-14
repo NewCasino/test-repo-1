@@ -31,7 +31,7 @@ namespace Luxbook.MVC.Repositories
             {
                 case "SDP_ADJ":
                     type = "Lux SDP roll";
-                    priorityColumns.AddRange(new[] { "LUX" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
                     break;
                 case "SDP_ADJ_TAB":
                     type = "TAB SDP roll";
@@ -39,7 +39,7 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "PLACE_SDP_ADJ_LUX":
                     type = "Lux Place roll";
-                    priorityColumns.AddRange(new[] { "LUX" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
 
                     break;
                 case "PLACE_SDP_ADJ_TAB":
@@ -79,11 +79,11 @@ namespace Luxbook.MVC.Repositories
             {
                 case "SDP_MIN":
                     type = "Lux SDP minimum";
-                    priorityColumns.AddRange(new[] { "LUX" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
                     break;
                 case "SDP_MAX":
                     type = "Lux SDP maximum";
-                    priorityColumns.AddRange(new[] { "LUX" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
                     break;
                 case "SDP_MIN_TAB":
                     type = "TAB SDP minimum";
