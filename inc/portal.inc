@@ -154,7 +154,7 @@ Function Kelly( FM As Object, DP As Object, BR As Object, KL As Object, KM As By
 End Function
 
 Sub chkEvent( ByRef EV As Object )
-  Dim C As String = Session("CNTL").Replace("1","AU").Replace("2","HK,JP,MO,MY,SG,UA").Replace("3","FR,IR,UK,SW,DE,FI").Replace("4","ZA").Replace("5","US,SE,CH,AR,UR").Replace("6","NZ").Replace(",","','")
+  Dim C As String = Session("CNTL").Replace("1","AU").Replace("2","HK,JP,MO,MY,SG,UA").Replace("3","FR,IR,UK,SW,DE,FI").Replace("4","ZA").Replace("5","US,SE,CH,AR,UR,CA").Replace("6","NZ").Replace(",","','")
   Dim X As String = "SELECT TOP 1 dbo.EVENT_ID(MEETING_ID, EVENT_NO) FROM dbo.EVENT_VIEW WHERE TYPE IN('" & Replace(Session("GAME"),",","','") & "') AND COUNTRY IN('" & C & "')"
   If EV = "" Then EV = getResult(X & " AND (M2R >= -90 AND STATUS='OPEN') ORDER BY START_TIME")
   If EV = "" Then EV = getResult(X & " ORDER BY START_TIME DESC")
@@ -1327,4 +1327,28 @@ Function XTgraph (Hist as string )
 End Function
 '----------------------------------------------------
 
+
+Function PlacePayDropdown(eventData as DataRow, productName as String) as String
+  Dim html = "<select id='pays_place_{1}' onfocus='pauseTimer();'  onblur=""updatePlacePays(this,{2},{3},'{1}');getEVN(curVNL); resumeTimer();""><option></option>{0}</select>"
+
+  Dim optionList = ""
+
+
+  Dim selection = eventData(productName & "_PLACE_PAYS")
+
+  If IsDbNull(selection) Then
+    selection = "0"
+  End If
+
+  For I = 2 To 3
+      If selection = I.ToString()
+        optionList &= String.Format("<option selected>{0}</option>", I)
+      Else
+        optionList &= String.Format("<option>{0}</option>", I)
+      End If
+  Next
+
+  return String.Format(html, optionList,productName, eventData("MEETING_ID"), eventData("EVENT_NO"))
+
+End Function
 </script>
