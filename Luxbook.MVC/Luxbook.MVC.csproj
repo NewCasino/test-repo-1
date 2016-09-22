@@ -265,6 +265,7 @@
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\LiabilityController.cs" />
     <Compile Include="Controllers\MaxExposureController.cs" />
     <Compile Include="Controllers\MeetingMatchController.cs" />

@@ -774,7 +774,26 @@ End Function
 
 			</table>
 		</div>
-	
+		<div class="race-settings">
+	<table>
+			<tr>
+<td>
+<table class="FX" cellspacing=0 cellpadding=1>
+	<tr>
+		<td>
+			<b>Lux Place Pays</b>
+			<%= PlacePayDropdown(RV,"LUX") %>
+
+			<b>TAB Place Pays</b>
+			<%= PlacePayDropdown(RV,"TAB") %>
+
+			<b>SunBets Place Pays</b>
+			<%= PlacePayDropdown(RV,"SUN") %>
+		</td></tr>
+</table></td>
+</tr>
+			</table>
+	</div>
 	  
 		<input name=RNR_NO type=hidden value="">
 		<input id=btnUPDT name=FCMD type=submit value="Update Changes" style="display:none">

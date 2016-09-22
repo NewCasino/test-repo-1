@@ -4,11 +4,13 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Web.Mvc;
+    using Infrastructure;
     using ModelBuilders;
     using Models;
     using Services;
     using ViewModels.Reports;
 
+    [RequireAuthentication]
     public partial class ReportsController : Controller
     {
         private readonly IReportService _reportService;
@@ -128,7 +130,7 @@
             }
             viewModel.MeetingDates = _reportModelBuilder.CreateMeetingDatesViewModel(meetingDates);
 
-            viewModel.MeetingDates.UrlFormat = Url.Action(Mvc.Reports.Pool()) + "?date={0}&raceType=" + viewModel.RaceType + "&internationalsOnly=" + parameters.InternationalsOnly;
+            viewModel.MeetingDates.UrlFormat = Url.Action(Mvc.Reports.Pool()) + "?date={0}&raceType=" + viewModel.RaceType + "&internationalsOnly=" + parameters.InternationalsOnly + "&PaperTrades=" + parameters.PaperTrades;
             #region test data
 
             //var meetings = new List<ReportsPoolViewModel.Meeting>();
@@ -198,7 +200,7 @@
 
             viewModel.MeetingDates = _reportModelBuilder.CreateMeetingDatesViewModel(meetingDates);
 
-            viewModel.MeetingDates.UrlFormat =  Url.Action(Mvc.Reports.Type()) + "?date={0}&raceType=" + viewModel.RaceType + "&internationalsOnly=" + parameters.InternationalsOnly;
+            viewModel.MeetingDates.UrlFormat =  Url.Action(Mvc.Reports.Type()) + "?date={0}&raceType=" + viewModel.RaceType + "&internationalsOnly=" + parameters.InternationalsOnly + "&PaperTrades=" + parameters.PaperTrades;
 
             return View(viewModel);
         }
