@@ -434,11 +434,18 @@ Function sHorse( RS As Object, CT As String, TP As String, MD As String ,Optiona
 		JS = "<SLK_SR='" & RS("JERSEY") & "'>"
 	End If
   
+  Dim scratchingTimestamp as String = ""
+
+  If Not IsDbNull(RS("SCR_TIMESTAMP")) Then
+    scratchingTimestamp = DateTime.Parse(RS("SCR_TIMESTAMP")).ToString("dd/MM hh:mm:ss tt")
+  End If 
+
   Return "<td class=""RI" & 
 			IIf(RS("SCR"), If(RS("SCRATCH") = 2, " LS", (If(RS("SCRATCH") = 3, " MS", " S"))), " ") & """>" & 
 			JS &   
 			"<b>" & RS("NAME").ToString.ToUpper & "</b>"  & 
 			IIf(sN0(RS("BARRIER")) = 0, "", " (" & RS("BARRIER") & ")")  &  Alerted &
+      " " & scratchingTimestamp & 
 			"<div>"  & 
 			RS("JOCKEY").ToString.ToUpper  & 
 			IIf(IsDBNull(RS("HANDICAP")), "", " (" & RS("HANDICAP") & ")")  & 
