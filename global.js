@@ -172,7 +172,7 @@ function getVNL( G, C, FX ) {
   $R("/venues.aspx", function(R) {
     var i, j, k = 0, S = "", F;
     if( memVNL != R ) { memVNL = R; R = R.split("\n");
-      var D = C.replace(/1/,"AU").replace(/2/,"HK,JP,MO,MY,SG,UA,KO").replace(/3/,"FR,IR,UK,NO,SW,DE,FI").replace(/4/,"ZA").replace(/5/,"US,SE,CH,AR,UR").replace(/6/,"NZ");
+      var D = C.replace(/1/,"AU").replace(/2/,"HK,JP,MO,MY,SG,UA,KO").replace(/3/,"FR,IR,UK,NO,SW,DE,FI").replace(/4/,"ZA").replace(/5/,"US,SE,CH,AR,UR,CA").replace(/6/,"NZ");
       for( i = 0; i < R.length - 1; i++ ) { F = R[i].split("\t"); F[7] = toNum(F[7]);
         var productEnablementError = false;
 

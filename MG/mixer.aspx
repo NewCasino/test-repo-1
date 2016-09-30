@@ -11,7 +11,7 @@ Sub Page_Load()
 	RS = getRecord("SELECT * FROM SYS_MIXER(nolock)")
     While RS.Read()
 		N = ""
-		For I = 6 To 33 
+		For I = 6 To 36 
 			DBcol = RS.GetName(I)
 			N &= ", " & DBcol & "=" & chkR9(DBcol & "_" & RS(0))		'RS(0) = Row_ID 
 		Next:
@@ -47,22 +47,22 @@ End Sub
 					T = RS("TYPE")  %>
 					<div class="LST GAP">
 						  <table cellpadding=3>
-							  <col width=55><col><col width=50><col width=50><colgroup span=29 width=53></colgroup>
+							  <col width=55><col><col width=50><col width=50><colgroup span=32 width=53></colgroup>
 							  <tr>
-								<td colspan=33 class="FT RN MED"><img src="/img/<%= T %>.png"> <%= ICase(T, "R","Thoroughbred", "H","Harness", "G","Greyhound") %>
+								<td colspan=36 class="FT RN MED"><img src="/img/<%= T %>.png"> <%= ICase(T, "R","Thoroughbred", "H","Harness", "G","Greyhound") %>
 							  <tr>
 							  <tr>
 								<th class=TT>Rgn<th class=TT>Venue<th class=TT>Rank<th class=TT>Conf<th colspan=14 class=TT>FX Dividend
-								<th colspan=2 class=TT>Betfair<th colspan=10 class=TT>PM Dividend<th colspan=3>
+								<th colspan=2 class=TT>Betfair<th colspan=10 class=TT>PM Dividend<th colspan=3><th colspan=3  class=TT>Bet Adjustment
 						<%  While MOF AndAlso T = RS("TYPE")
 								If MOF Then
 									If G <> RS("REGION") Then %>
 										<tr class=SML>
 											<th colspan=4><th>BOB<th>WOW<th>PA<th>NZ<th>TAB<th>QLD
 											<th>365<th>LAD<th>IAS<th>SPB<th>PAL<th>UNI<th>TOP<th>EZY<th>VWM<th>xB1<th>AUS<th>STAB<th>NSW
-											<th>QLD<th>RDbl<th>vTRF<th>vQIN<th>vXCT<th>PGI<th class=FRB>Host<th>Total<th>LXB %<th>Limit K
+											<th>QLD<th>RDbl<th>vTRF<th>vQIN<th>vXCT<th>PGI<th class=FRB>Host<th>Total<th>LXB %<th>Limit K<th>ResTote<th>GHI<th>Watch
 								<%	ElseIf R <> RS("RANK") Then %>
-										<tr><td colspan=33 class=SCR>
+										<tr><td colspan=36 class=SCR>
 								<% 	End If
 								End If
 								G = RS("REGION")
@@ -78,6 +78,9 @@ End Sub
 								<td class=FF><%= BlendTotal %>
 								<td class=SIP><input type=number name="LXB_PCT_<%= RS("ROW_ID") %>" value=<%= sN0(RS("LXB_PCT")) %>>
 								<td class=SIP><input type=number name="LIMIT_<%= RS("ROW_ID") %>" value=<%= sN0(RS("LIMIT")) %> >
+								<td class=SIP><input type=number step="0.01" min="0.01" max="1" name="RES_TOTE_ADJ_<%= RS("ROW_ID") %>" value=<%= RS("RES_TOTE_ADJ") %> >
+								<td class=SIP><input type=number step="0.01" min="0.01" max="1" name="GHI_ADJ_<%= RS("ROW_ID") %>" value=<%= RS("GHI_ADJ") %> >
+								<td class=SIP><input type=number step="0.01" min="0.01" max="1" name="WATCH_ADJ_<%= RS("ROW_ID") %>" value=<%= RS("WATCH_ADJ") %> >
 								<%
 								MOF = RS.Read
 							End While %>
