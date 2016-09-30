@@ -35,7 +35,7 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_ADJ_TAB":
                     type = "TAB SDP roll";
-                    //priorityColumns.Add("TAB");
+                    priorityColumns.Add("TAB");
                     break;
                 case "PLACE_SDP_ADJ_LUX":
                     type = "Lux Place roll";
@@ -44,7 +44,7 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "PLACE_SDP_ADJ_TAB":
                     type = "TAB Place roll";
-                    //priorityColumns.Add("TAB");
+                    priorityColumns.Add("TAB");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rollType), rollType, "Roll type not valid");
@@ -87,11 +87,11 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_MIN_TAB":
                     type = "TAB SDP minimum";
-                    //priorityColumns.Add("TAB");
+                    priorityColumns.Add("TAB");
                     break;
                 case "SDP_MAX_TAB":
                     type = "TAB SDP maximum";
-                    //priorityColumns.Add("TAB");
+                    priorityColumns.Add("TAB");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boundaryType), boundaryType, "Boundary type not valid");
