@@ -552,7 +552,7 @@ Function sDivF( RS As Object, RP As DataRow, F As String, Optional G As String =
       IIf(x > 0 AndAlso x = sN0(RS("FX_WOW")), " WOW", "") & _
       IIf(x > 0 AndAlso sN0(RS("BFR_FW_L1")) > 0 AndAlso x >= sN0(RS("BFR_FW_L1")), " HL2", _
       IIf(x > 0 AndAlso sN0(RS("BFR_FW_B1")) > 0 AndAlso x >  sN0(RS("BFR_FW_B1")) AndAlso RP("BFR_MP_B1") < getENum("XB1_MKP"), " HL1", "")) & "'"
-    If G <> "" AndAlso sNN(GetPriceChangeValueArray(PriceChange,F)) Then S &= " onmouseover=""drawPriceHistory(" & GetPriceChangeValueArray(PriceChange,F) & "," & GetPriceChangeTimelineArray(PriceChange, F) & "," & ScratchingsJavascript & ",this,'" & CloseTime & "')"" onmouseout=""gXX()"""
+    If G <> "" AndAlso sNN(GetPriceChangeValueArray(PriceChange,F,ColumnPostFix)) Then S &= " onmouseover=""drawPriceHistory(" & GetPriceChangeValueArray(PriceChange,F,ColumnPostFix) & "," & GetPriceChangeTimelineArray(PriceChange, F,ColumnPostFix) & "," & ScratchingsJavascript & ",this,'" & CloseTime & "')"" onmouseout=""gXX()"""
     Return S & ">" & FormatNumber(x, MIf(x >= 100, 0, x >= 10, 1, 2))
   Else: Return "<td class='" & cssClass & "' >": End If
 End Function
