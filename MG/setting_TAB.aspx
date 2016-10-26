@@ -19,8 +19,9 @@ Sub Page_Load()
 
 			RS = getRecord("SELECT TYPE FROM SYS_ENUM_TAB  WHERE TYPE NOT IN('DISC','TRD_LVL','OBSV','MTG_ID') AND TYPE NOT LIKE 'FXP_%'")
 			While RS.Read
-				S &= "UPDATE SYS_ENUM_TAB SET NUM=" & chkR9(RS(0)) & IIf("CMB, WIS BLN MKT".Contains(Left(RS(0), 3)), " * 100", "") & " WHERE TYPE='" & RS(0) & "'" & vbLf
-				
+				If chkR9(RS(0)) <> "NULL" Then
+					S &= "UPDATE SYS_ENUM SET NUM=" & chkR9(RS(0)) & IIf("CMB, WIS BLN MKT".Contains(Left(RS(0), 3)), " * 100", "") & " WHERE TYPE='" & RS(0) & "'" & vbLf
+				End If
 			End While
 			RS.Close
 

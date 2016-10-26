@@ -1,4 +1,4 @@
-<%@ OutputCache Duration=5 VaryByParam="*" %>
+<%@ OutputCache Duration=8 VaryByParam="*" Location="Server" %>
 <!-- #include file="/inc/page.inc" --><%
 
 Response.ContentType = "text/plain"
