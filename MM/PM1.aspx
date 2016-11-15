@@ -361,7 +361,7 @@ End Function
 			  
 			  <!--     'f price blend value   --> <% 
 			  If VM Then        %>
-				<td><input class=FBLD name=fblend_<%= RN %> value=<%= If (sNS(RV("CONF_LVL")) = "", RS("SKY_PD_T"),  RS("PPDVP")) %>><%
+				<td><input tabindex=<%=RN %> class=FBLD name=fblend_<%= RN %> value=<%= If (sNS(RV("CONF_LVL")) = "", RS("SKY_PD_T"),  RS("PPDVP")) %>><%
 			  Else        %>
 				<td><%= If (sNS(RV("CONF_LVL")) = "", sDiv(RS("SKY_PD_T")),  sDiv(RS("PPDVP")))  %><%
 			  End If    %>
