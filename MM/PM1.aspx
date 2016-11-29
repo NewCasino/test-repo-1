@@ -218,7 +218,7 @@ End Function
 	</script>	
 
 
-	<form method=post target=vrtPOST autocomplete=off>
+	<form method=post target=vrtPOST id="maker-form" onsubmit="return validateMa(document);" autocomplete=off>
 	  <input name=EV type=hidden value="<%= Join(EV, "_") %>">
 
 	  <div class=LST>
@@ -362,8 +362,8 @@ End Function
 			  <!--     'f price blend value   --> <% 
 			  If VM Then        %>
 				<td><input tabindex=<%=RN %> class=FBLD name=fblend_<%= RN %> value=<%= If (sNS(RV("CONF_LVL")) = "", RS("SKY_PD_T"),  RS("PPDVP")) %>><%
-			  Else        %>
-				<td><%= If (sNS(RV("CONF_LVL")) = "", sDiv(RS("SKY_PD_T")),  sDiv(RS("PPDVP")))  %><%
+			  Else        %>				
+			  	<td><%= If (sNS(RV("CONF_LVL")) = "", sDiv(RS("SKY_PD_T")),  sDiv(RS("PPDVP")))  %><%
 			  End If    %>
 			  <td>
 			  			  
@@ -803,7 +803,7 @@ End Function
 			If VM Then	%>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
 				<input type=button onclick="getEVN(curVNL)" value="Undo">
-				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>)" value="Save"><%
+				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>); " value="Save"><%
 			Else	%>
 				<div id=divDSP><%= sLcDt(Now, "dd MMM, HH:mm.ss") %></div> 
 				<input name=FCMD type=button  <%= IIf(Session("LVL") < 10, "", " disabled ") %> onclick="getEVN()" value="     Edit     ">

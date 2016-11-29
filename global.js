@@ -434,3 +434,28 @@ function resumeTimer(){
   timerPause  = false;
   getEVN(curVNL);
 }
+
+function validateMa(){
+  var marketAssesments = document.getElementsByClassName('FBLD');
+  var hasMarketAssessment = false;
+  var hasEmptyValues  = false;
+  for(var i  = 0; i< marketAssesments.length; i++){
+    if(marketAssesments[i].value != "0" && marketAssesments[i].value != ""){
+      hasMarketAssessment = true;
+      if(jQuery.isNumeric(marketAssesments[i].value) != true){
+        alert("Market assessment must be a valid number");
+        return false;
+      }
+    } else {
+      hasEmptyValues = true;
+    }
+  }
+
+  if(hasEmptyValues && hasMarketAssessment){
+    alert("If one runner has a market assessment, all runners must have a market assessment.")
+    return false;
+  }
+  
+  document.getElementById("maker-form").submit();
+  return true;
+}
