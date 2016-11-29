@@ -47,7 +47,6 @@
 				<li onclick="MVC('Luxbook.MVC/Liability/Index')"/> Liability monitor
 				<%	End If    %>
                 <li onclick="MVC('Luxbook.MVC/Alerts/Index')">Alerts
-				<li onclick="GO('MM/MV')">Movement
 				<%	If Session("LVL") = 10    %>
 					<li onclick="GO('RP/TH')">Trade History</li>  <!-- Media user only-->
 				<% End If%>	
