@@ -276,10 +276,6 @@ End Function
 		  Dim MeetingId = EV(0)
 		  Dim EventNo = EV(1)
 		  Dim Scratchings as New List(Of String)
-		  Dim W1 As Single = getResult("SELECT MIN(HST_TP) FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0 AND HST_TP BETWEEN 1 AND 10",,1)
-		  Dim W2 As Single = getResult("SELECT MIN(VIC_TP) FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0 AND VIC_TP BETWEEN 1 AND 10",,1)
-		  Dim EF As Single = getResult("SELECT TOP 1 PM_WIN FROM(SELECT TOP 4 * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0 AND PM_WIN < 11 AND ISNULL(PM_DVP,0) < 11 ORDER BY 1)un ORDER BY 1 DESC",,0)
-		  Dim FV As DataRow = getDataRow("SELECT ISNULL(MIN(PM_ORG),0), ISNULL(MIN(HST_TW),0) FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0")
 		  
 		  ' Pre-Iteration Market Price
 		  Dim RP As DataRow = getDataRow("SELECT BFR_MP_B1 = SUM(CASE WHEN BFR_FW_B1 > 0 THEN 100 / BFR_FW_B1 ELSE 0 END) " & _
