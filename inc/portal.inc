@@ -1085,7 +1085,7 @@ Function UsrColHeader(ColList() As String,Country as String) As String
 End Function
 
 'Price column HTML
-Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string)  As String
+Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string, ByRef colCount as Integer)  As String
 
 	Dim PriceCols As String = ""
   Dim count as Integer = 0
@@ -1096,7 +1096,7 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
             Case "APN"
 				PriceCols &= If(CT = "AU", sDivF(RS, RP, "APN", "AP", PriceChangeDictionary,ScratchingJavascript,CloseTime,cssClass)   ,  sDivF(RS, RP, "PAA", "AP", PriceChangeDictionary,ScratchingJavascript,CloseTime, cssClass)) 
 			Case "LXB", "QLD", "VIC", "B1Y", "LAD", "IAS", "SPB", "UNI", "TOP", "EZY" , "NZL", "CTI"
-				if Col = "VIC" Then  cssClass = "TAB"
+				if Col = "VIC" Then  cssClass = cssClass & " TAB"
 				PriceCols &= sDivF(RS, RP, Col, "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,cssClass)
             Case "CTI"
                 PriceCols &= sDivF(RS, RP, Col, "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"bold") 
@@ -1167,6 +1167,7 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
 
       count = count + 1
 	Next
+	colCount = count
 	Return PriceCols
 
 End Function
