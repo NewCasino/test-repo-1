@@ -38,11 +38,12 @@ Sub Page_Load()
 				  WC & " AND RUNNER_NO=" & N & vbLf
 			End While
 			RS.Close()
-			S &= "UPDATE EVENT SET" & _
+			S &= "UPDATE EVENT_TAB SET" & _
 				"  REMARK=" & chkRN("REMARK") & _
 				", REGION=" & chkRN("REGION") & _
 				", RANK="   & chkR9("RANK")   & _
                 ", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
+                ", MA_TARGET= " & Request("MATarget") & " " & _
 				WC & vbLf
 			execSQL(S)
 
@@ -148,7 +149,7 @@ End Function
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
 			<script src="/js/moment.min.js"> </script>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
 			<script>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
@@ -159,6 +160,7 @@ End Function
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
 				function RunScr(RunNo) {if (confirm('Confirm you want to scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&SCR=' + RunNo)}}
 			</script>
+			
 		</head>
 		<body onload=Init()>
 			<WT:Main Type="Chart_Canvas" runat=server/>
@@ -166,7 +168,7 @@ End Function
 			<div id=CNT></div>
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
-
+ 
 	
 		</body>
 	</html>
@@ -207,6 +209,8 @@ End Function
 
 	Dim MX   As DataTable = makeDataSet("SELECT * FROM SYS_MATRIX(nolock) WHERE COUNTRY='" & CT.Replace("NZ","AU") & "'").Tables(0)
 	Dim LV() As DataRow   = makeDataSet("SELECT * FROM SYS_LEVEL(nolock) WHERE LVL_ID IN(1,2) ORDER BY 1").Tables(0).Select() ' 0 = Bet, 1 = Eat
+
+	Dim MATarget = IIf(IsDbnull(RV("MA_TARGET")), 135, RV("MA_TARGET"))
 
 	'getCitibet(RM, RV)
 	
@@ -259,10 +263,7 @@ End Function
 		  Dim MeetingId = EV(0)
 		  Dim EventNo = EV(1)
 		  Dim Scratchings as New List(Of String)
-		  Dim W1 As Single = getResult("SELECT MIN(HST_TP) FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0 AND HST_TP BETWEEN 1 AND 10",,1)
-		  Dim W2 As Single = getResult("SELECT MIN(VIC_TP) FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0 AND VIC_TP BETWEEN 1 AND 10",,1)
-		  Dim EF As Single = getResult("SELECT TOP 1 PM_WIN FROM(SELECT TOP 4 * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0 AND PM_WIN < 11 AND ISNULL(PM_DVP,0) < 11 ORDER BY 1)un ORDER BY 1 DESC",,0)
-		  Dim FV As DataRow = getDataRow("SELECT ISNULL(MIN(PM_ORG),0), ISNULL(MIN(HST_TW),0) FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " AND SCR=0")
+		
 		  
 		  ' Pre-Iteration Market Price
 		  Dim RP As DataRow = getDataRow("SELECT BFR_MP_B1 = SUM(CASE WHEN BFR_FW_B1 > 0 THEN 100 / BFR_FW_B1 ELSE 0 END) " & _
@@ -654,7 +655,17 @@ End Function
 			<%	Else 	 %>
 				<td>	<!-- Hide from Media User-->
 			<% End If %>
-			  <td colspan=5>  <!-- risk - WOW  -->
+		      <td>
+
+		      <% If Vm Then %>
+		      <td>
+		      <td>
+    			<input type="text" name="MATarget" tabindex="100" id="MATarget" value="<%= MATarget %>" title="MA target market %">%</td>
+		      <% Else %>
+		      <td>
+
+		      <% End If %>
+			  <td colspan=3>  <!-- risk - WOW  -->
 			  
 			  <!-- Dyn Pool Sizes (Max 26 Cols)  ----------------------------->
 			  <%=  ColPools(ColList, RV, CT, MktPer) %>
