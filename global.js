@@ -451,11 +451,19 @@ function validateMa(){
     }
   }
 
+
+
   if(hasEmptyValues && hasMarketAssessment){
     alert("If one runner has a market assessment, all runners must have a market assessment.")
     return false;
   }
-  
+
+  var marketTarget =document.getElementById('MATarget');
+  if(jQuery.isNumeric(marketTarget.value) != true){
+    alert("MA Target % must be a valid number");
+    return false;
+  }
+
   document.getElementById("maker-form").submit();
   return true;
 }
