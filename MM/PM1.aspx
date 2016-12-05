@@ -339,9 +339,9 @@ End Function
 
 			<%
             ' - RUBT-1088 : provide un-scratch runner functionality 
-			If RS("SCR") Then   %>                  ' runner is scratched
+			If RS("SCR") Then   %>                  
 			  <td class=scrCols colspan=9>&nbsp;</td>
-            <% Else %>                              ' runner is not scratched 
+            <% Else %>                              
 			  <!-- ' Finishing Position  --> 
 			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
 			  
