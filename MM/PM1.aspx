@@ -43,6 +43,8 @@ Sub Page_Load()
 				", REGION=" & chkRN("REGION") & _
 				", RANK="   & chkR9("RANK")   & _
                 ", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
+                ", MA_TICK_SUN="   & If(Request("MATickSun") = 1, 1, 0)   & 
+                ", MA_TICK_TAB="   & If(Request("MATickTab") = 1, 1, 0)   & 
                 ", MA_TARGET= " & Request("MATarget") & " " & _
 				WC & vbLf
 			execSQL(S)
@@ -250,7 +252,10 @@ End Function
 					<th>FP<th class=BIG>&#10003;<th>Form<!-- th>Max<br>Expos<br>$ -->
 					
 					<th>Risk<br>$<th>Risk<br>VWM
-					<th>MA<br><input type="checkbox" class="MA_tick" name="MATick" value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/>
+					<th>MA
+					<br><label title="Luxbet MA" ><input type="checkbox" class="MA_tick" name="MATick"  value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> L</label>
+					<br><label title="SunBets MA" ><input type="checkbox" class="MA_tick" name="MATickSun" value=1  <%= If(RV("MA_TICK_SUN"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> S</label>
+					<br><label title="TAB MA" ><input type="checkbox" class="MA_tick" name="MATickTab" value=1  <%= If(RV("MA_TICK_TAB"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> T</label>
                     <th>&fnof;
 					<th>BOB<th>WOW
 					
