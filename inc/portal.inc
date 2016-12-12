@@ -1101,14 +1101,14 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
             Case "CTI"
                 PriceCols &= sDivF(RS, RP, Col, "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"bold") 
             Case "xB1"
-                PriceCols &= "<td class=""BET " & cssClass & """>" & sDiv(RS("BFR_FW_B1"))
+                PriceCols &= "<td class=""BET " & cssClass & """>" & sDiv(RS("BFR_FW_B1")) & GenerateSubscript(RS, "BFR_FP_B1", true)
             Case "xL1"
-                PriceCols &= "<td class=""EAT " & cssClass & """>" & sDiv(RS("BFR_FW_L1"))
+                PriceCols &= "<td class=""EAT " & cssClass & """>" & sDiv(RS("BFR_FW_L1")) & GenerateSubscript(RS, "BFR_FP_L1", true)
 
             Case "VWM"
-                PriceCols &= "<td class=""" & cssClass & """><b>" & sDiv(RS("BFR_WAP"))
+                PriceCols &= "<td class=""" & cssClass & """><b>" & sDiv(RS("BFR_WAP"))& GenerateSubscript(RS, "BFR_WAP_FP", true)
             Case "TMC", "LPT"
-                PriceCols &= "<td class=""" & cssClass & """>" & sTtP(RS("BFR_" & Col))
+                PriceCols &= "<td class=""" & cssClass & """>" & sTtP(RS("BFR_" & Col)) & GenerateSubscript(RS, "BFR_" & Col & "_FP", true)
             Case "AUS"
                PriceCols &= "<td class=""FV " & cssClass & """>" & sDiv(RS("AUS_TW"))
             Case "STAB", "NSW", "QLDT"
