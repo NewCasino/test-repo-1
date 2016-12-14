@@ -1085,7 +1085,7 @@ Function UsrColHeader(ColList() As String,Country as String) As String
 End Function
 
 'Price column HTML
-Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string)  As String
+Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string, ByRef colCount as Integer)  As String
 
 	Dim PriceCols As String = ""
   Dim count as Integer = 0
@@ -1096,19 +1096,19 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
             Case "APN"
 				PriceCols &= If(CT = "AU", sDivF(RS, RP, "APN", "AP", PriceChangeDictionary,ScratchingJavascript,CloseTime,cssClass)   ,  sDivF(RS, RP, "PAA", "AP", PriceChangeDictionary,ScratchingJavascript,CloseTime, cssClass)) 
 			Case "LXB", "QLD", "VIC", "B1Y", "LAD", "IAS", "SPB", "UNI", "TOP", "EZY" , "NZL", "CTI"
-				if Col = "VIC" Then  cssClass = "TAB"
+				if Col = "VIC" Then  cssClass = cssClass & " TAB"
 				PriceCols &= sDivF(RS, RP, Col, "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,cssClass)
             Case "CTI"
                 PriceCols &= sDivF(RS, RP, Col, "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"bold") 
             Case "xB1"
-                PriceCols &= "<td class=""BET " & cssClass & """>" & sDiv(RS("BFR_FW_B1"))
+                PriceCols &= "<td class=""BET " & cssClass & """>" & sDiv(RS("BFR_FW_B1")) & GenerateSubscript(RS, "BFR_FP_B1", true)
             Case "xL1"
-                PriceCols &= "<td class=""EAT " & cssClass & """>" & sDiv(RS("BFR_FW_L1"))
+                PriceCols &= "<td class=""EAT " & cssClass & """>" & sDiv(RS("BFR_FW_L1")) & GenerateSubscript(RS, "BFR_FP_L1", true)
 
             Case "VWM"
                 PriceCols &= "<td class=""" & cssClass & """><b>" & sDiv(RS("BFR_WAP"))
             Case "TMC", "LPT"
-                PriceCols &= "<td class=""" & cssClass & """>" & sTtP(RS("BFR_" & Col))
+                PriceCols &= "<td class=""" & cssClass & """>" & sTtP(RS("BFR_" & Col)) & GenerateSubscript(RS, "BFR_" & Col & "_FP", true)
             Case "AUS"
                PriceCols &= "<td class=""FV " & cssClass & """>" & sDiv(RS("AUS_TW"))
             Case "STAB", "NSW", "QLDT"
@@ -1167,6 +1167,7 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
 
       count = count + 1
 	Next
+	colCount = count
 	Return PriceCols
 
 End Function
