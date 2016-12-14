@@ -1106,7 +1106,7 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
                 PriceCols &= "<td class=""EAT " & cssClass & """>" & sDiv(RS("BFR_FW_L1")) & GenerateSubscript(RS, "BFR_FP_L1", true)
 
             Case "VWM"
-                PriceCols &= "<td class=""" & cssClass & """><b>" & sDiv(RS("BFR_WAP"))& GenerateSubscript(RS, "BFR_WAP_FP", true)
+                PriceCols &= "<td class=""" & cssClass & """><b>" & sDiv(RS("BFR_WAP"))
             Case "TMC", "LPT"
                 PriceCols &= "<td class=""" & cssClass & """>" & sTtP(RS("BFR_" & Col)) & GenerateSubscript(RS, "BFR_" & Col & "_FP", true)
             Case "AUS"
