@@ -436,11 +436,9 @@ P.DBG {	background:#fed; border:2px solid #fa3; border-radius:8px; margin:5px 0;
 
 .RISKFTR button {	padding:1px 1px; border:1px solid #444; border-radius: 25%;  color: Black; height:18px; text-align: center; width:75px; }
 
-input[type=checkbox], input[type=radio] {
-  position: relative;
-  bottom: -2px;
-}
 
-.MA_tick {
-	vertical-align:bottom;
+label.checkbox-label input[type=checkbox]{
+    position: relative;
+    vertical-align: bottom;
+    bottom: -3px;
 }

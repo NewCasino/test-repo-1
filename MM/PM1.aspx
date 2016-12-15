@@ -270,9 +270,9 @@ End Function
 					
 					<th>Risk<br>$<th>Risk<br>VWM
 					<th>MA
-					<br><label title="Luxbet MA" ><input type="checkbox" class="MA_tick" name="MATick"  value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> L</label>
-					<br><label title="SunBets MA" ><input type="checkbox" class="MA_tick" name="MATickSun" value=1  <%= If(RV("MA_TICK_SUN"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> S</label>
-					<br><label title="TAB MA" ><input type="checkbox" class="MA_tick" name="MATickTab" value=1  <%= If(RV("MA_TICK_TAB"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> T</label>
+					<br><label title="Luxbet MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATick"  value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> L</label>
+					<br><label title="SunBets MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickSun" value=1  <%= If(RV("MA_TICK_SUN"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> S</label>
+					<br><label title="TAB MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickTab" value=1  <%= If(RV("MA_TICK_TAB"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> T</label>
                     <th>&fnof;
 					<th>BOB<th>WOW
 					
