@@ -38,11 +38,14 @@ Sub Page_Load()
 				  WC & " AND RUNNER_NO=" & N & vbLf
 			End While
 			RS.Close()
-			S &= "UPDATE EVENT SET" & _
+			S &= "UPDATE EVENT_TAB SET" & _
 				"  REMARK=" & chkRN("REMARK") & _
 				", REGION=" & chkRN("REGION") & _
 				", RANK="   & chkR9("RANK")   & _
                 ", MA_TICK="   & If(Request("MATick") = 1, 1, 0)   & _
+                ", MA_TICK_SUN="   & If(Request("MATickSun") = 1, 1, 0)   & 
+                ", MA_TICK_TAB="   & If(Request("MATickTab") = 1, 1, 0)   & 
+                ", MA_TARGET= " & Request("MATarget") & " " & _
 				WC & vbLf
 			execSQL(S)
 
@@ -148,7 +151,7 @@ End Function
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
 			<script src="/js/moment.min.js"> </script>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
 			<script>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
@@ -159,6 +162,7 @@ End Function
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
 				function RunScr(RunNo) {if (confirm('Confirm you want to scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&SCR=' + RunNo)}}
 			</script>
+			
 		</head>
 		<body onload=Init()>
 			<WT:Main Type="Chart_Canvas" runat=server/>
@@ -166,7 +170,7 @@ End Function
 			<div id=CNT></div>
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
-
+ 
 	
 		</body>
 	</html>
@@ -208,6 +212,8 @@ End Function
 	Dim MX   As DataTable = makeDataSet("SELECT * FROM SYS_MATRIX(nolock) WHERE COUNTRY='" & CT.Replace("NZ","AU") & "'").Tables(0)
 	Dim LV() As DataRow   = makeDataSet("SELECT * FROM SYS_LEVEL(nolock) WHERE LVL_ID IN(1,2) ORDER BY 1").Tables(0).Select() ' 0 = Bet, 1 = Eat
 
+	Dim MATarget = IIf(IsDbnull(RV("MA_TARGET")), 135, RV("MA_TARGET"))
+
 	'getCitibet(RM, RV)
 	
 	
@@ -218,7 +224,7 @@ End Function
 	</script>	
 
 
-	<form method=post target=vrtPOST autocomplete=off>
+	<form method=post target=vrtPOST id="maker-form" onsubmit="return validateMa(document);" autocomplete=off>
 	  <input name=EV type=hidden value="<%= Join(EV, "_") %>">
 
 	  <div class=LST>
@@ -246,7 +252,10 @@ End Function
 					<th>FP<th class=BIG>&#10003;<th>Form<!-- th>Max<br>Expos<br>$ -->
 					
 					<th>Risk<br>$<th>Risk<br>VWM
-					<th>MA<br><input type="checkbox" class="MA_tick" name="MATick" value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/>
+					<th>MA
+					<br><label title="Luxbet MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATick"  value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> L</label>
+					<br><label title="SunBets MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickSun" value=1  <%= If(RV("MA_TICK_SUN"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> S</label>
+					<br><label title="TAB MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickTab" value=1  <%= If(RV("MA_TICK_TAB"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> T</label>
                     <th>&fnof;
 					<th>BOB<th>WOW
 					
@@ -357,9 +366,9 @@ End Function
 			  
 			  <!--     'f price blend value   --> <% 
 			  If VM Then        %>
-				<td><input class=FBLD name=fblend_<%= RN %> value=<%= If (sNS(RV("CONF_LVL")) = "", RS("SKY_PD_T"),  RS("PPDVP")) %>><%
-			  Else        %>
-				<td><%= If (sNS(RV("CONF_LVL")) = "", sDiv(RS("SKY_PD_T")),  sDiv(RS("PPDVP")))  %><%
+				<td><input tabindex=<%=RN %> class=FBLD name=fblend_<%= RN %> value=<%= If (sNS(RV("CONF_LVL")) = "", RS("SKY_PD_T"),  RS("PPDVP")) %>><%
+			  Else        %>				
+			  	<td><%=  sDiv(RS("SKY_PD_T"), RS("PPDVP")) %><%
 			  End If    %>
 			  <td>
 			  			  
@@ -650,7 +659,17 @@ End Function
 			<%	Else 	 %>
 				<td>	<!-- Hide from Media User-->
 			<% End If %>
-			  <td colspan=5>  <!-- risk - WOW  -->
+		      <td>
+
+		      <% If Vm Then %>
+		      <td>
+		      <td>
+    			<input type="text" name="MATarget" tabindex="100" id="MATarget" value="<%= MATarget %>" title="MA target market %">%</td>
+		      <% Else %>
+		      <td>
+
+		      <% End If %>
+			  <td colspan=3>  <!-- risk - WOW  -->
 			  
 			  <!-- Dyn Pool Sizes (Max 26 Cols)  ----------------------------->
 			  <%=  ColPools(ColList, RV, CT, MktPer) %>
@@ -799,7 +818,7 @@ End Function
 			If VM Then	%>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
 				<input type=button onclick="getEVN(curVNL)" value="Undo">
-				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>)" value="Save"><%
+				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>); " value="Save"><%
 			Else	%>
 				<div id=divDSP><%= sLcDt(Now, "dd MMM, HH:mm.ss") %></div> 
 				<input name=FCMD type=button  <%= IIf(Session("LVL") < 10, "", " disabled ") %> onclick="getEVN()" value="     Edit     ">
