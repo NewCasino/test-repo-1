@@ -177,10 +177,10 @@ iframe[name=vrtPOST] {	display:none }
 .LST td.HS {	font:bold 16px trebuchet ms; background:rgba(0,0,0,.12) }
 .LST td.HL {	background:#fc6!important } .LST td.HL .INV { font-weight:bold }
 .LST td.F2 {	background:#8df }
-.LST td.RI {	text-align:left; padding:0 0 0 3px; position:relative ;  white-space:normal; }
+.LST td.RI {	text-align:left; padding:0 0 0 3px; position:relative ;  white-space:normal}
 .LST td.RI img {	float:left; height:27px; margin:0 3px 0 -3px }
 .LST td.RN {	text-align:left; padding-left:10px }
-.LST td.RI div {	font-size:10px; color:#555; text-overflow:ellipsis; overflow:hidden; }
+.LST td.RI div {	font-size:10px; color:#555; text-overflow:ellipsis; overflow:hidden }
 .LST td.RI.S {	text-decoration:line-through; color:#777; background:#fff }
 .LST td.RI.LS {	text-decoration:line-through; color:#f00; background:#fff }
 .LST td.SCR {	background:#fff }

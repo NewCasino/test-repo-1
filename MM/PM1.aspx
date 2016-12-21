@@ -80,14 +80,6 @@ Sub Page_Load()
 		execSQL("UPDATE  RUNNER SET SCR=1, SCRATCH=3, SCR_TIMESTAMP = getdate() WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
 	End If
 	
-	'Manual un-scratch button
-    ' - RUBT-1088 : provide un-scratch runner functionality
-	if Request("UNSCR") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		SCR_RunnerNo = Request("UNSCR")
-		execSQL("UPDATE  RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
-	End If
-    	
 	'Hide/show scratchings
 	If Request("HS") = "Hide Scratch" OR Request("HS") = "Show Scratch" then
 		Session("ShowScr") = If(Session("ShowScr") = 1, 0, 1)
@@ -152,13 +144,6 @@ End Function
 				html {
 	       			overflow-y: scroll;
 				}
-                .LST th:last-child, .LST td:last-child {
-                     width: 5em;
-                 }
-                 .LST td.HXUNSCR  {	
-                     background:#90EE90; 
-                     font-weight:bold 
-                 }
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
@@ -173,8 +158,6 @@ End Function
 				function iSV(m) { iNR("PM_WIN_", 100, m) } 
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
 				function RunScr(RunNo) {if (confirm('Confirm you want to scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&SCR=' + RunNo)}}
-				// RUBT-1088 : provide un-scratch runner functionality
-				function RunUnScr(RunNo) {if (confirm('Confirm you want to un-scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&UNSCR=' + RunNo)}}
 			</script>
 		</head>
 		<body onload=Init()>
@@ -332,12 +315,9 @@ End Function
 			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"))     %> 
 
 			<% End If %>
-
-			<%
-            ' - RUBT-1088 : provide un-scratch runner functionality 
-			If RS("SCR") Then   %>                  
-			  <td class=scrCols colspan=9>&nbsp;</td>
-            <% Else %>                              
+			<% 'Not scratched
+			If Not RS("SCR") Then   %>
+			  
 			  <!-- ' Finishing Position  --> 
 			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
 			  
@@ -386,36 +366,14 @@ End Function
 			  <!--' FX Dividend   -->
 			  <td class=FT><%= sDiv(RS("FX_BOB"))      %>
 			  <td class=FW><%= sDiv(RS("FX_WOW"))      %>
-
-            <% End If %>			  
+			  
 			  <!-- -------- Dynamic columns -------------------- -->
-			<%          
-                ' RUBT-1088 : provide un-scratch runner functionality 
-                 Dim priceColCnt as Integer = 0
-                 Dim priceCols as String = UsrPriceCols(ColList, RS, RP, PriceChangeDictionary,ScratchingJavascript,CloseTime, CT, priceColCnt)
-                 If Not RS("SCR") Then
-                     Response.Write(priceCols)
-                 Else 
-                     Response.Write("<td class=scrCols colspan=" & priceColCnt & ">&nbsp;</td>" )
-                 End If
-             %>				  
+			  <%= UsrPriceCols(ColList, RS, RP, PriceChangeDictionary,ScratchingJavascript,CloseTime, CT)  			  %>
+				  
 			  <!-- Num col edit -->
 			  <%If VM Then        %>
-                <%
-                ' RUBT-1088 : provide un-scratch runner functionality 
-                If Not RS("SCR") Then
-                %>
-    				<td class=HX><%= RN %> 
-				    <input id=RNSCR type=button onclick="RunScr(<%= RN %>)"  value="SCR" >
-                <%
-                else
-                %>
-				    <td class=HXUNSCR><%= RN %> 
-				    <input id=RNUNSCR type=button onclick="RunUnScr(<%= RN %>)"  value="UNSCR" >
-                <%
-                End If
-                %>
-
+				<td class=HX><%= RN %> 
+				<input id=RNSCR type=button onclick="RunScr(<%= RN %>)"  value="SCR" >
 			 <%Else %>
 				<td class="HN"><%= RN %>
 			 <%End If   %>
@@ -664,6 +622,11 @@ End Function
 
 			  End If
 
+			Else 	 
+			%><!--  scratched  --> 
+				<!-- blank first 9 -->
+				<td colspan=<%= 9 + ColList.Length + 1 %> class=SCR>&nbsp;
+		 <% End If
 		  Next%>
 	  
 		  <tr><!-- blank first 11 -->
