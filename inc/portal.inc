@@ -1085,10 +1085,10 @@ Function UsrColHeader(ColList() As String,Country as String) As String
 End Function
 
 'Price column HTML
-Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string, ByRef colCount as Integer)  As String
+Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string, SCR as Boolean)  As String
 
 	Dim PriceCols As String = ""
-  Dim count as Integer = 0
+	Dim count as Integer = 9			' first 9 columns
 	For Each Col As String In ColList
         'Dim cssClass =  IIf(count Mod 2 = 0, "odd", "even")
         Dim cssClass = ""
@@ -1167,8 +1167,11 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
 
       count = count + 1
 	Next
-	colCount = count
-	Return PriceCols
+
+	If Not SCR then
+		Return PriceCols
+	End If
+	Return "<td class=scrCols colspan='" & count & "'>&nbsp;</td>"
 
 End Function
 
