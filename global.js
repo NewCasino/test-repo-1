@@ -145,7 +145,8 @@ function getEVN( x, y, n ) {
         } $("C2").innerHTML = R[1];
       } else { $("CNT").innerHTML = R; if($("SPG") && memSPD == "SPG") vSPD($("SPD"), "SPG"); else vSPD($("SPG"), "SPD") }
     }
-  }); if( x && !n ) tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+  });
+  if (x && !n) tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
 }
 
 function handleTimerPause(x){
