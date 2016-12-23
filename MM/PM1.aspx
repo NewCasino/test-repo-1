@@ -83,6 +83,14 @@ Sub Page_Load()
 		execSQL("UPDATE  RUNNER SET SCR=1, SCRATCH=3, SCR_TIMESTAMP = getdate() WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
 	End If
 	
+	'Manual un-scratch button
+    ' - RUBT-1088 : provide un-scratch runner functionality
+	if Request("UNSCR") <> "" AND EV <> "" Then
+		Dim LuxID() = Split(EV, "_")
+		SCR_RunnerNo = Request("UNSCR")
+		execSQL("UPDATE  RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
+	End If
+    	
 	'Hide/show scratchings
 	If Request("HS") = "Hide Scratch" OR Request("HS") = "Show Scratch" then
 		Session("ShowScr") = If(Session("ShowScr") = 1, 0, 1)
@@ -147,6 +155,13 @@ End Function
 				html {
 	       			overflow-y: scroll;
 				}
+                .LST th:last-child, .LST td:last-child {
+                     width: 5em;
+                 }
+                 .LST td.HXUNSCR  {	
+                     background:#90EE90; 
+                     font-weight:bold 
+                 }
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
@@ -161,6 +176,8 @@ End Function
 				function iSV(m) { iNR("PM_WIN_", 100, m) } 
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
 				function RunScr(RunNo) {if (confirm('Confirm you want to scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&SCR=' + RunNo)}}
+				// RUBT-1088 : provide un-scratch runner functionality
+				function RunUnScr(RunNo) {if (confirm('Confirm you want to un-scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&UNSCR=' + RunNo)}}
 			</script>
 			
 		</head>
@@ -324,8 +341,12 @@ End Function
 			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"))     %> 
 
 			<% End If %>
-			<% 'Not scratched
-			If Not RS("SCR") Then   %>
+
+            <% 
+            '===================================
+			If Not RS("SCR") Then         'runner is not scratched
+            '===================================
+            %>
 			  
 			  <!-- ' Finishing Position  --> 
 			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
@@ -375,17 +396,38 @@ End Function
 			  <!--' FX Dividend   -->
 			  <td class=FT><%= sDiv(RS("FX_BOB"))      %>
 			  <td class=FW><%= sDiv(RS("FX_WOW"))      %>
+
+            <% 
+            '===================================
+			End If                        'runner is not scratched
+            '===================================
+            %>
 			  
 			  <!-- -------- Dynamic columns -------------------- -->
-			  <%= UsrPriceCols(ColList, RS, RP, PriceChangeDictionary,ScratchingJavascript,CloseTime, CT)  			  %>
-				  
+
+			  <%= UsrPriceCols(ColList, RS, RP, PriceChangeDictionary,ScratchingJavascript,CloseTime, CT, Iif(Not RS("SCR"), False, True))   %>
+			  
 			  <!-- Num col edit -->
 			  <%If VM Then        %>
-				<td class=HX><%= RN %> 
-				<input id=RNSCR type=button onclick="RunScr(<%= RN %>)"  value="SCR" >
+                <%
+                ' RUBT-1088 : provide un-scratch runner functionality 
+                If Not RS("SCR") Then
+                %>
+    				<td class=HX><%= RN %> 
+				    <input id=RNSCR type=button onclick="RunScr(<%= RN %>)"  value="SCR" >
+                <% else  %>
+				    <td class=HXUNSCR><%= RN %> 
+				    <input id=RNUNSCR type=button onclick="RunUnScr(<%= RN %>)"  value="UNSCR" >
+                <% End If %>
 			 <%Else %>
 				<td class="HN"><%= RN %>
 			 <%End If   %>
+
+            <% 
+            '===================================
+			If Not RS("SCR") Then         'runner is not scratched
+            '===================================
+            %>
 			 
 			  <% '-- Calculate Total Market Percentage -------------------------------------------------------
 				'LBVWM
@@ -399,7 +441,7 @@ End Function
 				' FX Dividend
 				MktPer( 4) += If(CT = "AU", getMkP(RS("APN_FW")) ,  getMkP(RS("PAA_FW")))
 				MktPer( 5) += getMkP(RS("LXB_FW")) 				
-				MktPer(  6) += getMkP(RS("QLD_FW"))
+				MktPer(  6) += getMkP(RS("QLD_FW"))                         ' QLD UBET FO
 				MktPer( 7) += getMkP(RS("B1Y_FW")) : 
 				MktPer( 8) += getMkP(RS("LAD_FW")) 
 				MktPer(  9) += getMkP(RS("IAS_FW"))
@@ -418,7 +460,7 @@ End Function
 				' PM Dividend
 				MktPer( 20) += getMkP(RS("VIC_TW")) 
 				MktPer( 21) += getMkP(RS("NSW_TW"))
-				MktPer( 22) += getMkP(RS("QLD_TW"))
+				MktPer( 22) += getMkP(RS("QLD_TW"))                         ' QLD UBET TOTE
 				MktPer( 23) += getMkP(RS("AUS_TW")) 
 				MktPer( 24) += getMkP(RS("RDB_TW")) 
 				MktPer( 25) += getMkP(RS("HST_VT"))
@@ -631,19 +673,33 @@ End Function
 
 			  End If
 
-			Else 	 
-			%><!--  scratched  --> 
-				<!-- blank first 9 -->
-				<td colspan=<%= 9 + ColList.Length + 1 %> class=SCR>&nbsp;
-		 <% End If
-		  Next%>
+            %>
+            <% 
+            '===================================
+			Else                          ' runner is scratched
+            '===================================
+            %>
+				<!-- 
+                    blank first 9 cols --- moved into UsrPriceCols() function 
+				    <td colspan=<%= 9 + ColList.Length + 1 %> class=SCR>&nbsp;
+                 -->
+            <% 
+            '===================================
+			End If                         'runner is scratched
+            '===================================
+            %>
+
+          <%
+		  Next
+          %>
 	  
 		  <tr><!-- blank first 11 -->
 			<td colspan=<%= 11 + ColList.Length + 1 %> class=SPT>
 	  
 		<!-- Market % ------------------------------------------------------------------------------------  -->
+          <%Dim cs = Iif(VM,7,6) %>
 		  <tr height=23 class=TOT>
-			  <td colspan=6 class=TFN>Market %
+			  <td colspan=<%=cs%> class=TFN>Market %
 				<%= sMkP(MktPer(30)) %>		<!-- Liab VWM  -->
 				  <%  For I = 0 To 3  %>
 					<%= sMkP(MktPer(I)) %>		<!-- MA to WOW -->
@@ -653,7 +709,7 @@ End Function
 				  
 			  <td> <!-- Last No Col= blank -->
 		<!--'-- Pools Size ---------------------------------------------------------------------------------->  
-		  <tr height=23 class=TOT><td colspan=5 class=TFN>Pools Size
+		  <tr height=23 class=TOT><td colspan=<%=cs-1%> class=TFN>Pools Size
 			<% If Session("LVL") < 10 Then %>	
 				<td><%= GetLiabTotal  ("WIN")  & "<div class=RKSML>" & GetLiabTotal("PLACE") & "</div>"  %>
 			<%	Else 	 %>
