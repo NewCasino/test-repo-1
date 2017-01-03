@@ -1181,6 +1181,8 @@ Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceCh
           PriceCols &= sDivF(RS, RP, "TAB_SDP_PLACE", "TB", PriceChangeDictionary,ScratchingJavascript,CloseTime,"luxbook-grey bold", "")   
       Case "LUX_PLACE_ROLL"
             PriceCols &= "<td class='" & cssClass & "''>" & GenerateRollDropdown(RS, "PLACE_SDP_ADJ_LUX") & "</td>"
+    Case "SUN_PLACE_ROLL"
+            PriceCols &= "<td class='" & cssClass & "''>" & GenerateRollDropdown(RS, "PLACE_SDP_ADJ_SUN") & "</td>"            
       Case "TAB_PLACE_ROLL"
             PriceCols &= "<td class='" & cssClass & "''>" & GenerateRollDropdown(RS, "PLACE_SDP_ADJ_TAB") & "</td>"
       Case "MASTER_PLACE_ROLL"
