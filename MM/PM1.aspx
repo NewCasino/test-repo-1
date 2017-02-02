@@ -172,12 +172,6 @@ End Function
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
 			<script>
-				var aspSession = {
-					dept: '<%= Session("DEPT") %>',
-					lid: '<%= Session("LID") %>',
-					acc: '<%= Session("ACC") %>',
-					lvl: '<%= Session("LVL") %>'
-				};
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
 				function Init() { 
 					getVNL('<%= Session("GAME") %>', '<%= Session("CNTL") %>'); if( curVNL ) getEVN(curVNL); setInterval("iTM()", 1005); tvSZ(1) 
@@ -363,7 +357,7 @@ End Function
 			  <!--      ' WISE Counter      -->
 			  <td>
 			  		<%  ' RUBT-1436 : No wise data for media users
-			  		If Session("DEPT") <> "Tab-Media" Then  %>
+			  		If Session("LVL") <> 10 Then  %>
 					  	<font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
 							<div class=INV>
 								<span>
@@ -757,7 +751,7 @@ End Function
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL)"  value="ALL"  <%= if(RiskProf = ""," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Normal')"  value="Normal" <%= if(RiskProf = "Normal"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Restricted')"  value="Restricted"  <%= if(RiskProf = "Restricted"," id=SEL", "") %> >
-			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=WISE')"  value="WISE"  <%= if(RiskProf = "WISE"," id=SEL", "") %> <%= if(Session("DEPT") = "Tab-Media"," class='hidden'", "") %> >
+			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=WISE')"  value="WISE"  <%= if(RiskProf = "WISE"," id=SEL", "") %> <%= if(Session("LVL") = 10," class='hidden'", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=HARD')"  value="HARD"  <%= if(RiskProf = "HARD"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Watch')"  value="Watch"  <%= if(RiskProf = "Watch"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=VIP soft')"  value="VIP soft"  <%= if(RiskProf = "VIP soft"," id=SEL", "") %> >
@@ -812,7 +806,7 @@ End Function
 					<table class="LST FX" cellspacing=0 cellpadding=1>
 						<tr><th>Race Comments
 						<tr height=115>
-						<% If  Session("LVL") < 10 AND Session("DEPT") <> "Tab-Media" Then 
+						<% If  Session("LVL") < 10 Then 
 							If VM Then        %>
 								<td class=SIP><textarea name=REMARK><%= RV("REMARK") %></textarea><%
 							Else        %>
