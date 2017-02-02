@@ -232,12 +232,7 @@ End Function
 	Dim TT As DataRow = getDataRow("SELECT STAB='', NSW='', QLD='', USA=''")
 	Dim RM As DataRow = getDataRow("SELECT * FROM MEETING(nolock) WHERE MEETING_ID=" & EV(0))
 
-	''Dim RV As DataRow = getDataRow("SELECT * " &
-    ''    "FROM dbo.EVENT_PM " &
-    ''    "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
-	
-	Dim RV As DataRow = getDataRow("SELECT *, " &
-        "CAST(1 AS INT) as MA_TARGET, CAST(1 AS INT) AS MA_TICK_SUN, CAST(1 AS INT) AS MA_TICK_LUX, CAST(1 AS INT) AS MA_TICK_TAB " &
+	Dim RV As DataRow = getDataRow("SELECT * " &
         "FROM dbo.EVENT_PM " &
         "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
 		
@@ -334,13 +329,8 @@ End Function
 		  'Dim RS As Object = getRecord("SELECT * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
 
 
-		  '' Dim RunnerPrices As Object = getRecord("SELECT * " &
-          ''    "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
-			  
-		  Dim RunnerPrices As Object = getRecord("SELECT *, CAST(1 AS INT) as BFR_FP_B1, CAST(1 AS INT) as BFR_FP_L1, " &
-              "CAST(1 AS INT) as BFR_TMC_FP, CAST(1 AS INT) as BFR_LPT_FP " &
-              "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
-			  
+		    Dim RunnerPrices As Object = getRecord("SELECT * " &
+              "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
 			  
 		  Dim RunnerTable as New DataTable()
 		  Dim PriceChangeDictionary as New Dictionary(Of String, List(Of DataRow))
