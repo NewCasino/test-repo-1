@@ -33,7 +33,7 @@
 
 /* alert */
 .ymz-alert-box{
-	border: 5px solid teal;
+	border: 5px solid #3c67bc;
     background-color: #F8F8F8; -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 	-moz-border-radius: 10px; -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); margin:0; padding: 0;
 	-webkit-border-radius: 10px; min-width: 16em; position: fixed; _position: absolute; z-index: 11000;
