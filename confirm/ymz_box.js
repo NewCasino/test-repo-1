@@ -24,7 +24,7 @@ var ymz =ymz||{};
 		var l, t, w =j.outerWidth(), h =j.outerHeight();
 		l = (ww - w)/2, t = (wh - h)/2;
 		if(topval) t =topval;
-		j.css({left: l+"px", top: "5px"});
+		j.css({left: l+"px", top: "15px"});
 		
 	}, toast =function(p){
 		var d = {text: "", type: "success", sec: 3},
