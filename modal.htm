@@ -46,11 +46,12 @@ var modalControl = {
 				return;
 			}
 			_confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + data.runner_num + ' - ' + data.runner,
-				function(answerYes) {
-					if (answerYes) {
-						RunPropId(data.runner_num, tabProp);
-					}
-					_this.closeWindow();
+				function() {
+					RunPropId(data.runner_num, tabProp);
+					modalControl.closeWindow();
+				},
+				function() {
+					modalControl.closeWindow();
 				}
 			);
 		});

@@ -57,22 +57,22 @@ var contextMenuControl = {
 		}
 		if (action == 'scratchRunner') {
 			_confirm("Confirm you want to scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner,
-				function(answerYes) {
-					if (answerYes) {
-						RunScr(_this.data.runner_num);
-					}
+				function() {
+					RunScr(_this.data.runner_num);
+				},
+				function() {
 				}
 			);
 			return true;
 		}
 		if (action == 'unscratchRunner') {
 		   _confirm("Confirm you want to un-scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner,
-				function(answerYes) {
-					if (answerYes) {
-						RunUnScr(_this.data.runner_num);
-					}
+				function() {
+					RunUnScr(_this.data.runner_num);
+				},
+				function() {
 				}
-			);
+			);		   
 			return true;
 		}
 		return true;
@@ -103,26 +103,30 @@ var contextMenuControl = {
 	}
 };
 
-function _confirm(msg, callback) {
+function _confirm(msg, yesCallback, noCallback) {
 	var a = msg.split("\n");
 	ymz.jq_confirm({
 		title:"", 
 		text: a.join('<br />'), 
 		no_btn:"NO", 
 		yes_btn:"YES", 
-		no_fn:function(){}, 
-		yes_fn:function(){
-			callback();
+		yes_fn:function() {
+			yesCallback();
+		},
+		no_fn:function() {
+			noCallback();
 		}
 	});	
 }
 
-function _alert(msg) {
+function _alert(msg, callback) {
 	var a = msg.split("\n");
 	ymz.jq_alert({
 		title:"", 
 		text: a.join('<br />'), 
 		ok_btn:"OK", 
-		close_fn:null
+		close_fn:function() {
+			callback();
+		}
 	});	
 }	
