@@ -45,15 +45,13 @@ var modalControl = {
 				_alert('Tab Prop Id must be greater than zero !!');
 				return;
 			}
-			_confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + data.runner_num + ' - ' + data.runner,
-				function() {
-					RunPropId(data.runner_num, tabProp);
-					modalControl.closeWindow();
-				},
-				function() {
-					modalControl.closeWindow();
-				}
-			);
+			_confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + data.runner_num + ' - ' + data.runner)
+				.then(function(OK) {
+					if (OK) {
+						RunPropId(data.runner_num, tabProp);
+					}
+					_this.closeWindow();
+				});
 		});
 	},
 

@@ -56,23 +56,21 @@ var contextMenuControl = {
 			return true;
 		}
 		if (action == 'scratchRunner') {
-			_confirm("Confirm you want to scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner,
-				function() {
-					RunScr(_this.data.runner_num);
-				},
-				function() {
-				}
-			);
+			_confirm("Confirm you want to scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner)
+				.then(function(OK) {
+					if (OK) {
+						RunScr(_this.data.runner_num);
+					}
+				});
 			return true;
 		}
 		if (action == 'unscratchRunner') {
-		   _confirm("Confirm you want to un-scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner,
-				function() {
-					RunUnScr(_this.data.runner_num);
-				},
-				function() {
-				}
-			);		   
+		   _confirm("Confirm you want to un-scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner)
+				.then(function(OK) {
+					if (OK) {
+						RunUnScr(_this.data.runner_num);
+					}
+				});   
 			return true;
 		}
 		return true;
@@ -103,7 +101,8 @@ var contextMenuControl = {
 	}
 };
 
-function _confirm(msg, yesCallback, noCallback) {
+function _confirm(msg) {
+	var defer = jQuery.Deferred();
 	var a = msg.split("\n");
 	ymz.jq_confirm({
 		title:"", 
@@ -111,22 +110,25 @@ function _confirm(msg, yesCallback, noCallback) {
 		no_btn:"NO", 
 		yes_btn:"YES", 
 		yes_fn:function() {
-			yesCallback();
+			defer.resolve(true);
 		},
 		no_fn:function() {
-			noCallback();
+			defer.resolve(false);
 		}
 	});	
+	return defer;
 }
 
-function _alert(msg, callback) {
+function _alert(msg) {
+	var defer = jQuery.Deferred();
 	var a = msg.split("\n");
 	ymz.jq_alert({
 		title:"", 
 		text: a.join('<br />'), 
 		ok_btn:"OK", 
 		close_fn:function() {
-			callback();
+			defer.resolve(false);
 		}
 	});	
+	return defer;
 }	
