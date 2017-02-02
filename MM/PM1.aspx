@@ -90,6 +90,15 @@ Sub Page_Load()
 		SCR_RunnerNo = Request("UNSCR")
 		execSQL("UPDATE  RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
 	End If
+	
+	'Manual edit propid
+    ' - RUBT-1400 : provide propid edit functionality
+	if Request("PROPID") <> "" AND Request("RNUM") <> "" AND EV <> "" Then
+		Dim LuxID() = Split(EV, "_")
+		Dim RunnerNo = Request("RNUM")
+		Dim PropId = Request("PROPID")
+		execSQL("UPDATE RUNNER_TAB SET TAB_PROP= " & PropId & "  WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & RunnerNo)
+	End If
     	
 	'Hide/show scratchings
 	If Request("HS") = "Hide Scratch" OR Request("HS") = "Show Scratch" then
@@ -165,9 +174,16 @@ End Function
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
+
 			<script src="/js/moment.min.js"> </script>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 		
+			<script src="/js/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
+			<script src="/contextMenu.js"> </script>
+			
+			<!-- pretty confirm and alert dialogs -->
+			<link href="/confirm/ymz_box.css" rel="stylesheet" />
+			<script src="/confirm/ymz_box.js"></script>
+            
 			<script>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
 				function Init() { 
@@ -175,9 +191,24 @@ End Function
 				} 
 				function iSV(m) { iNR("PM_WIN_", 100, m) } 
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
-				function RunScr(RunNo) {if (confirm('Confirm you want to scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&SCR=' + RunNo)}}
+				function RunScr(RunNo) {getEVN(curVNL + '&SCR=' + RunNo)}
+				
 				// RUBT-1088 : provide un-scratch runner functionality
-				function RunUnScr(RunNo) {if (confirm('Confirm you want to un-scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&UNSCR=' + RunNo)}}
+				function RunUnScr(RunNo) {getEVN(curVNL + '&UNSCR=' + RunNo)}
+				
+				// RUBT-1400 : provide edit propid functionality
+				function RunPropId(RunNo, PropId) {getEVN(curVNL + '&PROPID=' + PropId + '&RNUM=' + RunNo)}
+				jQuery(function() {
+					// load context menu and modal popup stuff after page is rendered
+					setTimeout(function() {
+						jQuery.get("/contextMenu.htm", function (data) {
+							jQuery("body").append(data);
+						});
+						jQuery.get("/modal.htm", function (data) {
+							jQuery("body").append(data);
+						});
+					}, 1000);
+				});
 			</script>
 			
 		</head>
@@ -185,6 +216,7 @@ End Function
 			<WT:Main Type="Chart_Canvas" runat=server/>
 			<WT:Main id=VNL Type="Venue_List" runat=server/>
 			<div id=CNT></div>
+
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
  
@@ -199,7 +231,16 @@ End Function
 	Dim I As Byte, TS() As Double = {0, 0, 0, 0}, NC As String = Session("NSW_CLONE")
 	Dim TT As DataRow = getDataRow("SELECT STAB='', NSW='', QLD='', USA=''")
 	Dim RM As DataRow = getDataRow("SELECT * FROM MEETING(nolock) WHERE MEETING_ID=" & EV(0))
-	Dim RV As DataRow = getDataRow("SELECT * FROM dbo.EVENT_PM    WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+
+	''Dim RV As DataRow = getDataRow("SELECT * " &
+    ''    "FROM dbo.EVENT_PM " &
+    ''    "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+	
+	Dim RV As DataRow = getDataRow("SELECT *, " &
+        "CAST(1 AS INT) as MA_TARGET, CAST(1 AS INT) AS MA_TICK_SUN, CAST(1 AS INT) AS MA_TICK_LUX, CAST(1 AS INT) AS MA_TICK_TAB " &
+        "FROM dbo.EVENT_PM " &
+        "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+		
 	Dim DV As DataTable = makeDataSet("SELECT * FROM RESULTS(nolock) WHERE GAME IN('W','P') AND MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1)).Tables(0)
 	DV.PrimaryKey = New DataColumn() { DV.Columns(2), DV.Columns(3) }
 
@@ -291,7 +332,16 @@ End Function
 			"FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
 
 		  'Dim RS As Object = getRecord("SELECT * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
-		  Dim RunnerPrices As Object = getRecord("SELECT * FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
+
+
+		  '' Dim RunnerPrices As Object = getRecord("SELECT * " &
+          ''    "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
+			  
+		  Dim RunnerPrices As Object = getRecord("SELECT *, CAST(1 AS INT) as BFR_FP_B1, CAST(1 AS INT) as BFR_FP_L1, " &
+              "CAST(1 AS INT) as BFR_TMC_FP, CAST(1 AS INT) as BFR_LPT_FP " &
+              "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
+			  
+			  
 		  Dim RunnerTable as New DataTable()
 		  Dim PriceChangeDictionary as New Dictionary(Of String, List(Of DataRow))
 
@@ -336,7 +386,7 @@ End Function
 
 				<i><input class="pm_tick" name=PM_TICK_<%= RN %> type=checkbox value=1<%= IIf(RS("PM_TICK"), " checked", "") %>></i>
 				</td>
-				<%= sHorse(RS, CT, TP, "PM",Request("HighlightNo"))   %>
+				<%= sHorse(RS, CT, TP, "PM",Request("HighlightNo"), True)   %>
 			<% Else %>
 			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"))     %> 
 
@@ -414,10 +464,8 @@ End Function
                 If Not RS("SCR") Then
                 %>
     				<td class=HX><%= RN %> 
-				    <input id=RNSCR type=button onclick="RunScr(<%= RN %>)"  value="SCR" >
                 <% else  %>
 				    <td class=HXUNSCR><%= RN %> 
-				    <input id=RNUNSCR type=button onclick="RunUnScr(<%= RN %>)"  value="UNSCR" >
                 <% End If %>
 			 <%Else %>
 				<td class="HN"><%= RN %>
