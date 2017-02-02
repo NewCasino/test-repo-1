@@ -162,6 +162,9 @@ End Function
                      background:#90EE90; 
                      font-weight:bold 
                  }
+                 .hidden {
+                 	visibility:hidden;
+                 }
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
@@ -352,13 +355,19 @@ End Function
 			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
 			  
 			  <!--      ' WISE Counter      -->
-			  <td><font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
-					<div class=INV>
-						<span>
-							<font color="green"><%= If(RS("WISE_DF_NO")>0, RS("WISE_DF_NO"), "" ) %></font>
-						</span>
-						<font color="blue"><%= If(RS("RES_COUNT")>0, RS("RES_COUNT"), "" ) %></font>
-					</div>
+			  <td>
+			  		<%  ' RUBT-1436 : No wise data for media users
+			  		If Session("LVL") <> 10 Then  %>
+					  	<font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
+							<div class=INV>
+								<span>
+									<font color="green"><%= If(RS("WISE_DF_NO")>0, RS("WISE_DF_NO"), "" ) %></font>
+								</span>
+								<font color="blue"><%= If(RS("RES_COUNT")>0, RS("RES_COUNT"), "" ) %></font>
+							</div>
+					<% Else        %>
+						<div>&nbsp;</div>
+					<% End If %>  
 			  
 			<%  ' Confidence Level, Start & Speed
 			  If VM Then  %>
@@ -742,7 +751,7 @@ End Function
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL)"  value="ALL"  <%= if(RiskProf = ""," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Normal')"  value="Normal" <%= if(RiskProf = "Normal"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Restricted')"  value="Restricted"  <%= if(RiskProf = "Restricted"," id=SEL", "") %> >
-			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=WISE')"  value="WISE"  <%= if(RiskProf = "WISE"," id=SEL", "") %> >
+			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=WISE')"  value="WISE"  <%= if(RiskProf = "WISE"," id=SEL", "") %> <%= if(Session("LVL") = 10," class='hidden'", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=HARD')"  value="HARD"  <%= if(RiskProf = "HARD"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Watch')"  value="Watch"  <%= if(RiskProf = "Watch"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=VIP soft')"  value="VIP soft"  <%= if(RiskProf = "VIP soft"," id=SEL", "") %> >

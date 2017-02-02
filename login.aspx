@@ -26,6 +26,7 @@
 					Session("LID")  = RS("LID")
 					Session("ACC")  = RS("NAME")
 					Session("LVL")  = RS("LVL")
+					Session("DEPT")  = RS("DEPT")
 					Session("LNM")  = getEnum("TRD_LVL", RS("LVL"))
 					Session("GAME") = sNS(RS("GAME"))
 					Session("CNTL") = sNS(RS("CNTL"))
