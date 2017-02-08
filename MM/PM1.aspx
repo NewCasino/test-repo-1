@@ -175,7 +175,7 @@ End Function
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
-			<link rel="stylesheet" href="/ui/modal.css?p1">
+			<link rel="stylesheet" href="/ui/modal.css">
 
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
@@ -200,7 +200,6 @@ End Function
 				
 				// RUBT-1400 : provide edit propid functionality
 				function RunPropId(RunNo, PropId) {getEVN(curVNL + '&PROPID=' + PropId + '&RNUM=' + RunNo)}
-				var runnersBuf  = [];
 				jQuery(function() {
 					// load context menu stuff after page is rendered
 					setTimeout(function() {
@@ -245,7 +244,7 @@ End Function
 	Dim TT As DataRow = getDataRow("SELECT STAB='', NSW='', QLD='', USA=''")
 	Dim RM As DataRow = getDataRow("SELECT * FROM MEETING(nolock) WHERE MEETING_ID=" & EV(0))
 
-    Dim RV As DataRow = getDataRow("SELECT *, 1 as MA_TARGET, 1 as MA_TICK, 1 as MA_TICK_TAB, 1 as MA_TICK_SUN, 1 as MA_TICK_LUX " &
+    Dim RV As DataRow = getDataRow("SELECT * " &
         "FROM dbo.EVENT_PM " &
         "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
 
@@ -344,7 +343,7 @@ End Function
 
 		  'Dim RS As Object = getRecord("SELECT * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
 
-		    Dim RunnerPrices As Object = getRecord("SELECT *, 1 as BFR_FP_B1, 1 as BFR_FP_L1, 1 as BFR_TMC_FP, 1 as BFR_LPT_FP, 1 as BFR_MKT_ID_FP " &
+		    Dim RunnerPrices As Object = getRecord("SELECT * " &
               "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
 
 		    ''	Dim RunnerPrices As Object = getRecord("SELECT * " &
@@ -928,7 +927,7 @@ End Function
 		<div class=TED><%
 			If VM Then	%>
     		    <span>
-    				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit PropIds" />
+    				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit Prop Ids" />
 	    		</span>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
 				<input type=button onclick="getEVN(curVNL)" value="Cancel">

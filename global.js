@@ -124,6 +124,8 @@ function getEVN( x, y, n ) {
       return;
     }
 
+    // RUBT-1400 : implement propid edit ui
+    jQuery('.modalwindow').fadeOut(500);
   if( tmrEVN ) clearTimeout(tmrEVN);
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
   console.log('refreshing page');

@@ -126,7 +126,7 @@ Public Type As String, EventID As String, Odds As String
 		%>
 			<div class="MTG <%= Odds %>D">
 				<%	Dim RS As Object = getRecord("SELECT mv.*, m.BTK_ID, m.WIFT_MTG_ID, m.FXO_ID, m.PA_MTG_ID, " _
-					& "e.WIFT_EVT_ID, e.WIFT_SRC_ID, e.WP_EVENTID, e.PA_EVT_ID, e.GTX_ID, 111 as BFR_MKT_ID_FP " _
+					& "e.WIFT_EVT_ID, e.WIFT_SRC_ID, e.WP_EVENTID, e.PA_EVT_ID, e.GTX_ID, BFR_MKT_ID_FP " _
 					& "FROM dbo.MEETING_VIEW as mv " _
 					& "INNER JOIN dbo.MEETING as m ON (mv.MEETING_ID = m.MEETING_ID) " _
 					& "INNER JOIN dbo.EVENT as e ON (mv.MEETING_ID = e.MEETING_ID AND mv.EVENT_NO = e.EVENT_NO) " _

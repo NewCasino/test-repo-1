@@ -119,6 +119,7 @@ angular.module('WebApp', ['ngRoute'])
 		$scope.init();
         $scope.fetchEventData($scope.params.EventId)
         	.then(function() {
+                // console.log($scope.event);
         		eventControl.openWindow($scope.event);  
         	});
 			
