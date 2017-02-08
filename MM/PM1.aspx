@@ -175,7 +175,7 @@ End Function
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
-			<link rel="stylesheet" href="/ui/modal.css">
+			<link rel="stylesheet" href="/ui/modal.css?p1">
 
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
