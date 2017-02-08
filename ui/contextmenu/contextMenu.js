@@ -3,7 +3,8 @@ var contextMenuControl = {
 	data: {},
 	
 	initContextMenu: function () {
-		var elements = document.getElementsByClassName('context-menu-one');
+		// attach listener to all applicable html elements
+		var elements = document.getElementsByClassName('context-menu-one');		
 		for (var i = 0; i < elements.length; i++) {
 			elements[i].addEventListener("contextmenu", function(event) {
 				contextMenuControl.showContextMenu(event)
@@ -18,6 +19,7 @@ var contextMenuControl = {
 		this.menu = document.getElementById('contextMenu');
 	},
 
+	// display context menu for current element under mouse cursor
 	showContextMenu: function (event) {
 		event.preventDefault();
 		var el = (event.target.parentNode.tagName == 'TR' ? event.target : event.target.parentNode);
@@ -39,40 +41,30 @@ var contextMenuControl = {
 		return true;
 	},
 
+	// context menu items
 	setMenuContent: function(options) {
-		var items = (options.el.className.indexOf('scratched') == -1 ? '<li class="context-menu-item" data-action="scratchRunner">Scratch Runner</li>' : '<li class="context-menu-item" data-action="unscratchRunner">Un-Scratch Runner</li>');
+		var items = (options.el.className.indexOf('scratched') == -1 ? 
+			'<li class="context-menu-item" data-action="scratchRunner">Scratch Runner</li>' : 
+			'<li class="context-menu-item" data-action="unscratchRunner">Un-Scratch Runner</li>');
 		items += '<li class="separator"></li>' +
 				 '<li class="context-menu-item" data-action="editRunner">Edit Runner Data</li>';
 		document.getElementById('context-menu-items').innerHTML = items;		
 	},
-	
+
+	// link action to angular via router
 	contextMenuAction: function (event) {
-		var _this = this;
-		var action = event.target.getAttribute('data-action');
-		//console.log(action);
-		//console.log(this.data);
-		if (action == 'editRunner') {
-			modalControl.openWindow(this.data);
-			return true;
-		}
-		if (action == 'scratchRunner') {
-			_confirm("Confirm you want to scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner)
-				.then(function(OK) {
-					if (OK) {
-						RunScr(_this.data.runner_num);
-					}
-				});
-			return true;
-		}
-		if (action == 'unscratchRunner') {
-		   _confirm("Confirm you want to un-scratch runner ??\n\nRunner: " + this.data.runner_num + ' - ' + this.data.runner)
-				.then(function(OK) {
-					if (OK) {
-						RunUnScr(_this.data.runner_num);
-					}
-				});   
-			return true;
-		}
+		var id = jQuery.param(this.data);
+		switch(event.target.getAttribute('data-action')) {
+		    case 'scratchRunner':
+		    	document.location.href = "#/Runner/Scratch/"+id
+		        break;
+		    case 'unscratchRunner':
+		    	document.location.href = "#/Runner/UnScratch/"+id
+		        break;
+		    case 'editRunner':
+		    	document.location.href = "#/Runner/Edit/"+id
+		        break;
+		}		
 		return true;
 	},
 
@@ -100,35 +92,3 @@ var contextMenuControl = {
 		};
 	}
 };
-
-function _confirm(msg) {
-	var defer = jQuery.Deferred();
-	var a = msg.split("\n");
-	ymz.jq_confirm({
-		title:"", 
-		text: a.join('<br />'), 
-		no_btn:"NO", 
-		yes_btn:"YES", 
-		yes_fn:function() {
-			defer.resolve(true);
-		},
-		no_fn:function() {
-			defer.resolve(false);
-		}
-	});	
-	return defer;
-}
-
-function _alert(msg) {
-	var defer = jQuery.Deferred();
-	var a = msg.split("\n");
-	ymz.jq_alert({
-		title:"", 
-		text: a.join('<br />'), 
-		ok_btn:"OK", 
-		close_fn:function() {
-			defer.resolve(false);
-		}
-	});	
-	return defer;
-}	

@@ -125,7 +125,12 @@ Public Type As String, EventID As String, Odds As String
 			If Odds = "" Then Odds = "PM"
 		%>
 			<div class="MTG <%= Odds %>D">
-				<%	Dim RS As Object = getRecord("SELECT * FROM dbo.MEETING_VIEW WHERE MEETING_ID=" & Val(EV(0)) & " AND EVENT_NO=" & Val(EV(1)))
+				<%	Dim RS As Object = getRecord("SELECT mv.*, m.BTK_ID, m.WIFT_MTG_ID, m.FXO_ID, m.PA_MTG_ID, " _
+					& "e.WIFT_EVT_ID, e.WIFT_SRC_ID, e.WP_EVENTID, e.PA_EVT_ID, e.GTX_ID, 111 as BFR_MKT_ID_FP " _
+					& "FROM dbo.MEETING_VIEW as mv " _
+					& "INNER JOIN dbo.MEETING as m ON (mv.MEETING_ID = m.MEETING_ID) " _
+					& "INNER JOIN dbo.EVENT as e ON (mv.MEETING_ID = e.MEETING_ID AND mv.EVENT_NO = e.EVENT_NO) " _
+					& "WHERE mv.MEETING_ID=" & Val(EV(0)) & " AND mv.EVENT_NO=" & Val(EV(1)))
 				If RS.Read()  					%>
 					<div class=VNU>
 						<img src="/img/<%= RS("TYPE") %>.png"> <%= sLcDt(RS("START_TIME"), "hh:mmtt").ToLower	%> 
@@ -139,6 +144,10 @@ Public Type As String, EventID As String, Odds As String
 							<% If RS("SHOW_PRICE") = "1"  %>
 								<span id="showPrice" style="color:#f47b82;">SHOW PRICE ENABLED</span>
 							<% End If %>
+							<% Dim MtgData as String = RS("BTK_ID") & ":" & RS("WIFT_MTG_ID") & ":" &  RS("FXO_ID") & ":" &  RS("PA_MTG_ID") %>
+							<input type="hidden" id="mtg-data" value="<%=MtgData %>" />
+							<% Dim EvtData as String = RS("WIFT_EVT_ID") & ":" & RS("WIFT_SRC_ID") & ":" &  RS("WP_EVENTID") & ":" &  RS("PA_EVT_ID") & ":" &  RS("GTX_ID") & ":" &  RS("BFR_MKT_ID_FP") %>
+							<input type="hidden" id="evt-data" value="<%=EvtData %>" />
 					</div>
 
 					<div class=VD2>

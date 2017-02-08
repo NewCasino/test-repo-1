@@ -117,6 +117,7 @@ Sub Page_Load()
 	chkEvent(EV)
 	MTG.EventID = EV
 	EV = Split(EV, "_")
+
 End Sub
 
 Function GetLiabVWM(RunNo As Integer)
@@ -158,7 +159,7 @@ End Function
 
     %>
 	<!DOCTYPE html>
-	<html>
+	<html ng-app="WebApp">
 		<head>
 			<style>
 				html {
@@ -178,13 +179,13 @@ End Function
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
-			<script src="/contextMenu.js"> </script>
+			<script src="/ui/contextmenu/contextMenu.js"> </script>
 			
 			<!-- pretty confirm and alert dialogs -->
-			<link href="/confirm/ymz_box.css" rel="stylesheet" />
-			<script src="/confirm/ymz_box.js"></script>
+			<link href="/ui/confirm/confirm.css" rel="stylesheet" />
+			<script src="/ui/confirm/confirm.js"></script>
             
-			<script>
+			<script language='javascript'>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
 				function Init() { 
 					getVNL('<%= Session("GAME") %>', '<%= Session("CNTL") %>'); if( curVNL ) getEVN(curVNL); setInterval("iTM()", 1005); tvSZ(1) 
@@ -198,19 +199,23 @@ End Function
 				
 				// RUBT-1400 : provide edit propid functionality
 				function RunPropId(RunNo, PropId) {getEVN(curVNL + '&PROPID=' + PropId + '&RNUM=' + RunNo)}
+				var runnersBuf  = [];
 				jQuery(function() {
-					// load context menu and modal popup stuff after page is rendered
+					// load context menu stuff after page is rendered
 					setTimeout(function() {
-						jQuery.get("/contextMenu.htm", function (data) {
+						jQuery.get("/ui/contextmenu/contextMenu.htm", function (data) {
 							jQuery("body").append(data);
 						});
-						jQuery.get("/modal.htm", function (data) {
+						jQuery.get("/ui/runnerEdit.html", function (data) {
+							jQuery("body").append(data);
+						});
+						jQuery.get("/ui/eventEdit.html", function (data) {
 							jQuery("body").append(data);
 						});
 					}, 1000);
 				});
 			</script>
-			
+	
 		</head>
 		<body onload=Init()>
 			<WT:Main Type="Chart_Canvas" runat=server/>
@@ -219,8 +224,15 @@ End Function
 
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
- 
-	
+
+			<!-- modal window placeholder for edit event+runner popups -->
+			<div ng-view></div>
+
+			<script src="/ui/angular.min.js"></script>
+			<script src="/ui/angular-route.min.js"></script>
+			<script src="/ui/utilsLibrary.js"></script>
+			<script src="/ui/app.js"></script>
+			
 		</body>
 	</html>
 <%Else  %>
@@ -232,9 +244,13 @@ End Function
 	Dim TT As DataRow = getDataRow("SELECT STAB='', NSW='', QLD='', USA=''")
 	Dim RM As DataRow = getDataRow("SELECT * FROM MEETING(nolock) WHERE MEETING_ID=" & EV(0))
 
-	Dim RV As DataRow = getDataRow("SELECT * " &
+    Dim RV As DataRow = getDataRow("SELECT *, 1 as MA_TARGET, 1 as MA_TICK, 1 as MA_TICK_TAB, 1 as MA_TICK_SUN, 1 as MA_TICK_LUX " &
         "FROM dbo.EVENT_PM " &
         "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+
+	''Dim RV As DataRow = getDataRow("SELECT * " &
+    ''    "FROM dbo.EVENT_PM " &
+    ''    "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
 		
 	Dim DV As DataTable = makeDataSet("SELECT * FROM RESULTS(nolock) WHERE GAME IN('W','P') AND MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1)).Tables(0)
 	DV.PrimaryKey = New DataColumn() { DV.Columns(2), DV.Columns(3) }
@@ -273,7 +289,6 @@ End Function
 	%>
 	<script type="Text/javascript">
 		var scratchings  = [];
-
 	</script>	
 
 
@@ -328,9 +343,11 @@ End Function
 
 		  'Dim RS As Object = getRecord("SELECT * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
 
-
-		    Dim RunnerPrices As Object = getRecord("SELECT * " &
+		    Dim RunnerPrices As Object = getRecord("SELECT *, 1 as BFR_FP_B1, 1 as BFR_FP_L1, 1 as BFR_TMC_FP, 1 as BFR_LPT_FP, 1 as BFR_MKT_ID_FP " &
               "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
+
+		    ''	Dim RunnerPrices As Object = getRecord("SELECT * " &
+            ''  "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
 			  
 		  Dim RunnerTable as New DataTable()
 		  Dim PriceChangeDictionary as New Dictionary(Of String, List(Of DataRow))
@@ -339,7 +356,6 @@ End Function
 
 
 			For Each Runner in RunnerTable.Rows
-
 				If getNumberString(Runner("PAA_FW")) IsNot Nothing  Then
 					paActive = True
 				End If
@@ -910,8 +926,11 @@ End Function
 		<!--  '-- Edit Market, Save & Status Bar -------------------------------------------------------------->
 		<div class=TED><%
 			If VM Then	%>
+    		    <span>
+    				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit PropIds" />
+	    		</span>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
-				<input type=button onclick="getEVN(curVNL)" value="Undo">
+				<input type=button onclick="getEVN(curVNL)" value="Cancel">
 				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>); " value="Save"><%
 			Else	%>
 				<div id=divDSP><%= sLcDt(Now, "dd MMM, HH:mm.ss") %></div> 
@@ -992,11 +1011,11 @@ End Function
 					</pre><%
 			End If		
 
-
 			%>
-		</table><%
+		</table>
+	<%
 	End If
-	
-  'sDuration(TM)
-End If %>
 
+  'sDuration(TM)
+End If 
+%>

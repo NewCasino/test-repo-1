@@ -1,0 +1,79 @@
+<div id="runner-modal" class="modalwindow">
+    <div class="modal-title">
+		<span>Runner {{data.runner_num}} : {{data.runner}}</span>
+		<span class="modal-close"><a href="#">X</a></span>
+	</div>
+    <div class="modal-content">
+		<table cellspacing="5">
+			<tr><td width="150px">Meeting Id</td><td>{{data.meeting_id}}</td></tr>
+			<tr><td>Race Number</td><td>{{data.race_num}}</td></tr>
+			<tr><td>Runner Number</td><td>{{data.runner_num}}</td></tr>
+			<tr><td>Tab Prop Id</td><td><input id="tab-prop" type="text" ng-model="data.tab_prop" size="8" /></td></tr>
+		</table>
+		<hr class="hr" />
+		<input type="button" value="Save" class="modal-button modal-save" />
+    </div>
+</div>
+
+<script>
+var runnerControl = {
+
+	data: {},
+	event_ref: '',
+	
+	openWindow: function(data) {
+		if (tmrEVN) {
+			clearTimeout(tmrEVN);
+		}
+		this.data = data;
+		this.event_ref = data.meeting_id+'_'+data.race_num;
+		this.renderPopup();
+		this.delegateEvents();
+	},
+
+	renderPopup: function() {
+		var id = jQuery('#runner-modal');
+		var winH = jQuery(window).height();
+		var winW = jQuery(window).width();
+		id.css('top', winH/2-id.height()/2);
+		id.css('left', winW/2-id.width()/2);
+		id.fadeIn(500);	
+	},
+
+	delegateEvents: function() {
+		var _this = this;			
+		jQuery('#runner-modal .modal-close').click(function (event) {
+			event.preventDefault();
+			_this.closeWindow();
+		});
+		jQuery('#runner-modal .modal-button').click(function (event) {
+			if (event.target.getAttribute('value') !== 'Save') {
+				_this.closeWindow();
+				return;
+			}
+			// data validation on save
+			var tabProp = parseInt(jQuery('#tab-prop').val());
+			if (isNaN(tabProp) || tabProp < 1) {
+				_utils.alert('Tab Prop Id must be greater than zero !!');
+				return;
+			}
+			_utils.confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + _this.data.runner_num + ' - ' + _this.data.runner)
+				.then(function(OK) {
+					if (OK) {
+						RunPropId(_this.data.runner_num, tabProp);
+					}
+					_this.closeWindow();
+				});
+		});
+	},
+	
+	// close window and restart 5 second refresh timer
+	closeWindow: function() {
+		getEVN(curVNL);
+		jQuery('#runner-modal').fadeOut(500);
+		tmrEVN = setTimeout(function() {
+			getEVN(curVNL);
+		}, 5000);	
+	}
+};
+</script>
