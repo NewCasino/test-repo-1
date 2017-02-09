@@ -11,7 +11,8 @@
 			<tr><td>Tab Prop Id</td><td><input id="tab-prop" type="text" ng-model="data.tab_prop" size="8" /></td></tr>
 		</table>
 		<hr class="hr" />
-		<input type="button" value="Save" class="modal-button modal-save" />
+		<input type="button" value="Save" class="modal-button modal-save" ng-click="savePropId()" />
+	    <input type="button" value="Cancel" class="modal-button modal-cancel" onclick="javascript:runnerControl.closeWindow();" /> &nbsp;
     </div>
 </div>
 
@@ -41,29 +42,11 @@ var runnerControl = {
 	},
 
 	delegateEvents: function() {
-		var _this = this;			
+		var _this = this;		
+		// x in title bar        
 		jQuery('#runner-modal .modal-close').click(function (event) {
 			event.preventDefault();
 			_this.closeWindow();
-		});
-		jQuery('#runner-modal .modal-button').click(function (event) {
-			if (event.target.getAttribute('value') !== 'Save') {
-				_this.closeWindow();
-				return;
-			}
-			// data validation on save
-			var tabProp = parseInt(jQuery('#tab-prop').val());
-			if (isNaN(tabProp) || tabProp < 1) {
-				_utils.alert('Tab Prop Id must be greater than zero !!');
-				return;
-			}
-			_utils.confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + _this.data.runner_num + ' - ' + _this.data.runner)
-				.then(function(OK) {
-					if (OK) {
-						RunPropId(_this.data.runner_num, tabProp);
-					}
-					_this.closeWindow();
-				});
 		});
 	},
 	

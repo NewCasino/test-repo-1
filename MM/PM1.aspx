@@ -91,13 +91,26 @@ Sub Page_Load()
 		execSQL("UPDATE  RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
 	End If
 	
-	'Manual edit propid
+	'Manual update 1 propid
     ' - RUBT-1400 : provide propid edit functionality
 	if Request("PROPID") <> "" AND Request("RNUM") <> "" AND EV <> "" Then
 		Dim LuxID() = Split(EV, "_")
 		Dim RunnerNo = Request("RNUM")
 		Dim PropId = Request("PROPID")
 		execSQL("UPDATE RUNNER_TAB SET TAB_PROP= " & PropId & "  WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & RunnerNo)
+	End If
+	
+	'Manual update multiple propids
+    ' - RUBT-1400 : provide propid edit functionality ... Request("RUNPROPIDS") looks like "RUNNER1:PROPID1,RUNNER2:PROPID2,RUNNER3:PROPID3,RUNNER4:PROPID4,etc"
+	if Request("MULTIPROPIDS") <> "" AND EV <> "" Then
+		Dim LuxID() = Split(EV, "_")
+		Dim RunnerProp() As String = Split(Request("MULTIPROPIDS"), ",")
+        For Each Item As String In RunnerProp
+            Dim Arr() As String = Split(Item, ":")
+            Dim RunnerNo = Arr(0)
+            Dim PropId = Arr(1)
+            execSQL("UPDATE RUNNER_TAB SET TAB_PROP= " & PropId & "  WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & RunnerNo)            
+        Next        
 	End If
     	
 	'Hide/show scratchings
@@ -198,9 +211,12 @@ End Function
 				// RUBT-1088 : provide un-scratch runner functionality
 				function RunUnScr(RunNo) {getEVN(curVNL + '&UNSCR=' + RunNo)}
 				
-				// RUBT-1400 : provide edit propid functionality
+				// RUBT-1400 : provide edit 1 propid functionality
 				function RunPropId(RunNo, PropId) {getEVN(curVNL + '&PROPID=' + PropId + '&RNUM=' + RunNo)}
-				jQuery(function() {
+				// RUBT-1400 : provide edit multiple propid functionality
+				function MultiPropIds(Params) {getEVN(curVNL + '&MULTIPROPIDS=' + Params)}
+
+                jQuery(function() {
 					// load context menu stuff after page is rendered
 					setTimeout(function() {
 						jQuery.get("/ui/contextmenu/contextMenu.htm", function (data) {

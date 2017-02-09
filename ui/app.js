@@ -19,7 +19,6 @@ angular.module('WebApp', ['ngRoute'])
 		document.location.href='#';
         $scope.params = $routeParams;
         $scope.data = _utils.parseParams($routeParams.RunnerId);
-        console.log($scope.data);
         $scope.event = {
         	runners: []
         };
@@ -36,8 +35,6 @@ angular.module('WebApp', ['ngRoute'])
 						RunScr(_this.data.runner_num);
 					}
 				});
-				$location.url('');
-				$location.path('');
         }
         // un-scratch runner 
         if ($routeParams.Action == 'UnScratch') {
@@ -49,6 +46,22 @@ angular.module('WebApp', ['ngRoute'])
 				});
         }
 		
+        $scope.savePropId = function() {
+			// validate propid
+			var tabProp = parseInt($scope.data.tab_prop);
+			if (isNaN(tabProp) || tabProp < 1) {
+				_utils.alert('Prop Id must be integer and greater than zero !!');
+				return;
+			}
+			_utils.confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + $scope.data.runner_num + ' - ' + $scope.data.runner)
+				.then(function(OK) {
+					if (OK) {
+						RunPropId($scope.data.runner_num, tabProp);
+					}
+					runnerControl.closeWindow();
+				});
+        };
+        
         // start controller
 		$scope.init();
         if ($routeParams.Action == 'Edit') {
@@ -74,7 +87,7 @@ angular.module('WebApp', ['ngRoute'])
         // fetch event and runner info from DOM
 		$scope.autoAllocate = function() {
 			var id1 = parseInt($scope.event.runners[0].tab_prop);
-			if (id1 == NaN || id1 < 1) {
+			if (isNaN(id1) || id1 < 1) {
 				_utils.alert('Enter a valid Prop Id for 1st Runner');
 				return;
 			}
@@ -115,12 +128,31 @@ angular.module('WebApp', ['ngRoute'])
 	        return defer;
 		};
 
+        $scope.savePropIds = function() {
+			// validate propids
+            var buf = new Array();
+            angular.forEach($scope.event.runners, function (value, key) {
+                var propid = parseInt(value.tab_prop);
+            	if (isNaN(propid) || propid < 1) {
+                    _utils.alert('All Prop Ids must be integer and greater than zero !!');
+                    return;                   
+                }
+                buf.push(value.runner_num+':'+value.tab_prop)
+            });
+			_utils.confirm("Confirm you want to save the Prop Ids ??\n")
+				.then(function(OK) {
+					if (OK) {
+                        var propids = buf.join(',');
+						MultiPropIds(propids);        // do actual db update
+					}
+					eventControl.closeWindow();
+				});
+        };
+        
         // start controller
 		$scope.init();
         $scope.fetchEventData($scope.params.EventId)
         	.then(function() {
-                // console.log($scope.event);
         		eventControl.openWindow($scope.event);  
-        	});
-			
+        	});			
     }]);

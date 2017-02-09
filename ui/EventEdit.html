@@ -31,7 +31,7 @@
 			        	</thead>
 			        	<tbody>
 				            <tr ng-repeat="x in event.runners" ng-class-odd="'striped'">
-				                <td class="modal-data">{{x.runner_num}} {{x.runner}}</td>
+				                <td class="modal-data"><span class="cyan">{{x.runner_num}}</span> {{x.runner}}</td>
 				                <td class="modal-data">
 				                	<input type="text" ng-model="x.tab_prop" size="7">
 				                </td>
@@ -42,8 +42,8 @@
 	        </td></tr>
 	    </table>
 	    <hr class="hr" />
-	    <input type="button" value="Save" class="modal-button modal-save" />
-	    <input type="button" value="Cancel" class="modal-button modal-cancel" /> &nbsp;
+	    <input type="button" value="Save" class="modal-button modal-save" ng-click="savePropIds()" />
+	    <input type="button" value="Cancel" class="modal-button modal-cancel" onclick="javascript:eventControl.closeWindow();" /> &nbsp;
     </div>
 </div>
 <style>
@@ -67,6 +67,9 @@
 }
 .striped {
 	background-color: #333333;
+}
+#event-runners table tbody span.cyan {
+	color: cyan;
 }
 </style>
 <script>
@@ -104,28 +107,8 @@ var eventControl = {
 			event.preventDefault();
 			_this.closeWindow();
 		});
-		// save button
-		jQuery('#event-modal .modal-button').click(function (event) {
-			if (event.target.getAttribute('value') !== 'Save') {
-				_this.closeWindow();
-				return;
-			}
-			// data validation on save
-			var tabProp = parseInt(jQuery('#tab-prop').val());
-			if (isNaN(tabProp) || tabProp < 1) {
-				_utils.alert('Tab Prop Id must be greater than zero !!');
-				return;
-			}
-			_utils.confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + _this.data.runner_num + ' - ' + _this.data.runner)
-				.then(function(OK) {
-					if (OK) {
-						RunPropId(_this.data.runner_num, tabProp);
-					}
-					_this.closeWindow();
-				});
-		});
-	},
-	
+    },
+    
 	// close window and restart 5 second refresh timer
 	closeWindow: function() {
 		getEVN(curVNL);
