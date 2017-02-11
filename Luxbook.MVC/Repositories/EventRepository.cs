@@ -13,6 +13,7 @@
         List<RunnerLiability> GetAllEventLiabilities();
         List<Event> GetAllEvents(DateTime meetingDate, bool internationalsOnly, string raceType);
         Event GetEvent(int meetingId, int eventNumber);
+        Object GetEventMeta(int meetingId, int eventNumber);
 
         /// <summary>
         /// Sets the reduced staking flag on the vent level
@@ -84,6 +85,38 @@
                     eventNumber,
                     meetingId
                 }, commandType: CommandType.Text).FirstOrDefault();
+        }
+
+        public Object GetEventMeta(int meetingId, int eventNumber)
+        {
+            var meetingAndEventMeta = 
+                _database.Query<Object>(@"SELECT mv.*, m.BTK_ID, m.WIFT_MTG_ID, m.FXO_ID, m.PA_MTG_ID, e.WIFT_EVT_ID, 
+                                            e.WIFT_SRC_ID, e.WP_EVENTID, e.PA_EVT_ID, e.GTX_ID, BFR_MKT_ID_FP 
+                                            FROM dbo.MEETING_VIEW as mv
+                                            INNER JOIN dbo.MEETING as m ON (mv.MEETING_ID = m.MEETING_ID)
+                                            INNER JOIN dbo.EVENT as e ON (mv.MEETING_ID = e.MEETING_ID AND mv.EVENT_NO = e.EVENT_NO)
+                                            WHERE mv.EVENT_NO = @eventNumber and mv.MEETING_ID = @meetingId", 
+                    new
+                        {
+                            eventNumber,
+                            meetingId
+                        }, commandType: CommandType.Text).FirstOrDefault();
+            var runnerMeta =
+                _database.Query<Object>(@"SELECT RUNNER_NO, NAME, SCR, TAB_PROP
+                                            FROM dbo.RUNNER_TAB
+                                            WHERE EVENT_NO = @eventNumber and MEETING_ID = @meetingId
+                                            ORDER BY RUNNER_NO",
+                    new
+                    {
+                        eventNumber,
+                        meetingId
+                    }, commandType: CommandType.Text);
+
+            return new
+            {
+                EventMeta = meetingAndEventMeta,
+                RunnerMeta = runnerMeta
+            };
         }
 
         /// <summary>

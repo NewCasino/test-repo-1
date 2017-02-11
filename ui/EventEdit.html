@@ -1,20 +1,22 @@
 <div id="event-modal" class="modalwindow">
     <div class="modal-title">
-		<span>Race {{event.race}} : {{event.race_name}}</span>
+		<span>Race {{event.EVENT_NO}} : {{event.NAME}}</span>
 		<span class="modal-close"><a href="#">X</a></span>
 	</div>
     <div class="modal-content">
 	    <table cellpadding="2" width="100%">
 	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Meeting Identifiers</td></tr>
-	        <tr><td width="250px">Meeting Id</td><td class="modal-data">{{data.meeting_id}}</td></tr>
+	        <tr><td width="250px">Meeting Id</td><td class="modal-data">{{event.MEETING_ID}}</td></tr>
 	        <tr><td>Meeting BTK Id</td><td class="modal-data">{{event.BTK_ID}}</td></tr>
 	        <tr><td>PA Meeting Id</td><td class="modal-data">{{event.PA_MTG_ID}}</td></tr>
 	        <tr><td>WIFT Meeting Id</td><td class="modal-data">{{event.WIFT_MTG_ID}}</td></tr>
 	        <tr><td colspan="2"><hr /></td></tr>
 	        
 	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Event Identifiers</td></tr>
-	        <tr><td>Event Number</td><td class="modal-data">{{data.race_num}}</td></tr>
-	        <tr><td>Event Name</td><td class="modal-data">{{event.race_name}}</td></tr>
+	        <tr><td>Event Number</td><td class="modal-data">{{event.EVENT_NO}}
+	        			<span style="float:right;margin-right:80px;">{{event.START_TIME | date:'dd/MM/yyyy @ h:mma'}}</span>
+	        </td></tr>
+	        <tr><td>Event Name</td><td class="modal-data">{{event.NAME}}</td></tr>
 	        <tr><td>Book Spec Id</td><td class="modal-data">{{event.BFR_MKT_ID_FP}}</td></tr>
 	        <tr><td>Match Spec Id (GTX)</td><td class="modal-data">{{event.GTX_ID}}</td></tr>
 	        <tr><td>PA Event Id</td><td class="modal-data">{{event.PA_EVT_ID}}</td></tr>
@@ -30,10 +32,10 @@
 					        </tr>
 			        	</thead>
 			        	<tbody>
-				            <tr ng-repeat="x in event.runners" ng-class-odd="'striped'">
-				                <td class="modal-data"><span class="cyan">{{x.runner_num}}</span> {{x.runner}}</td>
+				            <tr ng-repeat="x in runners" ng-class-odd="'striped'">
+				                <td class="modal-data"><span class="cyan">{{x.RUNNER_NO}}</span> {{x.NAME}}</td>
 				                <td class="modal-data">
-				                	<input type="text" ng-model="x.tab_prop" size="7">
+				                	<input type="text" ng-model="x.TAB_PROP" size="7">
 				                </td>
 				            </tr>
 				        </tbody>
@@ -83,7 +85,7 @@ var eventControl = {
 			clearTimeout(tmrEVN);
 		}
 		this.data = data;
-		this.event_ref = data.meeting_id+'_'+data.race_num;
+		this.event_ref = data.MEETING_ID+'_'+data.EVENT_NO;
 		this.renderPopup();
 		this.delegateEvents();
 	},
@@ -94,7 +96,7 @@ var eventControl = {
 		var winW = jQuery(window).width();
 		id.css('top', 10);
 		id.css('width', winW/3);
-		id.css('left', winW-id.width()-50);
+		id.css('left', winW-id.width()-20);
 		id.css('max-height', winH-50);
 		jQuery('#event-runners').css('max-height', winH-480);
 		id.fadeIn(500);	

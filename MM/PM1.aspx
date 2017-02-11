@@ -75,43 +75,6 @@ Sub Page_Load()
             Response.End()
         End If
 	end If
-	
-	'Manual scratch button
-	if Request("SCR") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		SCR_RunnerNo = Request("SCR")
-		execSQL("UPDATE  RUNNER SET SCR=1, SCRATCH=3, SCR_TIMESTAMP = getdate() WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
-	End If
-	
-	'Manual un-scratch button
-    ' - RUBT-1088 : provide un-scratch runner functionality
-	if Request("UNSCR") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		SCR_RunnerNo = Request("UNSCR")
-		execSQL("UPDATE  RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
-	End If
-	
-	'Manual update 1 propid
-    ' - RUBT-1400 : provide propid edit functionality
-	if Request("PROPID") <> "" AND Request("RNUM") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		Dim RunnerNo = Request("RNUM")
-		Dim PropId = Request("PROPID")
-		execSQL("UPDATE RUNNER_TAB SET TAB_PROP= " & PropId & "  WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & RunnerNo)
-	End If
-	
-	'Manual update multiple propids
-    ' - RUBT-1400 : provide propid edit functionality ... Request("RUNPROPIDS") looks like "RUNNER1:PROPID1,RUNNER2:PROPID2,RUNNER3:PROPID3,RUNNER4:PROPID4,etc"
-	if Request("MULTIPROPIDS") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		Dim RunnerProp() As String = Split(Request("MULTIPROPIDS"), ",")
-        For Each Item As String In RunnerProp
-            Dim Arr() As String = Split(Item, ":")
-            Dim RunnerNo = Arr(0)
-            Dim PropId = Arr(1)
-            execSQL("UPDATE RUNNER_TAB SET TAB_PROP= " & PropId & "  WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & RunnerNo)            
-        Next        
-	End If
     	
 	'Hide/show scratchings
 	If Request("HS") = "Hide Scratch" OR Request("HS") = "Show Scratch" then
@@ -206,16 +169,6 @@ End Function
 				} 
 				function iSV(m) { iNR("PM_WIN_", 100, m) } 
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
-				function RunScr(RunNo) {getEVN(curVNL + '&SCR=' + RunNo)}
-				
-				// RUBT-1088 : provide un-scratch runner functionality
-				function RunUnScr(RunNo) {getEVN(curVNL + '&UNSCR=' + RunNo)}
-				
-				// RUBT-1400 : provide edit 1 propid functionality
-				function RunPropId(RunNo, PropId) {getEVN(curVNL + '&PROPID=' + PropId + '&RNUM=' + RunNo)}
-				// RUBT-1400 : provide edit multiple propid functionality
-				function MultiPropIds(Params) {getEVN(curVNL + '&MULTIPROPIDS=' + Params)}
-
                 jQuery(function() {
 					// load context menu stuff after page is rendered
 					setTimeout(function() {
@@ -361,9 +314,6 @@ End Function
 
 		    Dim RunnerPrices As Object = getRecord("SELECT * " &
               "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
-
-		    ''	Dim RunnerPrices As Object = getRecord("SELECT * " &
-            ''  "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
 			  
 		  Dim RunnerTable as New DataTable()
 		  Dim PriceChangeDictionary as New Dictionary(Of String, List(Of DataRow))

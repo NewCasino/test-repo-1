@@ -27,7 +27,7 @@ var runnerControl = {
 			clearTimeout(tmrEVN);
 		}
 		this.data = data;
-		this.event_ref = data.meeting_id+'_'+data.race_num;
+		this.event_ref = data.MEETING_ID+'_'+data.EVENT_NO;
 		this.renderPopup();
 		this.delegateEvents();
 	},

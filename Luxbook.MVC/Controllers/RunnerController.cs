@@ -9,6 +9,7 @@ namespace Luxbook.MVC.Controllers
 {
     using DTO;
     using Infrastructure;
+    using Newtonsoft.Json.Linq;
     using Services;
 
     [RequireAuthenticationWebApi]
@@ -44,5 +45,41 @@ namespace Luxbook.MVC.Controllers
             return new JsonResponseBase() { Success = true, Message = "Boundary updated" };
 
         }
+
+        [HttpGet]
+        public JsonResponseBase Scratch(int meetingId, int eventNumber, int runnerNumber)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, false, currentUser);
+
+            return new JsonResponseBase() { Success = true, Message = "Runner scratched" };
+
+        }
+
+        [HttpGet]
+        public JsonResponseBase UnScratch(int meetingId, int eventNumber, int runnerNumber)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, true, currentUser);
+
+            return new JsonResponseBase() { Success = true, Message = "Runner un-scratched" };
+
+        }
+
+        [HttpPost]
+        public JsonResponseBase PropId(JObject jsonData)
+        {
+            dynamic json = jsonData;
+
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.UpdatePropIds((int)json.meetingId, (int)json.eventNumber, (string)json.data, currentUser);
+
+            return new JsonResponseBase() { Success = true, Message = "Runner propids updated" };
+
+        }
+
     }
 }

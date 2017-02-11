@@ -19,6 +19,11 @@
         /// <returns></returns>
         List<Event> GetAllEvents(DateTime meetingDate, bool internationalsOnly, Enums.RaceType raceType);
 
+        /// <summary>
+        ///     Get event meta data for use by the RR gui prop id edit form
+        /// </summary>
+        Object GetEventMeta(int meetingId, int eventNumber);
+
         Event GetEvent(int meetingId, int eventNumber);
 
         /// <summary>
@@ -76,6 +81,11 @@
         public Event GetEvent(int meetingId, int eventNumber)
         {
             return _eventRepository.GetEvent(meetingId, eventNumber);
+        }
+
+        public Object GetEventMeta(int meetingId, int eventNumber)
+        {
+            return _eventRepository.GetEventMeta(meetingId, eventNumber);
         }
 
         /// <summary>

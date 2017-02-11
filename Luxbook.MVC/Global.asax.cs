@@ -21,6 +21,7 @@ namespace Luxbook.MVC
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);     
             UnityWebActivator.Start();
+            ValueProviderFactories.Factories.Add(new JsonValueProviderFactory());
         }
 
         protected void Application_PostAuthorizeRequest()

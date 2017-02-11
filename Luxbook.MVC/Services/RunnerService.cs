@@ -12,6 +12,10 @@ namespace Luxbook.MVC.Services
         void UpdateRunnerRoll(int meetingId, int eventNumber, int runnerNumber, string rollType, int roll, string currentUser);
 
         void UpdateRunnerBoundary(int meetingId, int eventNumber, int runnerNumber, string boundaryType, decimal? boundary, string currentUser);
+
+        void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
+
+        void UpdatePropIds(int meetingId, int eventNumber, string data, string currentUser);
     }
 
     public class RunnerService : IRunnerService
@@ -36,6 +40,27 @@ namespace Luxbook.MVC.Services
             _runnerRepository.UpdateRunnerBoundary(meetingId, eventNumber, runnerNumber, boundaryType, boundary, currentUser);
 
         }
+
+        public void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser)
+        {
+            _runnerRepository.ScratchRunner(meetingId, eventNumber, runnerNumber, unscratch, currentUser);
+            //TODO is logging required ??
+        }
+
+        // update runners propids
+        public void UpdatePropIds(int meetingId, int eventNumber, string data, string currentUser)
+        {
+            char[] delim1 = {','};
+            char[] delim2 = {':'};
+            string[] runners = data.Split(delim1);
+            foreach (string runner in runners)
+            {
+                string[] item = runner.Split(delim2);
+                _runnerRepository.UpdatePropId(meetingId, eventNumber, Int32.Parse(item[0]), Int32.Parse(item[1]), currentUser);
+            }
+            //TODO is logging required ??
+        }
+
 
     }
 }

@@ -12,6 +12,8 @@ namespace Luxbook.MVC.Repositories
     {
         void UpdateRunnerRoll(int meetingId, int eventNumber, int runnerNumber, string rollType, int roll, string currentUser);
         void UpdateRunnerBoundary(int meetingId, int eventNumber, int runnerNumber, string boundaryType, decimal? boundary, string currentUser);
+        void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
+        void UpdatePropId(int meetingId, int eventNumber, int runnerNumber, int propId, string currentUser);
     }
 
     public class RunnerRepository : IRunnerRepository
@@ -115,5 +117,37 @@ namespace Luxbook.MVC.Repositories
                 notification
             }, commandType: CommandType.Text);
         }
+
+        public void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser)
+        {
+            var sql = (!unscratch) ? "UPDATE RUNNER SET SCR=1, SCRATCH=3, SCR_TIMESTAMP = getdate() " :
+                                     "UPDATE RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL ";
+            sql += "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;";
+            _database.Execute(sql,
+                new
+                {
+                    meetingId,
+                    eventNumber,
+                    runnerNumber
+                },
+                commandType: CommandType.Text
+            );
+        }
+
+        public void UpdatePropId(int meetingId, int eventNumber, int runnerNumber, int propId, string currentUser)
+        {
+            var sql = string.Format("UPDATE RUNNER_TAB SET TAB_PROP={0} " +
+                                    "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;", propId);
+            _database.Execute(sql,
+                new
+                {
+                    meetingId,
+                    eventNumber,
+                    runnerNumber
+                },
+                commandType: CommandType.Text
+            );
+        }
     }
+
 }
