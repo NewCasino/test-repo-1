@@ -191,11 +191,11 @@ End Function
 				};
 				jQuery(function() {
 					_utils.loader.loadHTML([
-						"/ui/confirm.htm",
 						"/ui/contextMenu.htm",
 						"/ui/runnerEdit.html",
-						"/ui/eventEdit.html"
-					]);
+						"/ui/eventEdit.html",
+						"/ui/confirm.htm"
+					], false);
 				});			
 			
 			</script>

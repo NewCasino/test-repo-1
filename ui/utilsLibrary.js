@@ -53,48 +53,57 @@
     var config = {headers: {'Accept' : 'text/html'}};
         
     // load array of css urls
-    loader.loadCSS = function (urls) {
+    loader.loadCSS = function (urls, cached) {
         for (var i in urls) {
-            loader.load('css', urls[i]);
+            loader.load('css', urls[i], cached);
         }
     };
 
     // load array of js urls
-    loader.loadJS = function (urls) {
+    loader.loadJS = function (urls, cached) {
         for (var i in urls) {
-            loader.load('js', urls[i]);
+            loader.load('js', urls[i], cached);
         }
     };
 
     // load of html urls (usually view templates)
-    loader.loadHTML = function (urls) {
+    loader.loadHTML = function (urls, cached) {
         for (var i in urls) {
-            loader.load('html', urls[i]);
+            loader.load('html', urls[i], cached);
         }
     };
 
-    loader.load = function (mode, url) {
+    loader.load = function (mode, url, cached) {
+        var suffix = loader.getUniqueId(cached);        
         if (mode == 'css') {
             var style = document.createElement('link');
             style.rel = 'stylesheet';
             // style.type = 'text/css';
-            style.url = url;
+            style.url = url + suffix;
             document.body.appendChild(style);
             return;
         }
         if (mode == 'js') {
             var script = document.createElement('script');
-            script.src = url;
+            script.src = url + suffix;
             document.body.appendChild(script);
             return;
         }
         if (mode == 'html') {
             jQuery.ajax({
-                url: url,
+                url: url + suffix,
                 success: function (data) { jQuery('body').append(data); },
                 dataType: 'html'
             });
         }
+    };
+
+    loader.getUniqueId = function(cached) {
+        var suffix = '';
+        if (typeof cached != 'undefined' && cached == false) {
+            suffix = '?' + (new Date()).getTime();
+        }
+        return suffix;
     };
 
     // END API

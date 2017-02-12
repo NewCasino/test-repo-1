@@ -1,8 +1,8 @@
 .modalwindow {
-    position:fixed;
-    display:none; /* Hides the modal window by default */
-    z-index:9999;
-    width:500px;
+    position: fixed;
+    display: none; 
+    z-index: 9999;
+    width: 500px;
     background: #222;
     -webkit-box-shadow: 0 8px 6px -6px black;
     -moz-box-shadow: 0 8px 6px -6px black;
