@@ -1,4 +1,60 @@
-var contextMenuControl = {
+<div class="context-menu-container">
+	<div id="contextMenu" class="context-menu">
+        <div id="context-menu-title"></div>
+		<ul id="context-menu-items"></ul>
+	</div>
+</div>
+<style type="text/css">
+	.context-menu-container{
+		height: 100%;
+		font-family: verdana;
+		font-size: 10px;
+		background: #f6f6f6;
+		z-index: -1;
+	}
+	.context-menu{
+		background: #f6f6f6;
+		width: 200px;
+		height: auto;
+		box-shadow: 0 0 20px 0 #ccc;
+		position: absolute;
+		display: none;
+	}
+	.context-menu ul{
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		padding: 5px 0px 5px 0px;
+	}
+	.context-menu ul li:not(.separator){
+		padding: 10px 5px 10px 5px;
+		border-left: 4px solid transparent;
+		cursor: pointer;
+	}
+	.context-menu ul li {
+		font-weight: 600;
+     	color: blue;
+    }
+	.context-menu ul li:hover{
+		background: #eee;
+		border-left: 4px solid maroon;
+	}
+	.context-menu-separator{
+		height: 1px;
+		background: #dedede;
+		margin: 2px 0px 2px 0px;
+	}
+
+    #context-menu-title {
+        background-color: maroon;
+        color:white;
+        width:92%;
+        text-align: left;
+        padding: 8px;
+    }
+</style>
+<script type="text/javascript">
+var contextMenuCtrl = {
 	menu: null,
 	data: {},
 	
@@ -7,14 +63,14 @@ var contextMenuControl = {
 		var elements = document.getElementsByClassName('context-menu-one');		
 		for (var i = 0; i < elements.length; i++) {
 			elements[i].addEventListener("contextmenu", function(event) {
-				contextMenuControl.showContextMenu(event)
+				contextMenuCtrl.showContextMenu(event)
 			});
 		}
 		window.onclick = function(event){
-			contextMenuControl.hideContextMenu(event);
+			contextMenuCtrl.hideContextMenu(event);
 		};
 		window.onkeydown = function(event){
-			contextMenuControl.listenKeys(event);
+			contextMenuCtrl.listenKeys(event);
 		};
 		this.menu = document.getElementById('contextMenu');
 	},
@@ -35,7 +91,7 @@ var contextMenuControl = {
 		// delegate menu item 'click'  listener
 		for (var i = 0; i < elements.length; i++) {
 			elements[i].addEventListener("click", function(event) {
-				contextMenuControl.contextMenuAction(event)
+				contextMenuCtrl.contextMenuAction(event)
 			});
 		}
 		return true;
@@ -69,8 +125,8 @@ var contextMenuControl = {
 	},
 
 	hideContextMenu: function (event) {
-		if (contextMenuControl.menu !== null) {
-			contextMenuControl.menu.style.display = 'none';
+		if (contextMenuCtrl.menu !== null) {
+			contextMenuCtrl.menu.style.display = 'none';
 		}
 	},
 
@@ -91,4 +147,5 @@ var contextMenuControl = {
 			tab_prop: a[4]
 		};
 	}
-};
+};	
+</script>

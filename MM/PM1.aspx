@@ -156,11 +156,6 @@ End Function
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
-			<script src="/ui/contextmenu/contextMenu.js"> </script>
-			
-			<!-- pretty confirm and alert dialogs -->
-			<link href="/ui/confirm/confirm.css" rel="stylesheet" />
-			<script src="/ui/confirm/confirm.js"></script>
             
 			<script language='javascript'>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
@@ -169,20 +164,6 @@ End Function
 				} 
 				function iSV(m) { iNR("PM_WIN_", 100, m) } 
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
-                jQuery(function() {
-					// load context menu stuff after page is rendered
-					setTimeout(function() {
-						jQuery.get("/ui/contextmenu/contextMenu.htm", function (data) {
-							jQuery("body").append(data);
-						});
-						jQuery.get("/ui/runnerEdit.html", function (data) {
-							jQuery("body").append(data);
-						});
-						jQuery.get("/ui/eventEdit.html", function (data) {
-							jQuery("body").append(data);
-						});
-					}, 1000);
-				});
 			</script>
 	
 		</head>
@@ -201,7 +182,23 @@ End Function
 			<script src="/ui/angular-route.min.js"></script>
 			<script src="/ui/utilsLibrary.js"></script>
 			<script src="/ui/app.js"></script>
+
+			<script type="text/javascript">
+				var eventCtrl = {
+					onEventLoad: function() {		// when an event is loaded into main content
+    			  		contextMenuCtrl.initContextMenu();
+					}
+				};
+				jQuery(function() {
+					_utils.loader.loadHTML([
+						"/ui/confirm.htm",
+						"/ui/contextMenu.htm",
+						"/ui/runnerEdit.html",
+						"/ui/eventEdit.html"
+					]);
+				});			
 			
+			</script>
 		</body>
 	</html>
 <%Else  %>

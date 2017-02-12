@@ -147,9 +147,9 @@ function getEVN( x, y, n ) {
         } $("C2").innerHTML = R[1];
       } else {
           $("CNT").innerHTML = R;
-		  if (typeof contextMenuControl.initContextMenu == 'function') {
-			  contextMenuControl.initContextMenu();
-		  }
+    		  if (typeof eventCtrl != 'undefined') {
+    			    eventCtrl.onEventLoad();
+    		  }
           if ($("SPG") && memSPD == "SPG")
               vSPD($("SPD"), "SPG");
           else

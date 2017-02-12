@@ -1,4 +1,4 @@
-angular.module('WebApp', ['ngRoute'])
+var WebApp = angular.module('WebApp', ['ngRoute'])
 
 	// router
     .config(['$routeProvider','$httpProvider', function($routeProvider, $httpProvider) {
@@ -158,10 +158,9 @@ angular.module('WebApp', ['ngRoute'])
 
     // data service
     .factory('dataFactory', ['$http', function($http) {
-
         var urlBase = '/Luxbook.MVC/api';
         var dataFactory = {};
-        var config = { headers : {'Accept' : 'application/json'} };
+        var config = {headers: {'Accept' : 'application/json'}};
 
         dataFactory.getEventMeta = function (meetingId, eventId) {
             return $http.get(urlBase + '/Event/EventMeta', {

@@ -19,7 +19,7 @@
     function confirm(msg) {
         var defer = jQuery.Deferred();
         var a = msg.split("\n");
-        ymz.jq_confirm({
+        ca.jq_confirm({
             title:"", 
             text: a.join('<br />'), 
             no_btn:"NO", 
@@ -37,7 +37,7 @@
     function alert(msg) {
         var defer = jQuery.Deferred();
         var a = msg.split("\n");
-        ymz.jq_alert({
+        ca.jq_alert({
             title:"", 
             text: a.join('<br />'), 
             ok_btn:"OK", 
@@ -48,6 +48,55 @@
         return defer;
     }   
 
+    // asset loader
+    var loader = {};
+    var config = {headers: {'Accept' : 'text/html'}};
+        
+    // load array of css urls
+    loader.loadCSS = function (urls) {
+        for (var i in urls) {
+            loader.load('css', urls[i]);
+        }
+    };
+
+    // load array of js urls
+    loader.loadJS = function (urls) {
+        for (var i in urls) {
+            loader.load('js', urls[i]);
+        }
+    };
+
+    // load of html urls (usually view templates)
+    loader.loadHTML = function (urls) {
+        for (var i in urls) {
+            loader.load('html', urls[i]);
+        }
+    };
+
+    loader.load = function (mode, url) {
+        if (mode == 'css') {
+            var style = document.createElement('link');
+            style.rel = 'stylesheet';
+            // style.type = 'text/css';
+            style.url = url;
+            document.body.appendChild(style);
+            return;
+        }
+        if (mode == 'js') {
+            var script = document.createElement('script');
+            script.src = url;
+            document.body.appendChild(script);
+            return;
+        }
+        if (mode == 'html') {
+            jQuery.ajax({
+                url: url,
+                success: function (data) { jQuery('body').append(data); },
+                dataType: 'html'
+            });
+        }
+    };
+
     // END API
 
     // publish external API by extending _utils
@@ -55,7 +104,8 @@
          angular.extend(_utils, {
              'parseParams': parseParams,
              'alert': alert,
-             'confirm': confirm
+             'confirm': confirm,
+             'loader': loader
          });
     }
 
