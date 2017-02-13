@@ -58,7 +58,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 			// validate propid
 			var tabProp = parseInt($scope.data.tab_prop);
 			if (isNaN(tabProp) || tabProp < 1) {
-				_utils.alert('Prop Id must be integer and greater than zero !!');
+				_utils.error('Prop Id must be integer and greater than zero !!');
 				return;
 			}
 			_utils.confirm("Confirm you want to save the RUNNER data ??\n\nRunner: " + $scope.data.runner_num + ' - ' + $scope.data.runner)
@@ -101,7 +101,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 		$scope.autoAllocate = function() {
 			var id1 = parseInt($scope.runners[0].TAB_PROP);
 			if (isNaN(id1) || id1 < 1) {
-				_utils.alert('Enter a valid Prop Id for 1st Runner');
+				_utils.error('Enter a valid Prop Id for 1st Runner');
 				return;
 			}
             angular.forEach($scope.runners, function (value, key) {
@@ -126,15 +126,21 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 
         $scope.savePropIds = function() {
 			// validate propids
+            var err = false;
             var buf = new Array();
-            angular.forEach($scope.runners, function (value, key) {
-                var propid = parseInt(value.TAB_PROP);
-            	if (isNaN(propid) || propid < 1) {
-                    _utils.alert('All Prop Ids must be integer and greater than zero !!');
-                    return;                   
+            for (var i=0; i<$scope.runners.length; i++) {
+                var item = $scope.runners[i];
+                var propid = parseInt(item.TAB_PROP);
+                if (isNaN(propid) || propid < 1) {
+                    err = true;
+                    break;                   
                 }
-                buf.push(value.RUNNER_NO + ':' + propid)
-            });
+                buf.push(item.RUNNER_NO + ':' + propid)
+            }
+            if (err) {
+                _utils.error('All Prop Ids must be integer and greater than zero !!');
+                return;                   
+            }
 			_utils.confirm("Confirm you want to save the Prop Ids ??\n")
 				.then(function(OK) {
 					if (OK) {

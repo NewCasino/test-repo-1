@@ -20,7 +20,7 @@
         var defer = jQuery.Deferred();
         var a = msg.split("\n");
         ca.jq_confirm({
-            title:"", 
+            title:'', 
             text: a.join('<br />'), 
             no_btn:"NO", 
             yes_btn:"YES", 
@@ -39,6 +39,22 @@
         var a = msg.split("\n");
         ca.jq_alert({
             title:"", 
+            error:false,
+            text: a.join('<br />'), 
+            ok_btn:"OK", 
+            close_fn:function() {
+                defer.resolve(false);
+            }
+        }); 
+        return defer;
+    }   
+
+    function error(msg) {
+        var defer = jQuery.Deferred();
+        var a = msg.split("\n");
+        ca.jq_alert({
+            title:"", 
+            error:true,
             text: a.join('<br />'), 
             ok_btn:"OK", 
             close_fn:function() {
@@ -113,6 +129,7 @@
          angular.extend(_utils, {
              'parseParams': parseParams,
              'alert': alert,
+             'error': error,
              'confirm': confirm,
              'loader': loader
          });

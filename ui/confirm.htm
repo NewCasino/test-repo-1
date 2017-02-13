@@ -1,33 +1,45 @@
 <style>
 .ca-cover-box {
   position: fixed; _position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(55,55,55,0.5); z-index: 10000; display: none;
+  background: rgba(200,200,200,0.5); z-index: 10000; display: none;
 }
 .ca-alert-box{
-  background-color: #F8F8F8; -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
-  -moz-border-radius: 0px; -moz-box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.8); margin:0; padding: 0;
-  -webkit-border-radius: 0px; min-width: 16em; position: fixed; _position: absolute; z-index: 11000;
+  border: 4px solid white;
+  background-color: #F8F8F8; -webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.8);
+  -moz-border-radius: 4px; -moz-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.8); margin:0; padding: 0;
+  -webkit-border-radius: 4px; min-width: 16em; position: fixed; _position: absolute; z-index: 11000;
 }
 .ca-alert-box .alert-title{
     width: 100%; text-align: left; font-size: 12px; font-weight:500; margin: 1.5rem 0 1rem 0;
 }
+.ca-alert-box .alert-icon{
+  display: inline-block;
+  float: left;
+  margin-left: 15px;
+}
 .ca-alert-box .alert-text{
-  padding: 0px 50px;
+  display: inline-block;
+  float: right;
+  min-height: 90px;
+  width: 350px;
+  padding: 10px 20px 40px 20px;
   color: maroon;
-    text-align: left; font-size: 14px; margin: 0 1rem 4.5rem;
+  text-align: left; font-size: 16px;
 }
 .ca-alert-box button {
   background: transparent; border: none; height: 3rem; height: 3em\9;
   font-size: 14px; width: 50%; position: absolute; bottom: 0; 
   display: block; text-align: center; border-top: 1px solid #B4B4B4; cursor: pointer; color: #1678E5;
 }
-.ca-alert-box .alert-btn-wrap{}
+.ca-alert-box .alert-btn-wrap{clear:both;}
 .ca-alert-box .alert-btn-wrap button:focus, 
 .ca-alert-box .alert-btn-wrap button:hover { background: #EFEFEF; }
 .ca-alert-box .alert-btn-wrap button:active { background: #D6D6D6; }
-#alert-btn-no { left:0; border-right: 1px solid #B4B4B4; border-radius: 0 0 0 0; font-weight:400; background-color:crimson;color:white; }
+#alert-btn-no { left:0; border-right: 4px solid white; border-radius: 0 0 0 0; font-weight:400; background-color:crimson;color:white; }
 #alert-btn-yes {right:0; border-radius: 0 0 0 0; font-weight:400; background-color:green;color:white;}
-#alert-btn-ok{ width: 100%; border-radius: 0 0 0 0; font-weight:400; background-color:darkorange;color:white; }
+#alert-btn-ok{ width: 100%; border-radius: 0 0 0 0; font-weight:400; background-color:red;color:white; }
+.btn-bg-red: {background-color: red;}
+.btn-bg-blue: {background-color: blue;}
 </style>
 <script type="text/javascript">
 var ca = ca||{};
@@ -55,7 +67,7 @@ var ca = ca||{};
     var l, t, w =j.outerWidth(), h =j.outerHeight();
     l = (ww - w)/2, t = (wh - h)/2;
     if(topval) t =topval;
-    j.css({left: l+"px", top: "15px"});
+    j.css({left: l+"px", top: "65px"});
     
   };
   
@@ -75,7 +87,9 @@ var ca = ca||{};
   
   var jqConfirm =null, jqNo =null, jqYes =null, _confirm =function(p){
     if(!jqConfirm){
-      jqConfirm =jq('<div class="ca-alert-box"><h1 class="alert-title"></h1><div class="alert-text"></div><div class="alert-btn-wrap"><button id="alert-btn-no"></button><button id="alert-btn-yes"></button></div></div>');
+      jqConfirm =jq('<div class="ca-alert-box"><h1 class="alert-title"></h1>'+
+                      '<div class="alert-icon"><img src="/ui/tick.png" height="60px"></div><div class="alert-text"></div>' +
+                      '<div class="alert-btn-wrap"><button id="alert-btn-no"></button><button id="alert-btn-yes"></button></div></div>');
       jq("body").append(jqConfirm);
       jqNo =jq("#alert-btn-no");
       jqYes =jq("#alert-btn-yes");
@@ -125,7 +139,16 @@ var ca = ca||{};
   
   var jqAlert =null, jqOK =null, _alert =function(p){
     if(!jqAlert){
-      jqAlert =jq('<div class="ca-alert-box"><h1 class="alert-title"></h1><div class="alert-text"></div><div class="alert-btn-wrap"><button id="alert-btn-ok"></button></div></div>');
+      if (p.error) {
+        var bgclass = 'btn-bg-red';
+        var icon = '/ui/error1.png';
+      } else {
+        var bgclass = 'btn-bg-blue';
+        var icon = '/ui/notice.png';
+      }
+      jqAlert =jq('<div class="ca-alert-box"><h1 class="alert-title"></h1>'+
+                    '<div class="alert-icon"><img src="' + icon + '" height="50px"></div><div class="alert-text"></div>' +
+                    '<div class="alert-btn-wrap"><button id="alert-btn-ok" class="' + bgclass + '"></button></div></div>');
       jq("body").append(jqAlert);
       jqOK =jq("#alert-btn-ok");
     }
