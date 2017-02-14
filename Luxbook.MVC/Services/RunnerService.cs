@@ -7,6 +7,13 @@ namespace Luxbook.MVC.Services
 {
     using Repositories;
 
+    public class RunnerPropid
+    {
+        public int RunnerNo;
+        public int PropId;
+        public RunnerPropid() { }
+    }
+
     public interface IRunnerService
     {
         void UpdateRunnerRoll(int meetingId, int eventNumber, int runnerNumber, string rollType, int roll, string currentUser);
@@ -15,7 +22,7 @@ namespace Luxbook.MVC.Services
 
         void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
 
-        void UpdatePropIds(int meetingId, int eventNumber, string data, string currentUser);
+        void UpdatePropIds(int meetingId, int eventNumber, RunnerPropid[] runnerList, string currentUser);
     }
 
     public class RunnerService : IRunnerService
@@ -48,19 +55,14 @@ namespace Luxbook.MVC.Services
         }
 
         // update runners propids
-        public void UpdatePropIds(int meetingId, int eventNumber, string data, string currentUser)
+        public void UpdatePropIds(int meetingId, int eventNumber, RunnerPropid[] runnerList, string currentUser)
         {
-            char[] delim1 = {','};
-            char[] delim2 = {':'};
-            string[] runners = data.Split(delim1);
-            foreach (string runner in runners)
+            foreach (RunnerPropid runner in runnerList)
             {
-                string[] item = runner.Split(delim2);
-                _runnerRepository.UpdatePropId(meetingId, eventNumber, Int32.Parse(item[0]), Int32.Parse(item[1]), currentUser);
+                _runnerRepository.UpdatePropId(meetingId, eventNumber, runner.RunnerNo, runner.PropId, currentUser);
             }
             //TODO is logging required ??
         }
-
 
     }
 }

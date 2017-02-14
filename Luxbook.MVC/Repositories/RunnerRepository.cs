@@ -136,11 +136,12 @@ namespace Luxbook.MVC.Repositories
 
         public void UpdatePropId(int meetingId, int eventNumber, int runnerNumber, int propId, string currentUser)
         {
-            var sql = string.Format("UPDATE RUNNER_TAB SET TAB_PROP={0} " +
-                                    "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;", propId);
+            var sql = "UPDATE RUNNER_TAB SET TAB_PROP = @propId " +
+                      "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;";
             _database.Execute(sql,
                 new
                 {
+                    propId,
                     meetingId,
                     eventNumber,
                     runnerNumber

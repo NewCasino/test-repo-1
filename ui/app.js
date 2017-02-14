@@ -99,13 +99,13 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 
         // fetch event and runner info from DOM
 		$scope.autoAllocate = function() {
-			var id1 = parseInt($scope.runners[0].TAB_PROP);
+			var id1 = parseInt($scope.runners[0].Tab_Prop);
 			if (isNaN(id1) || id1 < 1) {
 				_utils.error('Enter a valid Prop Id for 1st Runner');
 				return;
 			}
             angular.forEach($scope.runners, function (value, key) {
-            	value.TAB_PROP = id1;
+            	value.Tab_Prop = id1;
             	id1++;
             });
 		};
@@ -115,10 +115,9 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
             var defer = $q.defer();
             dataFactory.getEventMeta($scope.data.meeting_id, $scope.data.race_num)
                 .then(function(resp) {  
-                    $scope.event = resp.data.EventMeta;
-                    $scope.runners = resp.data.RunnerMeta;
-                    // console.log($scope.event);
-                    // console.log($scope.runners);
+					// console.log(resp);
+                    $scope.event = resp.data.Event;
+                    $scope.runners = resp.data.Runners;
                     defer.resolve();
                 });
             return defer.promise;
@@ -130,12 +129,15 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
             var buf = new Array();
             for (var i=0; i<$scope.runners.length; i++) {
                 var item = $scope.runners[i];
-                var propid = parseInt(item.TAB_PROP);
+                var propid = parseInt(item.Tab_Prop);
                 if (isNaN(propid) || propid < 1) {
                     err = true;
                     break;                   
                 }
-                buf.push(item.RUNNER_NO + ':' + propid)
+                buf.push({
+					RunnerNo: item.Runner_No, 
+					PropId: propid
+				});
             }
             if (err) {
                 _utils.error('All Prop Ids must be integer and greater than zero !!');
@@ -144,7 +146,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 			_utils.confirm("Confirm you want to save the Prop Ids ??\n")
 				.then(function(OK) {
 					if (OK) {
-                        dataFactory.savePropIds($scope.data.meeting_id, $scope.data.race_num, buf.join(','))
+                        dataFactory.savePropIds($scope.data.meeting_id, $scope.data.race_num, buf)
                             .then(function(resp) {                     
                                 runnerControl.closeWindow();
                             });
@@ -190,7 +192,10 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         };
 
         dataFactory.savePropId = function (meetingId, eventId, runnerNum, propId) {
-            var data = runnerNum + ':' + propId;
+            var data = [{
+				RunnerNo: runnerNum, 
+				PropId: propId
+			}];
             return dataFactory.savePropIds(meetingId, eventId, data);
         };
 

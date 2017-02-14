@@ -73,9 +73,9 @@ namespace Luxbook.MVC.Controllers
         {
             dynamic json = jsonData;
 
-            var currentUser = _securityService.GetCurrentUser();
+            string currentUser = _securityService.GetCurrentUser();
 
-            _runnerService.UpdatePropIds((int)json.meetingId, (int)json.eventNumber, (string)json.data, currentUser);
+            _runnerService.UpdatePropIds((int)json.meetingId, (int)json.eventNumber, json.data.ToObject<RunnerPropid[]>(), currentUser);
 
             return new JsonResponseBase() { Success = true, Message = "Runner propids updated" };
 
