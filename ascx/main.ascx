@@ -125,7 +125,9 @@ Public Type As String, EventID As String, Odds As String
 			If Odds = "" Then Odds = "PM"
 		%>
 			<div class="MTG <%= Odds %>D">
-				<%	Dim RS As Object = getRecord("SELECT * FROM dbo.MEETING_VIEW WHERE MEETING_ID=" & Val(EV(0)) & " AND EVENT_NO=" & Val(EV(1)))
+				<%	Dim RS As Object = getRecord("SELECT * " _
+					& "FROM dbo.MEETING_VIEW " _
+					& "WHERE MEETING_ID=" & Val(EV(0)) & " AND EVENT_NO=" & Val(EV(1)))
 				If RS.Read()  					%>
 					<div class=VNU>
 						<img src="/img/<%= RS("TYPE") %>.png"> <%= sLcDt(RS("START_TIME"), "hh:mmtt").ToLower	%> 

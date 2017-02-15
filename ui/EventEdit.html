@@ -1,0 +1,123 @@
+<div id="event-modal" class="modalwindow">
+    <div class="modal-title">
+		<span>Race {{event.Event_No}} : {{event.Name}}</span>
+		<span class="modal-close"><a href="#">X</a></span>
+	</div>
+    <div class="modal-content">
+	    <table cellpadding="2" width="100%">
+	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Meeting Identifiers</td></tr>
+	        <tr><td width="250px">Meeting Id</td><td class="modal-data">{{event.Meeting_Id}}</td></tr>
+	        <tr><td>Meeting BTK Id</td><td class="modal-data">{{event.Btk_Id}}</td></tr>
+	        <tr><td>PA Meeting Id</td><td class="modal-data">{{event.Pa_Mtg_Id}}</td></tr>
+	        <tr><td>WIFT Meeting Id</td><td class="modal-data">{{event.Wift_Mtg_Id}}</td></tr>
+	        <tr><td colspan="2"><hr /></td></tr>
+	        
+	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Event Identifiers</td></tr>
+	        <tr><td>Event Number</td><td class="modal-data">{{event.Event_No}}
+	        			<span style="float:right;margin-right:80px;">{{event.Start_Time | date:'dd/MM/yyyy @ h:mma'}}</span>
+	        </td></tr>
+	        <tr><td>Event Name</td><td class="modal-data">{{event.Name}}</td></tr>
+	        <tr><td>Book Spec Id</td><td class="modal-data">{{event.Bfr_Mkt_Id}}</td></tr>
+	        <tr><td>Match Spec Id (GTX)</td><td class="modal-data">{{event.Gtx_Id}}</td></tr>
+	        <tr><td>PA Event Id</td><td class="modal-data">{{event.Pa_Evt_Id}}</td></tr>
+	        <tr><td>WIFT Event Id</td><td class="modal-data">{{event.Wift_Evt_Id}}</td></tr>
+	        <tr><td colspan="2"><hr /></td></tr>
+	        <tr><td colspan="2">
+	        	<div id="event-runners">
+			        <table width="100%">
+			        	<thead>
+					        <tr id="runner-propid-header">
+					        	<td width="80%">Runner</td>
+					        	<td><a href="#" ng-click="autoAllocate()">AutoAllocate</a><br>Prop Id</td>
+					        </tr>
+			        	</thead>
+			        	<tbody>
+				            <tr ng-repeat="x in runners" ng-class-odd="'striped'">
+				                <td class="modal-data"><span class="cyan">{{x.Runner_No}}</span> {{x.Name}}</td>
+				                <td class="modal-data">
+				                	<input type="text" ng-model="x.Tab_Prop" size="7">
+				                </td>
+				            </tr>
+				        </tbody>
+		            </table>
+		        </div>
+	        </td></tr>
+	    </table>
+	    <hr class="hr" />
+	    <input type="button" value="Save" class="modal-button modal-save" ng-click="savePropIds()" />
+	    <input type="button" value="Cancel" class="modal-button modal-cancel" onclick="javascript:eventControl.closeWindow();" /> &nbsp;
+    </div>
+</div>
+<style>
+#event-runners table thead a {
+	color: cyan;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 300;
+	text-transform: uppercase;
+}
+#event-runners table tbody input {
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px; 
+	-khtml-border-radius: 4px; 
+}
+#event-runners, #event-runners table {
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+}
+.striped {
+	background-color: #333333;
+}
+#event-runners table tbody span.cyan {
+	color: cyan;
+}
+</style>
+<script>
+var eventControl = {
+
+	data: {},
+	event_ref: '',
+	
+	openWindow: function(data) {
+		if (tmrEVN) {
+			clearTimeout(tmrEVN);
+		}
+		this.data = data;
+		this.event_ref = data.Meeting_Id+'_'+data.Event_No;
+		this.renderPopup();
+		this.delegateEvents();
+	},
+
+	renderPopup: function() {
+		var id = jQuery('#event-modal');
+		var winH = jQuery(window).height();
+		var winW = jQuery(window).width();
+		id.css('top', 10);
+		id.css('width', winW/3);
+		id.css('left', winW-id.width()-20);
+		id.css('max-height', winH-50);
+		jQuery('#event-runners').css('max-height', winH-480);
+		id.fadeIn(500);	
+	},
+
+	delegateEvents: function() {
+		var _this = this;			
+		// x in title bar
+		jQuery('#event-modal .modal-close').click(function (event) {
+			event.preventDefault();
+			_this.closeWindow();
+		});
+    },
+    
+	// close window and restart 5 second refresh timer
+	closeWindow: function() {
+		getEVN(curVNL);
+		jQuery('#event-modal').fadeOut(500);
+		tmrEVN = setTimeout(function() {
+			getEVN(curVNL);
+		}, 5000);	
+	}
+};
+</script>

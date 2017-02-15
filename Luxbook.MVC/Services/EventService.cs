@@ -5,6 +5,7 @@
     using Common;
     using Models;
     using Repositories;
+    using Repositories.Responses;
 
     public interface IEventService
     {
@@ -18,6 +19,11 @@
         /// <param name="raceType"></param>
         /// <returns></returns>
         List<Event> GetAllEvents(DateTime meetingDate, bool internationalsOnly, Enums.RaceType raceType);
+
+        /// <summary>
+        ///     Get event meta data for use by the RR gui prop id edit form
+        /// </summary>
+        EventMetaResponse GetEventMeta(int meetingId, int eventNumber);
 
         Event GetEvent(int meetingId, int eventNumber);
 
@@ -76,6 +82,11 @@
         public Event GetEvent(int meetingId, int eventNumber)
         {
             return _eventRepository.GetEvent(meetingId, eventNumber);
+        }
+
+        public EventMetaResponse GetEventMeta(int meetingId, int eventNumber)
+        {
+            return _eventRepository.GetEventMeta(meetingId, eventNumber);
         }
 
         /// <summary>
