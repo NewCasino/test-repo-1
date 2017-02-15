@@ -14,7 +14,7 @@
     <RootNamespace>Luxbook.MVC</RootNamespace>
     <AssemblyName>Luxbook.MVC</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -452,7 +452,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>11868</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:11847/</IISUrl>
+          <IISUrl>http://localhost/Luxbook.MVC</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -7,12 +7,15 @@
     using Infrastructure;
     using Models;
     using Services;
+    using DTO;
+    using Responses;
 
     public interface IEventRepository
     {
         List<RunnerLiability> GetAllEventLiabilities();
         List<Event> GetAllEvents(DateTime meetingDate, bool internationalsOnly, string raceType);
         Event GetEvent(int meetingId, int eventNumber);
+        EventMetaResponse GetEventMeta(int meetingId, int eventNumber);
 
         /// <summary>
         /// Sets the reduced staking flag on the vent level
@@ -84,6 +87,43 @@
                     eventNumber,
                     meetingId
                 }, commandType: CommandType.Text).FirstOrDefault();
+        }
+
+        public EventMetaResponse GetEventMeta(int meetingId, int eventNumber)
+        {
+            var eventMeta = 
+                _database.Query<EventMeta>(@"SELECT mv.Meeting_Id, mv.Event_No, mv.Start_Time, mv.Type,
+                                            mv.Country, mv.Venue, mv.Name, mv.Btk_Id, 
+                                            m.Wift_Mtg_Id, m.Fxo_Id, m.Pa_Mtg_Id, 
+                                            e.Wift_Evt_Id, e.Wift_Src_Id, e.Wp_EventId, e.Pa_Evt_Id, e.Gtx_Id, e.Bfr_Mkt_Id 
+                                            FROM dbo.MEETING_VIEW as mv
+                                            INNER JOIN dbo.MEETING as m ON (mv.MEETING_ID = m.MEETING_ID)
+                                            INNER JOIN dbo.EVENT as e ON (mv.MEETING_ID = e.MEETING_ID AND mv.EVENT_NO = e.EVENT_NO)
+                                            WHERE mv.EVENT_NO = @eventNumber and mv.MEETING_ID = @meetingId", 
+                    new
+                    {
+                        eventNumber,
+                        meetingId
+                    }, commandType: CommandType.Text).FirstOrDefault();
+
+            var runnerMeta =
+                _database.Query<RunnerMeta>(@"SELECT MEETING_ID, EVENT_NO, RUNNER_NO, NAME, SCR, TAB_PROP
+                                            FROM dbo.RUNNER_TAB
+                                            WHERE EVENT_NO = @eventNumber and MEETING_ID = @meetingId
+                                            ORDER BY RUNNER_NO",
+                    new
+                    {
+                        eventNumber,
+                        meetingId
+                    }, commandType: CommandType.Text);
+
+            return new EventMetaResponse()
+            {
+                Success = true,
+                Message = null,
+                Event = eventMeta,
+                Runners = runnerMeta.ToArray()
+            };
         }
 
         /// <summary>

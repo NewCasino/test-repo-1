@@ -1,0 +1,151 @@
+<div class="context-menu-container">
+	<div id="contextMenu" class="context-menu">
+        <div id="context-menu-title"></div>
+		<ul id="context-menu-items"></ul>
+	</div>
+</div>
+<style type="text/css">
+	.context-menu-container{
+		height: 100%;
+		font-family: verdana;
+		font-size: 10px;
+		background: #f6f6f6;
+		z-index: -1;
+	}
+	.context-menu{
+		background: #f6f6f6;
+		width: 200px;
+		height: auto;
+		box-shadow: 0 0 20px 0 #ccc;
+		position: absolute;
+		display: none;
+	}
+	.context-menu ul{
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		padding: 5px 0px 5px 0px;
+	}
+	.context-menu ul li:not(.separator){
+		padding: 10px 5px 10px 5px;
+		border-left: 4px solid transparent;
+		cursor: pointer;
+	}
+	.context-menu ul li {
+		font-weight: 600;
+     	color: blue;
+    }
+	.context-menu ul li:hover{
+		background: #eee;
+		border-left: 4px solid maroon;
+	}
+	.context-menu-separator{
+		height: 1px;
+		background: #dedede;
+		margin: 2px 0px 2px 0px;
+	}
+
+    #context-menu-title {
+        background-color: maroon;
+        color:white;
+        width:92%;
+        text-align: left;
+        padding: 8px;
+    }
+</style>
+<script type="text/javascript">
+var contextMenuCtrl = {
+	menu: null,
+	data: {},
+	
+	initContextMenu: function () {
+		// attach listener to all applicable html elements
+		var elements = document.getElementsByClassName('context-menu-one');		
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].addEventListener("contextmenu", function(event) {
+				contextMenuCtrl.showContextMenu(event)
+			});
+		}
+		window.onclick = function(event){
+			contextMenuCtrl.hideContextMenu(event);
+		};
+		window.onkeydown = function(event){
+			contextMenuCtrl.listenKeys(event);
+		};
+		this.menu = document.getElementById('contextMenu');
+	},
+
+	// display context menu for current element under mouse cursor
+	showContextMenu: function (event) {
+		event.preventDefault();
+		var el = (event.target.parentNode.tagName == 'TR' ? event.target : event.target.parentNode);
+		this.data = this.getDataItems(el.getAttribute('data-attrs'));
+		document.getElementById('context-menu-title').innerHTML = this.data.runner;
+		// built menu items
+		this.setMenuContent({menuNum:1, el:el});
+		// render menu
+		this.menu.style.display = 'block';
+		this.menu.style.left = (event.clientX-120) + 'px';
+		this.menu.style.top = event.clientY + 'px';
+		var elements = document.getElementsByClassName('context-menu-item');
+		// delegate menu item 'click'  listener
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].addEventListener("click", function(event) {
+				contextMenuCtrl.contextMenuAction(event)
+			});
+		}
+		return true;
+	},
+
+	// context menu items
+	setMenuContent: function(options) {
+		var items = (options.el.className.indexOf('scratched') == -1 ? 
+			'<li class="context-menu-item" data-action="scratchRunner">Scratch Runner</li>' : 
+			'<li class="context-menu-item" data-action="unscratchRunner">Un-Scratch Runner</li>');
+		items += '<li class="separator"></li>' +
+				 '<li class="context-menu-item" data-action="editRunner">Edit Runner Data</li>';
+		document.getElementById('context-menu-items').innerHTML = items;		
+	},
+
+	// link action to angular via router
+	contextMenuAction: function (event) {
+		var id = jQuery.param(this.data);
+		switch(event.target.getAttribute('data-action')) {
+		    case 'scratchRunner':
+		    	document.location.href = "#/Runner/Scratch/"+id
+		        break;
+		    case 'unscratchRunner':
+		    	document.location.href = "#/Runner/UnScratch/"+id
+		        break;
+		    case 'editRunner':
+		    	document.location.href = "#/Runner/Edit/"+id
+		        break;
+		}		
+		return true;
+	},
+
+	hideContextMenu: function (event) {
+		if (contextMenuCtrl.menu !== null) {
+			contextMenuCtrl.menu.style.display = 'none';
+		}
+	},
+
+	listenKeys: function (event) {
+		var keyCode = event.which || event.keyCode;
+		if(keyCode == 27){
+			this.hideContextMenu();
+		}
+	},
+
+	getDataItems: function (serializedData) {
+		var a = serializedData.split(':');
+		return {
+			runner: a[0],
+			meeting_id: a[1],
+			race_num: a[2],
+			runner_num: a[3],
+			tab_prop: a[4]
+		};
+	}
+};	
+</script>

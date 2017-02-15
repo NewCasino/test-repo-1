@@ -9,7 +9,15 @@ namespace Luxbook.MVC.Controllers
 {
     using DTO;
     using Infrastructure;
+    using Newtonsoft.Json.Linq;
     using Services;
+
+    public class RunnerPostDataDTO
+    {
+        public int MeetingId;
+        public int EventNumber;
+        public List<RunnerPropid> Data;
+    }
 
     [RequireAuthenticationWebApi]
     public class RunnerController : ApiController
@@ -44,5 +52,39 @@ namespace Luxbook.MVC.Controllers
             return new JsonResponseBase() { Success = true, Message = "Boundary updated" };
 
         }
+
+        [HttpGet]
+        public JsonResponseBase Scratch(int meetingId, int eventNumber, int runnerNumber)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, false, currentUser);
+
+            return new JsonResponseBase() { Success = true, Message = "Runner scratched" };
+
+        }
+
+        [HttpGet]
+        public JsonResponseBase UnScratch(int meetingId, int eventNumber, int runnerNumber)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, true, currentUser);
+
+            return new JsonResponseBase() { Success = true, Message = "Runner un-scratched" };
+
+        }
+
+        [HttpPost]
+        public JsonResponseBase PropId(RunnerPostDataDTO PostData)
+        {
+            string currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.UpdatePropIds(PostData.MeetingId, PostData.EventNumber, PostData.Data, currentUser);
+
+            return new JsonResponseBase() { Success = true, Message = "Runner propids updated" };
+
+        }
+
     }
 }

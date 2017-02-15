@@ -1,0 +1,193 @@
+<style>
+.ca-cover-box {
+  position: fixed; _position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(200,200,200,0.5); z-index: 10000; display: none;
+}
+.ca-alert-box{
+  border: 4px solid white;
+  background-color: #F8F8F8; -webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.8);
+  -moz-border-radius: 4px; -moz-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.8); margin:0; padding: 0;
+  -webkit-border-radius: 4px; min-width: 16em; position: fixed; _position: absolute; z-index: 11000;
+}
+.ca-alert-box .alert-title{
+    width: 100%; text-align: left; font-size: 12px; font-weight:500; margin: 1.5rem 0 1rem 0;
+}
+.ca-alert-box .alert-icon{
+  display: inline-block;
+  float: left;
+  margin-left: 15px;
+}
+.ca-alert-box .alert-text{
+  display: inline-block;
+  float: right;
+  min-height: 90px;
+  width: 350px;
+  padding: 10px 20px 40px 20px;
+  color: maroon;
+  text-align: left; font-size: 16px;
+}
+.ca-alert-box button {
+  background: transparent; border: none; height: 3rem; height: 3em\9;
+  font-size: 14px; width: 50%; position: absolute; bottom: 0; 
+  display: block; text-align: center; border-top: 1px solid #B4B4B4; cursor: pointer; color: #1678E5;
+}
+.ca-alert-box .alert-btn-wrap{clear:both;}
+.ca-alert-box .alert-btn-wrap button:focus, 
+.ca-alert-box .alert-btn-wrap button:hover { background: #EFEFEF; }
+.ca-alert-box .alert-btn-wrap button:active { background: #D6D6D6; }
+#alert-btn-no { left:0; border-right: 4px solid white; border-radius: 0 0 0 0; font-weight:400; background-color:crimson;color:white; }
+#alert-btn-yes {right:0; border-radius: 0 0 0 0; font-weight:400; background-color:green;color:white;}
+#alert-btn-ok{ width: 100%; border-radius: 0 0 0 0; font-weight:400; background-color:red;color:white; }
+.btn-bg-red: {background-color: red;}
+.btn-bg-blue: {background-color: blue;}
+</style>
+<script type="text/javascript">
+var ca = ca||{};
+
+;!function(jq, y) {
+    "use strict";
+  
+  var _lang ={},
+    jWin =jq(window),
+    ww = jWin.width(),
+    wh = jWin.height(),
+    st = jWin.scrollTop(),
+    sl = jWin.scrollLeft();
+    
+  if(y && y.lang){
+    _lang =y.lang;
+  }
+  
+  var pos_center = function(j, topval){
+    var _w =j.width();
+    if( _w >= ww ){
+      _w =ww -60;
+      j.width(_w);
+    }
+    var l, t, w =j.outerWidth(), h =j.outerHeight();
+    l = (ww - w)/2, t = (wh - h)/2;
+    if(topval) t =topval;
+    j.css({left: l+"px", top: "65px"});
+    
+  };
+  
+  var jqCover =null, jqLoad =null,
+  cover ={
+    show: function(){
+      if(!jqCover){
+        jqCover =jq('<div class="ca-cover-box"></div>');
+        jq("body").append(jqCover);
+      }
+      jqCover.show();
+    },
+    hide: function(){
+      if(jqCover) jqCover.hide();
+    }
+  };
+  
+  var jqConfirm =null, jqNo =null, jqYes =null, _confirm =function(p){
+    if(!jqConfirm){
+      jqConfirm =jq('<div class="ca-alert-box"><h1 class="alert-title"></h1>'+
+                      '<div class="alert-icon"><img src="/ui/tick.png" height="60px"></div><div class="alert-text"></div>' +
+                      '<div class="alert-btn-wrap"><button id="alert-btn-no"></button><button id="alert-btn-yes"></button></div></div>');
+      jq("body").append(jqConfirm);
+      jqNo =jq("#alert-btn-no");
+      jqYes =jq("#alert-btn-yes");
+    }
+    var d = {width:null, title: _lang.tip||'', text: "", no_btn: _lang.cancel||'', yes_btn: _lang.confirm||'', no_fn:null, yes_fn:null},
+    jTitle =jqConfirm.find(".alert-title"),
+    jText =jqConfirm.find(".alert-text");
+    
+    var btn_unbind =function(){
+      jqNo.unbind("click");
+      jqYes.unbind("click");
+    }, box_close =function(){
+      btn_unbind();
+      jqConfirm.hide();
+      cover.hide();
+    };
+    
+    p =jq.extend({}, d, p||{});
+    
+    //btn_unbind();
+    jTitle.html(p.title);
+    jText.html(p.text);
+    
+    jqNo.html(p.no_btn);
+    jqNo.click(function(){
+      if(p.no_fn){
+        p.no_fn();
+        p.no_fn =null;
+      }
+      box_close();
+    });
+    
+    jqYes.html(p.yes_btn);
+    jqYes.click(function(){
+      if(p.yes_fn){
+        p.yes_fn();
+        p.yes_fn =null;
+      }
+      box_close();
+    });
+    
+    pos_center(jqConfirm);
+    
+    cover.show();
+    jqConfirm.show();
+  };
+  
+  var jqAlert =null, jqOK =null, _alert =function(p){
+    if(!jqAlert){
+      if (p.error) {
+        var bgclass = 'btn-bg-red';
+        var icon = '/ui/error1.png';
+      } else {
+        var bgclass = 'btn-bg-blue';
+        var icon = '/ui/notice.png';
+      }
+      jqAlert =jq('<div class="ca-alert-box"><h1 class="alert-title"></h1>'+
+                    '<div class="alert-icon"><img src="' + icon + '" height="50px"></div><div class="alert-text"></div>' +
+                    '<div class="alert-btn-wrap"><button id="alert-btn-ok" class="' + bgclass + '"></button></div></div>');
+      jq("body").append(jqAlert);
+      jqOK =jq("#alert-btn-ok");
+    }
+    var d = {width:null, title: _lang.tip||'', text: "", ok_btn: _lang.close||'', close_fn:null},
+    jTitle =jqAlert.find(".alert-title"),
+    jText =jqAlert.find(".alert-text");
+    
+    var btn_unbind =function(){
+      jqOK.unbind("click");
+    }, box_close =function(){
+      btn_unbind();
+      jqAlert.hide();
+      cover.hide();
+    };
+    
+    //btn_unbind();
+    p =jq.extend({}, d, p||{});
+    
+    jTitle.html(p.title);
+    jText.html(p.text);
+    
+    jqOK.html(p.ok_btn);
+    jqOK.click(function(){
+      if(p.close_fn){
+        p.close_fn();
+        p.close_fn =null;
+      }
+      box_close();
+    });
+    
+    pos_center(jqAlert);
+    
+    cover.show();
+    jqAlert.show();
+  };
+  
+  y.jq_confirm = _confirm;
+  y.jq_alert = _alert;
+  
+} (jQuery, ca);
+
+</script>
