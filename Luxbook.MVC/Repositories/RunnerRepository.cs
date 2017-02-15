@@ -33,12 +33,30 @@ namespace Luxbook.MVC.Repositories
                     type = "Lux SDP roll";
                     priorityColumns.AddRange(new[] { "LUX", "SUN" });
                     break;
+                case "SDP_ADJ_SUN":
+                    type = "SUN SDP roll";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    break;
+                case "SDP_ADJ_MASTER":
+                    type = "Master  SDP roll";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    break;
                 case "SDP_ADJ_TAB":
                     type = "TAB SDP roll";
                     priorityColumns.Add("TAB");
                     break;
                 case "PLACE_SDP_ADJ_LUX":
                     type = "Lux Place roll";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+
+                    break;
+                case "PLACE_SDP_ADJ_SUN":
+                    type = "Sun Place roll";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+
+                    break;
+                case "PLACE_SDP_ADJ_MASTER":
+                    type = "Master Place roll";
                     priorityColumns.AddRange(new[] { "LUX", "SUN" });
 
                     break;
@@ -92,6 +110,22 @@ namespace Luxbook.MVC.Repositories
                 case "SDP_MAX_TAB":
                     type = "TAB SDP maximum";
                     priorityColumns.Add("TAB");
+                    break;
+                case "SDP_MIN_SUN":
+                    type = "SUN SDP minimum";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    break;
+                case "SDP_MAX_SUN":
+                    type = "SUN SDP maximum";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    break;
+                case "SDP_MIN_MASTER":
+                    type = "Master SDP minimum";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    break;
+                case "SDP_MAX_MASTER":
+                    type = "Master SDP maximum";
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boundaryType), boundaryType, "Boundary type not valid");
