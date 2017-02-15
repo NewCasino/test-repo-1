@@ -12,6 +12,13 @@ namespace Luxbook.MVC.Controllers
     using Newtonsoft.Json.Linq;
     using Services;
 
+    public class RunnerPostDataDTO
+    {
+        public int MeetingId;
+        public int EventNumber;
+        public List<RunnerPropid> Data;
+    }
+
     [RequireAuthenticationWebApi]
     public class RunnerController : ApiController
     {
@@ -69,13 +76,11 @@ namespace Luxbook.MVC.Controllers
         }
 
         [HttpPost]
-        public JsonResponseBase PropId(JObject jsonData)
+        public JsonResponseBase PropId(RunnerPostDataDTO PostData)
         {
-            dynamic json = jsonData;
-
             string currentUser = _securityService.GetCurrentUser();
 
-            _runnerService.UpdatePropIds((int)json.meetingId, (int)json.eventNumber, json.data.ToObject<RunnerPropid[]>(), currentUser);
+            _runnerService.UpdatePropIds(PostData.MeetingId, PostData.EventNumber, PostData.Data, currentUser);
 
             return new JsonResponseBase() { Success = true, Message = "Runner propids updated" };
 

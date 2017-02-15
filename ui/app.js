@@ -202,9 +202,9 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         dataFactory.savePropIds = function (meetingId, eventId, data) {
             return $http.post(urlBase + '/Runner/Propid', 
                 { 
-                    meetingId: meetingId, 
-                    eventNumber: eventId,
-                    data: data
+                    MeetingId: meetingId, 
+                    EventNumber: eventId,
+                    Data: data
                 }, config
              );
         };

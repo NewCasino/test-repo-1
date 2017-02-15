@@ -11,7 +11,6 @@ namespace Luxbook.MVC.Services
     {
         public int RunnerNo;
         public int PropId;
-        public RunnerPropid() { }
     }
 
     public interface IRunnerService
@@ -22,7 +21,7 @@ namespace Luxbook.MVC.Services
 
         void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
 
-        void UpdatePropIds(int meetingId, int eventNumber, RunnerPropid[] runnerList, string currentUser);
+        void UpdatePropIds(int meetingId, int eventNumber, List<RunnerPropid> runnerList, string currentUser);
     }
 
     public class RunnerService : IRunnerService
@@ -55,7 +54,7 @@ namespace Luxbook.MVC.Services
         }
 
         // update runners propids
-        public void UpdatePropIds(int meetingId, int eventNumber, RunnerPropid[] runnerList, string currentUser)
+        public void UpdatePropIds(int meetingId, int eventNumber, List<RunnerPropid> runnerList, string currentUser)
         {
             foreach (RunnerPropid runner in runnerList)
             {
