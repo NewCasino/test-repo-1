@@ -82,7 +82,8 @@
                 _database.Query<Event>(@"SELECT MT.MEETING_ID, ET.EVENT_NO, MT.TYPE as RaceTypeCode, MT.TAB_SELL_CODE AS SellCode  
                                             FROM EVENT_TAB ET
                                             INNER JOIN MEETING_TAB MT ON MT.MEETING_ID = ET.MEETING_ID
-                                            WHERE ET.EVENT_NO = @eventNumber and MT.MEETING_ID = @meetingId", new
+                                            WHERE ET.EVENT_NO = @eventNumber and MT.MEETING_ID = @meetingId", 
+                new
                 {
                     eventNumber,
                     meetingId
@@ -122,7 +123,7 @@
                 Success = true,
                 Message = null,
                 Event = eventMeta,
-                Runners = runnerMeta.ToArray()
+                Runners = runnerMeta.ToList()
             };
         }
 
