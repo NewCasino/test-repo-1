@@ -14,7 +14,7 @@
     <RootNamespace>Luxbook.MVC</RootNamespace>
     <AssemblyName>Luxbook.MVC</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -272,6 +272,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Controllers\RunnerController.cs" />
+    <Compile Include="DTO\RunnerPostDataDTO.cs" />
     <Compile Include="Controllers\StakingController.cs" />
     <Compile Include="Controllers\TradeController.cs" />
     <Compile Include="Controllers\TradeManagementController.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Models\Bettekk.cs" />
     <Compile Include="Models\BetTypeSummary.cs" />
     <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\EventMeta.cs" />
     <Compile Include="Models\EventTrading.cs" />
     <Compile Include="Models\EventTradingSummary.cs" />
     <Compile Include="Models\MaxExposureParameter.cs" />
@@ -325,9 +327,11 @@
     <Compile Include="Models\MonthlyReportParameter.cs" />
     <Compile Include="Models\PoolReportParameters.cs" />
     <Compile Include="Models\Property.cs" />
+    <Compile Include="Models\ReportParameters.cs" />
     <Compile Include="Models\Rule.cs" />
     <Compile Include="Models\Runner.cs" />
     <Compile Include="Models\RunnerLiability.cs" />
+    <Compile Include="Models\RunnerMeta.cs" />
     <Compile Include="Models\Staking.cs" />
     <Compile Include="Models\SystemEnum.cs" />
     <Compile Include="Models\Trader.cs" />
@@ -342,6 +346,7 @@
     <Compile Include="Repositories\MaxExposureRepository.cs" />
     <Compile Include="Repositories\MeetingRepository.cs" />
     <Compile Include="Repositories\PropertiesRepository.cs" />
+    <Compile Include="DTO\EventMetaResponse.cs" />
     <Compile Include="Repositories\RuleRepository.cs" />
     <Compile Include="Repositories\RunnerRepository.cs" />
     <Compile Include="Repositories\SystemRepository.cs" />

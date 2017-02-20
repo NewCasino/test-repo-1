@@ -25,5 +25,7 @@ namespace Luxbook.MVC.Models
         public string Gtx_Id { get; set; }
         public string Bfr_Mkt_Id { get; set; }
 
+        public List<RunnerMeta> Runners { get; set; }
+
     }
 }
