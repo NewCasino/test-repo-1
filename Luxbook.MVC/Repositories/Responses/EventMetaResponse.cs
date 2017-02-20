@@ -10,6 +10,6 @@ namespace Luxbook.MVC.Repositories.Responses
     public class EventMetaResponse : JsonResponseBase
     {
         public EventMeta Event { get; set; }
-        public RunnerMeta[] Runners { get; set; }
+        public List<RunnerMeta> Runners { get; set; }
     }
 }
