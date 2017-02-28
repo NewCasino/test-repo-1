@@ -412,7 +412,7 @@ Function OLDsHorse( RS As Object, CT As String, TP As String, MD As String ) As 
       "<p><i class=S" & RS(MD & "_PAT_B") & "></i><i class=S" & RS(MD & "_PAT_E") & "></i></p>", "")
 End Function
 
-Function sHorse( RS As Object, CT As String, TP As String, MD As String ,Optional HighlightNumber As Integer? = Nothing) As String
+Function sHorse( RS As Object, CT As String, TP As String, MD As String ,Optional HighlightNumber As Integer? = Nothing, Optional IsEditMode As Boolean? = False) As String
 
   Dim Alerted as String = ""
   Dim JS As String = ""
@@ -440,24 +440,38 @@ Function sHorse( RS As Object, CT As String, TP As String, MD As String ,Optiona
     scratchingTimestamp = DateTime.Parse(RS("SCR_TIMESTAMP")).ToString("dd/MM hh:mm:ss tt")
   End If 
 
-  Return "<td class=""RI" & 
-			IIf(RS("SCR"), If(RS("SCRATCH") = 2, " LS", (If(RS("SCRATCH") = 3, " MS", " S"))), " ") & """>" & 
-			JS &   
-			"<b>" & RS("NAME").ToString.ToUpper & "</b>"  & 
-			IIf(sN0(RS("BARRIER")) = 0, "", " (" & RS("BARRIER") & ")")  &  Alerted &
-      " " & scratchingTimestamp & 
-			"<div>"  & 
-			RS("JOCKEY").ToString.ToUpper  & 
-			IIf(IsDBNull(RS("HANDICAP")), "", " (" & RS("HANDICAP") & ")")  & 
-			IIf(IsDBNull(RS("JOCKEY")) Or IsDBNull(RS("TRAINER")), "", " - ")  & 
-			RS("TRAINER").ToString.ToUpper  & 
-			IIf(IsDBNull(RS("JOCKEY")) And IsDBNull(RS("TRAINER")), "NA", "")  &
-			"</div>"  & 
-			IIf(Session("LVL") < 2 And (Not IsDBNull(RS(MD & "_PAT_B")) Or Not IsDBNull(RS(MD & "_PAT_E"))), "<p><i class=S"  & 
-				RS(MD & "_PAT_B")  & 
-				"></i><i class=S"  & 
-				RS(MD & "_PAT_E")  & 
-				"></i></p>", "")
+  Dim Resp as String =  ""
+  If IsEditMode = True then
+	  Dim ScrClass = IIf(RS("SCR"), " scratched", "")
+	  '' assign selected runner data items to html attribute for later use
+	  Resp =  "<td class=""context-menu-one RI" & ScrClass &  
+			IIf(RS("SCR"), If(RS("SCRATCH") = 2, " LS", (If(RS("SCRATCH") = 3, " MS", " S"))), " ") & 
+			""" data-attrs=""" & RS("NAME").ToString.ToUpper & ":" &
+			RS("MEETING_ID").ToString.ToUpper & ":" &
+			RS("EVENT_NO").ToString.ToUpper & ":" &
+			RS("RUNNER_NO").ToString.ToUpper & ":" &
+			RS("TAB_PROP").ToString.ToUpper & 
+			""">" 
+	  Else
+		Resp =  "<td class=""RI" & 
+			IIf(RS("SCR"), If(RS("SCRATCH") = 2, " LS", (If(RS("SCRATCH") = 3, " MS", " S"))), " ") & """>" 
+	  End If
+  Return Resp & JS &    
+		"<b>" & RS("NAME").ToString.ToUpper & "</b>"  & 
+		IIf(sN0(RS("BARRIER")) = 0, "", " (" & RS("BARRIER") & ")")  &  Alerted &
+		" " & scratchingTimestamp & 
+		"<div>"  & 
+		RS("JOCKEY").ToString.ToUpper  & 
+		IIf(IsDBNull(RS("HANDICAP")), "", " (" & RS("HANDICAP") & ")")  & 
+		IIf(IsDBNull(RS("JOCKEY")) Or IsDBNull(RS("TRAINER")), "", " - ")  & 
+		RS("TRAINER").ToString.ToUpper  & 
+		IIf(IsDBNull(RS("JOCKEY")) And IsDBNull(RS("TRAINER")), "NA", "")  &
+		"</div>"  & 
+		IIf(Session("LVL") < 2 And (Not IsDBNull(RS(MD & "_PAT_B")) Or Not IsDBNull(RS(MD & "_PAT_E"))), "<p><i class=S"  & 
+			RS(MD & "_PAT_B")  & 
+			"></i><i class=S"  & 
+			RS(MD & "_PAT_E")  & 
+			"></i></p>", "")
 End Function
 
 Function sPNL( x As Object, Optional p As Boolean = False ) As String
@@ -1096,7 +1110,6 @@ End Function
 
 'Price column HTML
 Function UsrPriceCols(ColList() As String , RS As Object, RP As DataRow, PriceChangeDictionary as  Dictionary(Of String, List(Of DataRow)) , ScratchingJavascript as String, CloseTime as String, CT as string, SCR as Boolean)  As String
-
 	Dim PriceCols As String = ""
 	Dim count as Integer = 9			' first 9 columns
 	For Each Col As String In ColList

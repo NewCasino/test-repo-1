@@ -75,21 +75,6 @@ Sub Page_Load()
             Response.End()
         End If
 	end If
-	
-	'Manual scratch button
-	if Request("SCR") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		SCR_RunnerNo = Request("SCR")
-		execSQL("UPDATE  RUNNER SET SCR=1, SCRATCH=3, SCR_TIMESTAMP = getdate() WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
-	End If
-	
-	'Manual un-scratch button
-    ' - RUBT-1088 : provide un-scratch runner functionality
-	if Request("UNSCR") <> "" AND EV <> "" Then
-		Dim LuxID() = Split(EV, "_")
-		SCR_RunnerNo = Request("UNSCR")
-		execSQL("UPDATE  RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL WHERE MEETING_ID = " & LuxID(0) & " AND EVENT_NO=" & LuxID(1) & " AND RUNNER_NO=" & SCR_RunnerNo)
-	End If
     	
 	'Hide/show scratchings
 	If Request("HS") = "Hide Scratch" OR Request("HS") = "Show Scratch" then
@@ -108,6 +93,7 @@ Sub Page_Load()
 	chkEvent(EV)
 	MTG.EventID = EV
 	EV = Split(EV, "_")
+
 End Sub
 
 Function GetLiabVWM(RunNo As Integer)
@@ -149,7 +135,7 @@ End Function
 
     %>
 	<!DOCTYPE html>
-	<html>
+	<html ng-app="WebApp">
 		<head>
 			<style>
 				html {
@@ -162,33 +148,59 @@ End Function
                      background:#90EE90; 
                      font-weight:bold 
                  }
+                 .hidden {
+                 	visibility:hidden;
+                 }
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
+			<link rel="stylesheet" href="/ui/modal.css">
+
 			<script src="/js/moment.min.js"> </script>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> 		
+			<script src="/js/jquery.min.js"></script> 		
 			<script src="/global.js"></script>
-			<script>
+            
+			<script language='javascript'>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
 				function Init() { 
 					getVNL('<%= Session("GAME") %>', '<%= Session("CNTL") %>'); if( curVNL ) getEVN(curVNL); setInterval("iTM()", 1005); tvSZ(1) 
 				} 
 				function iSV(m) { iNR("PM_WIN_", 100, m) } 
 				function iTM() { var X = $("tdPLTM"); if(X && X.innerHTML) X.innerHTML = toNum(X.innerHTML) + 1 } 
-				function RunScr(RunNo) {if (confirm('Confirm you want to scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&SCR=' + RunNo)}}
-				// RUBT-1088 : provide un-scratch runner functionality
-				function RunUnScr(RunNo) {if (confirm('Confirm you want to un-scratch runner ' + RunNo + ' ?') == true) {getEVN(curVNL + '&UNSCR=' + RunNo)}}
 			</script>
-			
+	
 		</head>
 		<body onload=Init()>
 			<WT:Main Type="Chart_Canvas" runat=server/>
 			<WT:Main id=VNL Type="Venue_List" runat=server/>
 			<div id=CNT></div>
+
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
- 
-	
+
+			<!-- modal window placeholder for edit event+runner popups -->
+			<div ng-view></div>
+
+			<script src="/ui/angular.min.js"></script>
+			<script src="/ui/angular-route.min.js"></script>
+			<script src="/ui/utilsLibrary.js"></script>
+			<script src="/ui/app.js"></script>
+
+			<script type="text/javascript">
+				var eventCtrl = {
+					onEventLoad: function() {		// when an event is loaded into main content
+    			  		contextMenuCtrl.initContextMenu();
+					}
+				};
+				jQuery(function() {
+					_utils.loader.loadHTML([
+						"/ui/contextMenu.htm",
+						"/ui/runnerEdit.html",
+						"/ui/eventEdit.html",
+						"/ui/confirm.htm"
+					], false);
+				});			
+			</script>
 		</body>
 	</html>
 <%Else  %>
@@ -199,7 +211,15 @@ End Function
 	Dim I As Byte, TS() As Double = {0, 0, 0, 0}, NC As String = Session("NSW_CLONE")
 	Dim TT As DataRow = getDataRow("SELECT STAB='', NSW='', QLD='', USA=''")
 	Dim RM As DataRow = getDataRow("SELECT * FROM MEETING(nolock) WHERE MEETING_ID=" & EV(0))
-	Dim RV As DataRow = getDataRow("SELECT * FROM dbo.EVENT_PM    WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+
+    Dim RV As DataRow = getDataRow("SELECT * " &
+        "FROM dbo.EVENT_PM " &
+        "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+
+	''Dim RV As DataRow = getDataRow("SELECT * " &
+    ''    "FROM dbo.EVENT_PM " &
+    ''    "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
+		
 	Dim DV As DataTable = makeDataSet("SELECT * FROM RESULTS(nolock) WHERE GAME IN('W','P') AND MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1)).Tables(0)
 	DV.PrimaryKey = New DataColumn() { DV.Columns(2), DV.Columns(3) }
 
@@ -237,7 +257,6 @@ End Function
 	%>
 	<script type="Text/javascript">
 		var scratchings  = [];
-
 	</script>	
 
 
@@ -291,7 +310,10 @@ End Function
 			"FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
 
 		  'Dim RS As Object = getRecord("SELECT * FROM RUNNER(nolock) WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
-		  Dim RunnerPrices As Object = getRecord("SELECT * FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")
+
+		    Dim RunnerPrices As Object = getRecord("SELECT * " &
+              "FROM VW_RUNNER_PRICES WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1) & " ORDER BY RUNNER_NO")		  
+			  
 		  Dim RunnerTable as New DataTable()
 		  Dim PriceChangeDictionary as New Dictionary(Of String, List(Of DataRow))
 
@@ -299,7 +321,6 @@ End Function
 
 
 			For Each Runner in RunnerTable.Rows
-
 				If getNumberString(Runner("PAA_FW")) IsNot Nothing  Then
 					paActive = True
 				End If
@@ -336,9 +357,9 @@ End Function
 
 				<i><input class="pm_tick" name=PM_TICK_<%= RN %> type=checkbox value=1<%= IIf(RS("PM_TICK"), " checked", "") %>></i>
 				</td>
-				<%= sHorse(RS, CT, TP, "PM",Request("HighlightNo"))   %>
+				<%= sHorse(RS, CT, TP, "PM",Request("HighlightNo"), True)   %>
 			<% Else %>
-			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"))     %> 
+			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"), IIf(Session("LVL") < 10, True, False))     %> 
 
 			<% End If %>
 
@@ -352,13 +373,19 @@ End Function
 			  <td><%= IIf(sNN(RS("POS")), "<b>" & RS("POS"), "") %> 
 			  
 			  <!--      ' WISE Counter      -->
-			  <td><font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
-					<div class=INV>
-						<span>
-							<font color="green"><%= If(RS("WISE_DF_NO")>0, RS("WISE_DF_NO"), "" ) %></font>
-						</span>
-						<font color="blue"><%= If(RS("RES_COUNT")>0, RS("RES_COUNT"), "" ) %></font>
-					</div>
+			  <td>
+			  		<%  ' RUBT-1436 : No wise data for media users
+			  		If Session("LVL") <> 10 Then  %>
+					  	<font color="<%= if( (CT = "AU" And TP = "R"), "red","green" ) %>"><%= if( (CT = "AU" And TP = "R"), RS("WISE_NO"), (If(RS("GHI_COUNT")>0, RS("GHI_COUNT"), "" )) ) %></font> 
+							<div class=INV>
+								<span>
+									<font color="green"><%= If(RS("WISE_DF_NO")>0, RS("WISE_DF_NO"), "" ) %></font>
+								</span>
+								<font color="blue"><%= If(RS("RES_COUNT")>0, RS("RES_COUNT"), "" ) %></font>
+							</div>
+					<% Else        %>
+						<div>&nbsp;</div>
+					<% End If %>  
 			  
 			<%  ' Confidence Level, Start & Speed
 			  If VM Then  %>
@@ -414,10 +441,8 @@ End Function
                 If Not RS("SCR") Then
                 %>
     				<td class=HX><%= RN %> 
-				    <input id=RNSCR type=button onclick="RunScr(<%= RN %>)"  value="SCR" >
                 <% else  %>
 				    <td class=HXUNSCR><%= RN %> 
-				    <input id=RNUNSCR type=button onclick="RunUnScr(<%= RN %>)"  value="UNSCR" >
                 <% End If %>
 			 <%Else %>
 				<td class="HN"><%= RN %>
@@ -742,7 +767,7 @@ End Function
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL)"  value="ALL"  <%= if(RiskProf = ""," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Normal')"  value="Normal" <%= if(RiskProf = "Normal"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Restricted')"  value="Restricted"  <%= if(RiskProf = "Restricted"," id=SEL", "") %> >
-			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=WISE')"  value="WISE"  <%= if(RiskProf = "WISE"," id=SEL", "") %> >
+			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=WISE')"  value="WISE"  <%= if(RiskProf = "WISE"," id=SEL", "") %> <%= if(Session("LVL") = 10," class='hidden'", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=HARD')"  value="HARD"  <%= if(RiskProf = "HARD"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=Watch')"  value="Watch"  <%= if(RiskProf = "Watch"," id=SEL", "") %> >
 			<td><input name=RKPBTN type=button onclick="getEVN(curVNL + '&RKP=VIP soft')"  value="VIP soft"  <%= if(RiskProf = "VIP soft"," id=SEL", "") %> >
@@ -871,12 +896,14 @@ End Function
 		
 		<!--  '-- Edit Market, Save & Status Bar -------------------------------------------------------------->
 		<div class=TED><%
+			<% If Session("LVL") < 10 Then %>
+				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit Prop Ids" />
+			<% End If %>
 			If VM Then	%>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
-				<input type=button onclick="getEVN(curVNL)" value="Undo">
+				<input type=button onclick="getEVN(curVNL)" value="Cancel">
 				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>); " value="Save"><%
 			Else	%>
-				<div id=divDSP><%= sLcDt(Now, "dd MMM, HH:mm.ss") %></div> 
 				<input name=FCMD type=button  <%= IIf(Session("LVL") < 10, "", " disabled ") %> onclick="getEVN()" value="     Edit     ">
 				<input name=MR type=submit  value="MR"  >
 				<input name=FCMD type=button onclick="tvReplay( '<%= videoID %>' )" value="VID"><%				
@@ -954,11 +981,11 @@ End Function
 					</pre><%
 			End If		
 
-
 			%>
-		</table><%
+		</table>
+	<%
 	End If
-	
-  'sDuration(TM)
-End If %>
 
+  'sDuration(TM)
+End If 
+%>

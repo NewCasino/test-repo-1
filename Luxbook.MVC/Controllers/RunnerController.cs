@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-
-namespace Luxbook.MVC.Controllers
+﻿namespace Luxbook.MVC.Controllers
 {
+    using System.Web.Http;
     using DTO;
     using Infrastructure;
     using Services;
@@ -30,7 +24,7 @@ namespace Luxbook.MVC.Controllers
             var currentUser = _securityService.GetCurrentUser();
             _runnerService.UpdateRunnerRoll(meetingId, eventNumber, runnerNumber, rollType, roll, currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Roll updated" };
+            return new JsonResponseBase {Success = true, Message = "Roll updated"};
         }
 
         [HttpGet]
@@ -39,10 +33,40 @@ namespace Luxbook.MVC.Controllers
         {
             var currentUser = _securityService.GetCurrentUser();
 
-            _runnerService.UpdateRunnerBoundary(meetingId, eventNumber, runnerNumber, boundaryType, boundary, currentUser);
+            _runnerService.UpdateRunnerBoundary(meetingId, eventNumber, runnerNumber, boundaryType, boundary,
+                currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Boundary updated" };
+            return new JsonResponseBase {Success = true, Message = "Boundary updated"};
+        }
 
+        [HttpGet]
+        public JsonResponseBase Scratch(int meetingId, int eventNumber, int runnerNumber)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, false, currentUser);
+
+            return new JsonResponseBase {Success = true, Message = "Runner scratched"};
+        }
+
+        [HttpGet]
+        public JsonResponseBase UnScratch(int meetingId, int eventNumber, int runnerNumber)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, true, currentUser);
+
+            return new JsonResponseBase {Success = true, Message = "Runner un-scratched"};
+        }
+
+        [HttpPost]
+        public JsonResponseBase PropId(RunnerPostDataDto postData)
+        {
+            var currentUser = _securityService.GetCurrentUser();
+
+            _runnerService.UpdatePropIds(postData.MeetingId, postData.EventNumber, postData.Data, currentUser);
+
+            return new JsonResponseBase {Success = true, Message = "Runner propids updated"};
         }
     }
 }

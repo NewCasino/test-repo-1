@@ -34,5 +34,20 @@
 
             return new JsonResponseBase {Success = true};
         }
+        
+        [HttpGet]
+        public EventMetaResponse EventMeta(int meetingId, int eventNumber)
+        {
+            try
+            {
+                return _eventService.GetEventMeta(meetingId, eventNumber);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return new EventMetaResponse() { Success = false, Message = ex.Message };
+            }            
+        }
+
     }
 }
