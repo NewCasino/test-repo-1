@@ -1,24 +1,25 @@
+.shadow {
+	box-shadow: 10px 10px 8px #000;
+}
+
 .modalwindow {
     position: fixed;
     display: none; 
     z-index: 9999;
-    width: 500px;
-    background: #222;
-    -webkit-box-shadow: 0 8px 6px -6px black;
-    -moz-box-shadow: 0 8px 6px -6px black;
-    box-shadow: 0 8px 6px -6px black;
-    -webkit-box-shadow: 0 8px 6px -6px black;
-    -moz-box-shadow: 0 8px 6px -6px black;
-    box-shadow: 0 8px 6px -6px black;
+    width: 300px;
+    background: #98a8a0;
+	border: 0px solid #444;
+	border-radius: 4px;
 }
 
 .modal-title {
-    background-color: #000;
-    padding: 20px;
+    background-color: #444; /* #e4be32; */
+    padding: 8px;
     font-size: 15px;
-    color: orange;
+    color: #e4be32;
     margin: 0;
     font-family: arial;
+	font-weight: 900;
     text-align: left;
     text-transform: uppercase;
 }
@@ -38,17 +39,11 @@
 }
 
 .modal-content .modal-data  {
-    color: yellow;
+    color: black;
 }
 
 .modalwindow .modal-content .modal-subtitle  {
-    color: cyan;
-}
-
-.modal-content table input[type="text"] {
-    color:crimson;
-    font-weight: 900;
-    padding-left: 5px;
+    color: #fea;
 }
 
 .modal-button  {
@@ -78,5 +73,5 @@
 .hr {
 	padding: 0;
 	margin: 0;
-	border: 1px solid #666;
+	border: 1px solid #fff;
 }

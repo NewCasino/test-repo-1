@@ -107,7 +107,7 @@
         }
         if (mode == 'html') {
             jQuery.ajax({
-                url: url + suffix,
+                url: url,
                 success: function (data) { jQuery('body').append(data); },
                 dataType: 'html'
             });
