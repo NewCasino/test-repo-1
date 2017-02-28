@@ -166,7 +166,7 @@
 			</li>
 		  
 		<%  End If %>
-
+			<li id="local-time" onclick="">&nbsp;</li>
 		</ul>
 			
 		<div id=TTL></div>
@@ -176,6 +176,14 @@
 		<% End If%>
 		<img id=CLG src="img/logo.png">
 		<script type="text/javascript">
+		var mth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		jQuery(function() {
+			setInterval(function() {
+				var d = new Date();
+				var tm = ('0'+d.getHours()).substr(-2)+':'+('0'+d.getMinutes()).substr(-2)+':'+('0'+d.getSeconds()).substr(-2)
+				jQuery('#MNU > li#local-time').html(d.getDate()+' '+mth[d.getMonth()]+' '+tm);
+			},1000);		
+		});
 		<%If Session("LID") <> "" AND Request("redirect") <> "" Then %>
 			DTL.location = '<%=Request("redirect")%>';
 		<% End If%>		

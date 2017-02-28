@@ -200,7 +200,6 @@ End Function
 						"/ui/confirm.htm"
 					], false);
 				});			
-			
 			</script>
 		</body>
 	</html>
@@ -360,7 +359,7 @@ End Function
 				</td>
 				<%= sHorse(RS, CT, TP, "PM",Request("HighlightNo"), True)   %>
 			<% Else %>
-			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"))     %> 
+			<%= sRNo(CT, RN) & sHorse(RS, CT, TP, "PM",Request("HighlightNo"), IIf(Session("LVL") < 10, True, False))     %> 
 
 			<% End If %>
 
@@ -897,15 +896,14 @@ End Function
 		
 		<!--  '-- Edit Market, Save & Status Bar -------------------------------------------------------------->
 		<div class=TED><%
+			<% If Session("LVL") < 10 Then %>
+				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit Prop Ids" />
+			<% End If %>
 			If VM Then	%>
-    		    <span>
-    				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit Prop Ids" />
-	    		</span>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
 				<input type=button onclick="getEVN(curVNL)" value="Cancel">
 				<input name=FCMD type=submit onclick="iSV(<%= IIf(USA, 1, 0) %>); " value="Save"><%
 			Else	%>
-				<div id=divDSP><%= sLcDt(Now, "dd MMM, HH:mm.ss") %></div> 
 				<input name=FCMD type=button  <%= IIf(Session("LVL") < 10, "", " disabled ") %> onclick="getEVN()" value="     Edit     ">
 				<input name=MR type=submit  value="MR"  >
 				<input name=FCMD type=button onclick="tvReplay( '<%= videoID %>' )" value="VID"><%				

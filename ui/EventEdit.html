@@ -1,4 +1,4 @@
-<div id="event-modal" class="modalwindow">
+<div id="event-modal" class="modalwindow shadow">
     <div class="modal-title">
 		<span>Race {{event.Event_No}} : {{event.Name}}</span>
 		<span class="modal-close"><a href="#">X</a></span>
@@ -27,14 +27,16 @@
 			        <table width="100%">
 			        	<thead>
 					        <tr id="runner-propid-header">
-					        	<td width="80%">&nbsp; &nbsp; RUNNER</td>
+					        	<td>&nbsp;</td>
+					        	<td width="80%">RUNNER</td>
 					        	<td>Prop Id &nbsp; <a href="#" ng-click="autoAllocate()">Auto</a></td>
 					        </tr>
 			        	</thead>
 			        	<tbody>
-				            <tr ng-repeat="x in runners" ng-class-odd="'striped'">
-				                <td class="modal-data"><span class="cyan">{{x.Runner_No}}</span> {{x.Name}}</td>
-				                <td class="modal-data">
+				            <tr valign="middle" ng-repeat="x in runners" ng-class-odd="'striped'">
+				                <td class="modal-data" align="right"><span class="index">{{x.Runner_No}}</span></td>
+				                <td class="modal-data">{{x.Name}}</td>
+				                <td class="modal-data align="right"">
 				                	<input type="text" ng-model="x.Tab_Prop" size="7">
 				                </td>
 				            </tr>
@@ -57,23 +59,23 @@
 }
 
 #event-runners table thead a {
-	color: cyan;
+	color: #fea;
 	text-decoration: none;
 	font-size: .9em;
 	font-weight: 300;
 	text-transform: uppercase;
 }
+#event-runners table tbody td {
+	padding: 0px 4px;
+}
 #event-runners table tbody input {
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px; 
-	-khtml-border-radius: 4px; 
-    color:crimson;
+	border: 0px solid #fff;
+	border-radius: 3px;
+    color: #000;
 	font-size: 0.9em;
     font-weight: 700;
-    padding: 0px 3px;
-	letter-spacing:2px;
-
+    padding: 0px 2px;
+	line-height: 1em;
 }
 #event-runners, #event-runners table {
 	padding: 0;
@@ -81,10 +83,10 @@
 	overflow-y: auto;
 }
 .striped {
-	background-color: #333333;
+	background-color: #a8b8b0;
 }
-#event-runners table tbody span.cyan {
-	color: cyan;
+#event-runners table tbody span.index {
+	color: #fea;
 }
 </style>
 <script>
@@ -107,9 +109,9 @@ var eventControl = {
 		var id = jQuery('#event-modal');
 		var winH = jQuery(window).height();
 		var winW = jQuery(window).width();
-		id.css('top', 10);
-		id.css('width', winW/3);
-		id.css('left', winW-id.width()-20);
+		id.css('top', 70);
+		id.css('width', winW/4);
+		id.css('left', winW-id.width()-40);
 		id.css('max-height', winH-50);
 		jQuery('#event-runners').css('max-height', winH-480);
 		id.fadeIn(500);	
