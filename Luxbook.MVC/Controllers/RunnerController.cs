@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-
-namespace Luxbook.MVC.Controllers
+﻿namespace Luxbook.MVC.Controllers
 {
+    using System.Web.Http;
     using DTO;
     using Infrastructure;
-    using Newtonsoft.Json.Linq;
     using Services;
-
-    public class RunnerPostDataDTO
-    {
-        public int MeetingId;
-        public int EventNumber;
-        public List<RunnerPropid> Data;
-    }
 
     [RequireAuthenticationWebApi]
     public class RunnerController : ApiController
@@ -38,7 +24,7 @@ namespace Luxbook.MVC.Controllers
             var currentUser = _securityService.GetCurrentUser();
             _runnerService.UpdateRunnerRoll(meetingId, eventNumber, runnerNumber, rollType, roll, currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Roll updated" };
+            return new JsonResponseBase {Success = true, Message = "Roll updated"};
         }
 
         [HttpGet]
@@ -47,10 +33,10 @@ namespace Luxbook.MVC.Controllers
         {
             var currentUser = _securityService.GetCurrentUser();
 
-            _runnerService.UpdateRunnerBoundary(meetingId, eventNumber, runnerNumber, boundaryType, boundary, currentUser);
+            _runnerService.UpdateRunnerBoundary(meetingId, eventNumber, runnerNumber, boundaryType, boundary,
+                currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Boundary updated" };
-
+            return new JsonResponseBase {Success = true, Message = "Boundary updated"};
         }
 
         [HttpGet]
@@ -60,8 +46,7 @@ namespace Luxbook.MVC.Controllers
 
             _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, false, currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Runner scratched" };
-
+            return new JsonResponseBase {Success = true, Message = "Runner scratched"};
         }
 
         [HttpGet]
@@ -71,20 +56,17 @@ namespace Luxbook.MVC.Controllers
 
             _runnerService.ScratchRunner(meetingId, eventNumber, runnerNumber, true, currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Runner un-scratched" };
-
+            return new JsonResponseBase {Success = true, Message = "Runner un-scratched"};
         }
 
         [HttpPost]
-        public JsonResponseBase PropId(RunnerPostDataDTO PostData)
+        public JsonResponseBase PropId(RunnerPostDataDto postData)
         {
-            string currentUser = _securityService.GetCurrentUser();
+            var currentUser = _securityService.GetCurrentUser();
 
-            _runnerService.UpdatePropIds(PostData.MeetingId, PostData.EventNumber, PostData.Data, currentUser);
+            _runnerService.UpdatePropIds(postData.MeetingId, postData.EventNumber, postData.Data, currentUser);
 
-            return new JsonResponseBase() { Success = true, Message = "Runner propids updated" };
-
+            return new JsonResponseBase {Success = true, Message = "Runner propids updated"};
         }
-
     }
 }

@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using Common;
+    using DTO;
     using Models;
     using Repositories;
-    using Repositories.Responses;
 
     public interface IEventService
     {
@@ -86,7 +86,16 @@
 
         public EventMetaResponse GetEventMeta(int meetingId, int eventNumber)
         {
-            return _eventRepository.GetEventMeta(meetingId, eventNumber);
+            var eventMeta = _eventRepository.GetEventMeta(meetingId, eventNumber);
+
+            var result = new EventMetaResponse
+            {
+                Event = eventMeta,
+                Runners = eventMeta.Runners
+            };
+
+
+            return result;
         }
 
         /// <summary>

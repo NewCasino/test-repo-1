@@ -36,7 +36,7 @@
         }
         
         [HttpGet]
-        public Object EventMeta(int meetingId, int eventNumber)
+        public EventMetaResponse EventMeta(int meetingId, int eventNumber)
         {
             try
             {
@@ -45,7 +45,7 @@
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                return new JsonResponseBase { Success = false, Message = ex.Message };
+                return new EventMetaResponse() { Success = false, Message = ex.Message };
             }            
         }
 
