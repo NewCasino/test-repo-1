@@ -887,9 +887,10 @@ End Function
 		
 		<!--  '-- Edit Market, Save & Status Bar -------------------------------------------------------------->
 		<div class=TED><%
-			<% If Session("LVL") < 10 Then %>
+			If Session("LVL") < 10 Then %>
 				<input type=button onclick="document.location.href='#/Event/Edit/<%= Join(EV, "_") %>'" value="Edit Prop Ids" />
-			<% End If %>
+			<% End If 
+
 			If VM Then	%>
 				<input name=UPD_OGN type=checkbox value=1> Update f Origin 
 				<input type=button onclick="getEVN(curVNL)" value="Cancel">

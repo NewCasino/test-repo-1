@@ -119,17 +119,22 @@ function getRPT( x, y ) {
 }
 
 // Get Event data. Fills page with event info and runner data. Sets timer to auto refresh in 5 secs
-function getEVN( x, y, n ) {  
+var saveVNL = '';
+function getEVN( x, y, n ) { 
    if(handleTimerPause(x)){
       return;
     }
 
-    // RUBT-1400 : implement propid edit ui
-    jQuery('.modalwindow').fadeOut(500);
   if( tmrEVN ) clearTimeout(tmrEVN);
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
   console.log('refreshing page');
   $R((n? n+".aspx": location.pathname) + "?EV=" + (x? x: curVNL + "&VM=1"), function(R) {
+	
+    // RUBT-1400 : implement propid edit ui
+	if (x != saveVNL) {
+		jQuery('.modalwindow').fadeOut(500);	// event_id changed so close popups
+	}
+    saveVNL = x;
 
     if(handleTimerPause(x)){
       return;
