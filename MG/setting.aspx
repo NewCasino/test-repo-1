@@ -140,6 +140,26 @@ End Sub
 						</table>
 					</div>
 
+                    <%' Low Start Market % 
+                    %>
+                    <div class="LST GAP" id=WIP>
+                        <table>
+							<col width=40><col><col width=60>
+							<tr><th colspan=3 class=TT>Low Start Mkt %
+                            <%
+							RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE LIKE 'MKTPCT_%'")
+							While RS.Read  %>
+							<tr>
+                                <% If Right(RS(0), 1) = "C" Then %>
+                                <td rowspan=3><img src="/img/<%= Left(RS(2),1) %>.png">
+                                <% End If %>
+								<td><%= RS(2) %>
+								<td><input name=<%= RS(0) %> type=number  step='0.01' value=<%= FormatNumber(RS(1) / 100)  %>><% 
+							End While
+							RS.Close    
+                            %>
+                        </table>
+                    </div>
 					<td width=15><td valign=top width=175>
 
 					<%' Reduced Staking %
@@ -205,21 +225,7 @@ End Sub
 						</table>
                
 					</div>
-                        <div class="LST GAP" id=WIP>
-                          <table>
-							<col><col width=65>
-							<tr><th colspan=2 class=TT>Low Start Mkt %
-                                     <%
-								RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE LIKE 'MKTPCT_%'")
-								While RS.Read  %>
-									<tr>
-										<td><%= RS(2) %>
-										<td><input name=<%= RS(0) %> type=number  step='0.01' value=<%= FormatNumber(RS(1) / 100)  %>><% 
-								End While
-								RS.Close    %>
-                                    
-                            </table>
-                            </div>
+                    
 
 					<%' Kelly Formula
 					%>
