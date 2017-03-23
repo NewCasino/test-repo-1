@@ -94,7 +94,7 @@ End Sub
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="/global.css">
 	<script src="/global.js"></script>
-	<script>top.setTitle("Parameter Settings")</script>
+	<script>top.setTitle("Parameter Settings - LUX")</script>
 	<style>#WIP input { width:45px; text-align:right }</style>
 	
 	<body>
@@ -194,7 +194,7 @@ End Sub
 								RS.Close  %>
 							<tr>
 								<td colspan=3 class=SPT><%
-								RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE IN( 'MKTPCT_R', 'MKTPCT_H', 'MKTPCT_G' ,'WISECL_A',  'WISECL_B', 'WISECL_C',  'WISECL_D')")
+								RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE IN( 'WISECL_A',  'WISECL_B', 'WISECL_C',  'WISECL_D')")
 								While RS.Read  %>
 									<tr>
 										<td colspan=2><%= RS(2) %>
@@ -203,7 +203,23 @@ End Sub
 								RS.Close    %>
 
 						</table>
+               
 					</div>
+                        <div class="LST GAP" id=WIP>
+                          <table>
+							<col><col width=65>
+							<tr><th colspan=2 class=TT>Low Start Mkt %
+                                     <%
+								RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE LIKE 'MKTPCT_%'")
+								While RS.Read  %>
+									<tr>
+										<td><%= RS(2) %>
+										<td><input name=<%= RS(0) %> type=number  step='0.01' value=<%= FormatNumber(RS(1) / 100)  %>><% 
+								End While
+								RS.Close    %>
+                                    
+                            </table>
+                            </div>
 
 					<%' Kelly Formula
 					%>
