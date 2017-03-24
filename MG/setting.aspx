@@ -94,7 +94,7 @@ End Sub
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="/global.css">
 	<script src="/global.js"></script>
-	<script>top.setTitle("Parameter Settings")</script>
+	<script>top.setTitle("Parameter Settings - LUX")</script>
 	<style>#WIP input { width:45px; text-align:right }</style>
 	
 	<body>

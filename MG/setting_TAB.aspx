@@ -20,7 +20,7 @@ Sub Page_Load()
 			RS = getRecord("SELECT TYPE FROM SYS_ENUM_TAB  WHERE TYPE NOT IN('DISC','TRD_LVL','OBSV','MTG_ID') AND TYPE NOT LIKE 'FXP_%'")
 			While RS.Read
 				If chkR9(RS(0)) <> "NULL" Then
-					S &= "UPDATE SYS_ENUM SET NUM=" & chkR9(RS(0)) & IIf("CMB, WIS BLN MKT".Contains(Left(RS(0), 3)), " * 100", "") & " WHERE TYPE='" & RS(0) & "'" & vbLf
+					S &= "UPDATE SYS_ENUM_TAB SET NUM=" & chkR9(RS(0)) & IIf("CMB, WIS BLN MKT".Contains(Left(RS(0), 3)), " * 100", "") & " WHERE TYPE='" & RS(0) & "'" & vbLf
 				End If
 			End While
 			RS.Close
@@ -238,7 +238,7 @@ End Sub
 								For I = 1 To 11 %>
 									<td>
 									<% If sNN(RS(I)) Then %>
-										<input name=LVL_<%= RS(0) %>_<%= I %> type=number value=<%= RS(I) %>><% 
+										<input name=LVL_<%= RS(0) %>_<%= I %> type=number min="0" value=<%= RS(I) %>><% 
 									End If
 								Next
 							End While
@@ -266,7 +266,7 @@ End Sub
 								For I = 1 To 10 %>
 									<td>
 									<% If sNN(RS(I)) Then %>
-										<input name=LSB_<%= RS(0) %><%= RS(1) %>_<%= I %> type=number value=<%= RS(I+1) %>><% 
+										<input name=LSB_<%= RS(0) %><%= RS(1) %>_<%= I %> type=number min="0" value=<%= RS(I+1) %>><% 
 									End If
 								Next
 							End While
