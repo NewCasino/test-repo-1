@@ -238,7 +238,7 @@ End Sub
 								For I = 1 To 11 %>
 									<td>
 									<% If sNN(RS(I)) Then %>
-										<input name=LVL_<%= RS(0) %>_<%= I %> type=number value=<%= RS(I) %>><% 
+										<input name=LVL_<%= RS(0) %>_<%= I %> type=number min="0" value=<%= RS(I) %>><% 
 									End If
 								Next
 							End While
@@ -266,7 +266,7 @@ End Sub
 								For I = 1 To 10 %>
 									<td>
 									<% If sNN(RS(I)) Then %>
-										<input name=LSB_<%= RS(0) %><%= RS(1) %>_<%= I %> type=number value=<%= RS(I+1) %>><% 
+										<input name=LSB_<%= RS(0) %><%= RS(1) %>_<%= I %> type=number min="0" value=<%= RS(I+1) %>><% 
 									End If
 								Next
 							End While
