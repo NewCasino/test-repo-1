@@ -147,9 +147,10 @@ End Sub
 							<col width=40><col><col width=60>
 							<tr><th colspan=3 class=TT>Low Start Mkt %
                             <%
-							RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE LIKE 'MKTPCT_%'")
+							RS = getRecord("SELECT * FROM SYS_ENUM(nolock) WHERE TYPE LIKE 'MKTPCT_%' ORDER BY [TYPE]")
 							While RS.Read  %>
 							<tr>
+								<%' First TYPE in the group should end with (C)ountry if naming convention followed %>
                                 <% If Right(RS(0), 1) = "C" Then %>
                                 <td rowspan=3><img src="/img/<%= Left(RS(2),1) %>.png">
                                 <% End If %>
