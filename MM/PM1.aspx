@@ -826,7 +826,11 @@ End Function
 							If VM Then        %>
 								<td class=SIP><textarea name=REMARK><%= RV("REMARK") %></textarea><%
 							Else        %>
-								<td valign=top class=RI><%= sNS(RV("REMARK")).Replace(vbCrLf, "<br>") %><%
+								<td valign=top class=RI>
+									<div class="comment">
+										<%= sNS(RV("REMARK")).Replace(vbCrLf, "<br>") %>
+									</div>
+								</td><%
 							End If
 						End If    %>
 					</table>			
