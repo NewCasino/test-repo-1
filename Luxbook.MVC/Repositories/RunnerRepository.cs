@@ -37,11 +37,11 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_ADJ_SUN":
                     type = "SUN SDP roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] {  "SUN" });
                     break;
                 case "SDP_ADJ_MASTER":
                     type = "Master  SDP roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN", "TAB" });
                     break;
                 case "SDP_ADJ_TAB":
                     type = "TAB SDP roll";
@@ -54,12 +54,12 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "PLACE_SDP_ADJ_SUN":
                     type = "Sun Place roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] {  "SUN" });
 
                     break;
                 case "PLACE_SDP_ADJ_MASTER":
                     type = "Master Place roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" , "TAB"});
 
                     break;
                 case "PLACE_SDP_ADJ_TAB":
@@ -69,8 +69,7 @@ namespace Luxbook.MVC.Repositories
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rollType), rollType, "Roll type not valid");
             }
-            var notification = String.Format("[{0}] {1} set {2} to {3} for runner {4}<br/>",
-                DateTime.Now.ToString("h:mm:ss tt"), currentUser, type, roll, runnerNumber);
+            var notification = $"[{DateTime.Now.ToString("h:mm:ss tt")}] {currentUser} set {type} to {roll} for runner {runnerNumber}<br/>";
             string priorityUpdates = string.Empty;
             if (priorityColumns.Any())
             {
@@ -115,19 +114,19 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_MIN_SUN":
                     type = "SUN SDP minimum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] {  "SUN" });
                     break;
                 case "SDP_MAX_SUN":
                     type = "SUN SDP maximum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "SUN" });
                     break;
                 case "SDP_MIN_MASTER":
                     type = "Master SDP minimum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN", "TAB" });
                     break;
                 case "SDP_MAX_MASTER":
                     type = "Master SDP maximum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN" ,"TAB" });
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boundaryType), boundaryType, "Boundary type not valid");
