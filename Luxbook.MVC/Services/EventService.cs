@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Common;
+    using DTO;
     using Models;
     using Repositories;
 
@@ -18,6 +19,11 @@
         /// <param name="raceType"></param>
         /// <returns></returns>
         List<Event> GetAllEvents(DateTime meetingDate, bool internationalsOnly, Enums.RaceType raceType);
+
+        /// <summary>
+        ///     Get event meta data for use by the RR gui prop id edit form
+        /// </summary>
+        EventMetaResponse GetEventMeta(int meetingId, int eventNumber);
 
         Event GetEvent(int meetingId, int eventNumber);
 
@@ -76,6 +82,20 @@
         public Event GetEvent(int meetingId, int eventNumber)
         {
             return _eventRepository.GetEvent(meetingId, eventNumber);
+        }
+
+        public EventMetaResponse GetEventMeta(int meetingId, int eventNumber)
+        {
+            var eventMeta = _eventRepository.GetEventMeta(meetingId, eventNumber);
+
+            var result = new EventMetaResponse
+            {
+                Event = eventMeta,
+                Runners = eventMeta.Runners
+            };
+
+
+            return result;
         }
 
         /// <summary>

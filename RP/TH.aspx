@@ -69,7 +69,7 @@ If Request("DT") = "" Then
 			</div>
 			<div id=VNL style="bottom:212px">
 			<table><col width=40><col width=32><col width=31><col width=19><col><col width=20>
-<%				Dim RM As Object = getRecord("SELECT DISTINCT MEETING_DATE FROM MEETING(nolock) ORDER BY MEETING_DATE DESC")  'This section is sensitive to chg !!
+<%				Dim RM As Object = getRecord("SELECT DISTINCT MEETING_DATE FROM MEETING(nolock) WHERE MEETING_DATE IS NOT NULL ORDER BY MEETING_DATE DESC")  'This section is sensitive to chg !!
 				While RM.Read() %>
 					<tr class=MTD onclick=tSH(this)><%
 					%><td><%= CDate(RM(0)).ToString("ddd") %><td colspan=4><%= CDate(RM(0)).ToString("dd MMM yyyy")

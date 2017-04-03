@@ -1,4 +1,4 @@
-var memVNL = "", curVNL = "", memSPD = "", posVNL = null,   tmrEVN = null /* timer ID */ , timerPause = false, timerPauseCount = 0;
+var memVNL = "", curVNL = "", memSPD = "", posVNL = null, tmrEVN = null /* timer ID */ , timerPause = false, timerPauseCount = 0;
 
 function toNum( x ) { return ( isNaN(x) )? 0: x * 1  }
 function xNW() { try { return new XMLHttpRequest } catch(e) { try { return new ActiveXObject("Msxml2.XMLHTTP.6.0") } catch(e) { return new ActiveXObject("Msxml2.XMLHTTP") } } }
@@ -115,11 +115,12 @@ function KD( ev, n ) {
 
 function getRPT( x, y ) {
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
-  $R(location.pathname + "?DT=" + x, function(R) { $("CNT").innerHTML = R });
+  $R(location.pathname + "?DT=" + x, function(R) { $("CNT").innerHTML = R; });
 }
 
 // Get Event data. Fills page with event info and runner data. Sets timer to auto refresh in 5 secs
-function getEVN( x, y, n ) {  
+var saveVNL = '';
+function getEVN( x, y, n ) { 
    if(handleTimerPause(x)){
       return;
     }
@@ -128,6 +129,12 @@ function getEVN( x, y, n ) {
   if( y ) { if( posVNL ) posVNL.className = ""; y.className = "CLK"; curVNL = x; posVNL = y }
   console.log('refreshing page');
   $R((n? n+".aspx": location.pathname) + "?EV=" + (x? x: curVNL + "&VM=1"), function(R) {
+	
+    // RUBT-1400 : implement propid edit ui
+	if (x != saveVNL) {
+		jQuery('.modalwindow').fadeOut(500);	// event_id changed so close popups
+	}
+    saveVNL = x;
 
     if(handleTimerPause(x)){
       return;
@@ -143,10 +150,21 @@ function getEVN( x, y, n ) {
           d = "=tb" + b[i] + j + " style='display:" + (d? d.style.display: "none") + "'";
           R[1] = R[1].replace("=tb" + (b[i] + j), d);
         } $("C2").innerHTML = R[1];
-      } else { $("CNT").innerHTML = R; if($("SPG") && memSPD == "SPG") vSPD($("SPD"), "SPG"); else vSPD($("SPG"), "SPD") }
+      } else {
+          $("CNT").innerHTML = R;
+    		  if (typeof eventCtrl != 'undefined') {
+    			    eventCtrl.onEventLoad();
+    		  }
+          if ($("SPG") && memSPD == "SPG")
+              vSPD($("SPD"), "SPG");
+          else
+              vSPD($("SPG"), "SPD")
+      }
     }
   });
-  if (x && !n) tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+  if (x && !n) {
+      tmrEVN = setTimeout("getEVN('" + x + "')", 5000);
+  }
 }
 
 function handleTimerPause(x){

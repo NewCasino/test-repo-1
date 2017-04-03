@@ -2,8 +2,9 @@
 
 '-- Database Related Functions ------------------------------------------------
 Function Conn( Optional SVR As Byte = 0 ) As SqlConnection
-  Dim X As New SqlConnection(ConfigurationManager.AppSettings("dbConnStr_" & SVR) & _
-    " Application Name=[LUXBOOK]" & Request.ServerVariables("SCRIPT_NAME")): X.Open(): Return X
+  Dim ConnStr = ConfigurationManager.AppSettings("dbConnStr_" & SVR) & _
+        " Application Name=[LUXBOOK]" & Request.ServerVariables("SCRIPT_NAME")
+  Dim X As New SqlConnection(ConnStr): X.Open(): Return X
 End Function
 
 

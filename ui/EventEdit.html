@@ -1,0 +1,138 @@
+<div id="event-modal" class="modalwindow shadow">
+    <div class="modal-title">
+		<span>Race {{event.Event_No}} : {{event.Name}}</span>
+		<span class="modal-close"><a href="#">X</a></span>
+	</div>
+    <div class="modal-content">
+	    <table cellpadding="2" width="100%">
+	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Meeting Identifiers</td></tr>
+	        <tr><td width="150px">Meeting Name</td><td class="modal-data">{{event.Venue}}</td></tr>
+	        <tr><td>Meeting Id</td><td class="modal-data">{{event.Meeting_Id}}</td></tr>
+	        <tr><td>OCTS</td><td class="modal-data">{{event.Btk_Id}}</td></tr>
+	        <tr><td>PA Meeting Id</td><td class="modal-data">{{event.Pa_Mtg_Id}}</td></tr>
+	        <tr><td>WIFT Meeting Id</td><td class="modal-data">{{event.Wift_Mtg_Id}}</td></tr>
+	        <tr><td colspan="2"><hr /></td></tr>
+	        
+	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Event Identifiers</td></tr>
+	        <tr><td>Event Number</td><td class="modal-data">{{event.Event_No}}
+	        			<span style="float:right;margin-right:80px;">{{event.Start_Time | date:'dd/MM/yyyy @ h:mma'}}</span>
+	        </td></tr>
+	        <tr><td>Event Name</td><td class="modal-data">{{event.Name}}</td></tr>
+	        <tr><td>Betfair Win Market Id</td><td class="modal-data">{{event.Bfr_Mkt_Id}}</td></tr>
+	        <tr><td>PA Event Id</td><td class="modal-data">{{event.Pa_Evt_Id}}</td></tr>
+	        <tr><td>WIFT Event Id</td><td class="modal-data">{{event.Wift_Evt_Id}}</td></tr>
+	        <tr><td colspan="2"><hr /></td></tr>
+	        <tr><td colspan="2">
+	        	<div id="event-runners">
+			        <table width="100%">
+			        	<thead>
+					        <tr id="runner-propid-header">
+					        	<td>&nbsp;</td>
+					        	<td width="75%">RUNNER</td>
+					        	<td>Prop Id &nbsp; <a href="#" ng-click="autoAllocate()">Auto</a></td>
+					        </tr>
+			        	</thead>
+			        	<tbody>
+				            <tr valign="middle" ng-repeat="x in runners" ng-class-odd="'striped'">
+				                <td class="modal-data" align="right"><span class="index">{{x.Runner_No}}</span></td>
+				                <td class="modal-data">{{x.Name}}</td>
+				                <td class="modal-data align="right"">
+				                	<input type="text" ng-model="x.Tab_Prop" size="7">
+				                </td>
+				            </tr>
+				        </tbody>
+		            </table>
+		        </div>
+	        </td></tr>
+	    </table>
+	    <hr class="hr" />
+	    <input type="button" value="Save" class="modal-button modal-save" ng-click="savePropIds()" />
+	    <input type="button" value="Cancel" class="modal-button modal-cancel" onclick="javascript:eventControl.closeWindow();" /> &nbsp;
+    </div>
+</div>
+<style>
+
+.modal-content table  {
+    padding: 10px;
+    color: #fff;
+    font-size: 1.1em;
+}
+
+#event-runners table thead a {
+	color: #fea;
+	text-decoration: none;
+	font-size: .9em;
+	font-weight: 300;
+	text-transform: uppercase;
+}
+#event-runners table tbody td {
+	padding: 0px 4px;
+}
+#event-runners table tbody input {
+	border: 0px solid #fff;
+	border-radius: 3px;
+    color: #000;
+	font-size: 0.9em;
+    font-weight: 700;
+    padding: 0px 2px;
+	line-height: 1em;
+}
+#event-runners, #event-runners table {
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+}
+.striped {
+	background-color: #a8b8b0;
+}
+#event-runners table tbody span.index {
+	color: #fea;
+}
+</style>
+<script>
+var eventControl = {
+
+	data: {},
+	event_ref: '',
+	
+	openWindow: function(data) {
+		if (tmrEVN) {
+			clearTimeout(tmrEVN);
+		}
+		this.data = data;
+		this.event_ref = data.Meeting_Id+'_'+data.Event_No;
+		this.renderPopup();
+		this.delegateEvents();
+	},
+
+	renderPopup: function() {
+		var id = jQuery('#event-modal');
+		var winH = jQuery(window).height();
+		var winW = jQuery(window).width();
+		id.css('top', 70);
+		id.css('width', winW/4);
+		id.css('left', winW-id.width()-40);
+		id.css('max-height', winH-50);
+		jQuery('#event-runners').css('max-height', winH-480);
+		id.fadeIn(500);	
+	},
+
+	delegateEvents: function() {
+		var _this = this;			
+		// x in title bar
+		jQuery('#event-modal .modal-close').click(function (event) {
+			event.preventDefault();
+			_this.closeWindow();
+		});
+    },
+    
+	// close window and restart 5 second refresh timer
+	closeWindow: function() {
+		getEVN(curVNL);
+		jQuery('#event-modal').fadeOut(500);
+		tmrEVN = setTimeout(function() {
+			getEVN(curVNL);
+		}, 5000);	
+	}
+};
+</script>

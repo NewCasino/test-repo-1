@@ -94,7 +94,7 @@ End Sub
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="/global.css">
 	<script src="/global.js"></script>
-	<script>top.setTitle("Parameter Settings")</script>
+	<script>top.setTitle("Parameter Settings - LUX")</script>
 	<style>#WIP input { width:45px; text-align:right }</style>
 	
 	<body>
@@ -238,7 +238,7 @@ End Sub
 								For I = 1 To 11 %>
 									<td>
 									<% If sNN(RS(I)) Then %>
-										<input name=LVL_<%= RS(0) %>_<%= I %> type=number value=<%= RS(I) %>><% 
+										<input name=LVL_<%= RS(0) %>_<%= I %> type=number min="0" value=<%= RS(I) %>><% 
 									End If
 								Next
 							End While
@@ -266,7 +266,7 @@ End Sub
 								For I = 1 To 10 %>
 									<td>
 									<% If sNN(RS(I)) Then %>
-										<input name=LSB_<%= RS(0) %><%= RS(1) %>_<%= I %> type=number value=<%= RS(I+1) %>><% 
+										<input name=LSB_<%= RS(0) %><%= RS(1) %>_<%= I %> type=number min="0" value=<%= RS(I+1) %>><% 
 									End If
 								Next
 							End While
