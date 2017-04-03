@@ -443,7 +443,7 @@ label.checkbox-label input[type=checkbox]{
     bottom: -3px;
 }
 
-td > div.comment {
+.LST td.RI div.comment {
 	overflow-y: auto;
 	height: 120px;
 	text-align: left;
