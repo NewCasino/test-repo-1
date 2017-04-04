@@ -131,8 +131,11 @@ function getEVN( x, y, n ) {
   $R((n? n+".aspx": location.pathname) + "?EV=" + (x? x: curVNL + "&VM=1"), function(R) {
 	
     // RUBT-1400 : implement propid edit ui
-	if (x != saveVNL) {
-		jQuery('.modalwindow').fadeOut(500);	// event_id changed so close popups
+    if (x != saveVNL) {
+        // RUBT-2015 Temporary fix to show trade history
+	    if (typeof jQuery !== 'undefined') {
+	        jQuery('.modalwindow').fadeOut(500);    // event_id changed so close popups
+	    }
 	}
     saveVNL = x;
 
