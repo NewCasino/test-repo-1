@@ -1,5 +1,3 @@
-Imports System.Text.RegularExpressions
-
 <!-- #include file="/inc/page.inc" -->
 <script language=VBScript runat=server>
 
