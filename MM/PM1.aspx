@@ -1,3 +1,5 @@
+Imports System.Text.RegularExpressions
+
 <!-- #include file="/inc/page.inc" -->
 <script language=VBScript runat=server>
 
@@ -828,7 +830,7 @@ End Function
 							Else        %>
 								<td valign=top class=RI>
 									<div class="comment">
-										<%= sNS(RV("REMARK")).Replace(vbCrLf, "<br>") %>
+										<%= Regex.Replace(Regex.Replace(Regex.Replace(sNS(RV("REMARK")).Replace(vbCrLf, "<br>"), "(ID:\d+)", "<b class='crimson'>$0</b>"), "(@ \d+(\.\d+)?)", "<b class='crimson'>$0</b>"), "(RunNo: \d+)", "<b class='blue'>$0</b>") %>
 									</div>
 								</td><%
 							End If
