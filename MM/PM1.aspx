@@ -828,7 +828,7 @@ End Function
 							Else        %>
 								<td valign=top class=RI>
 									<div class="comment">
-										<%= sNS(RV("REMARK")).Replace(vbCrLf, "<br>") %>
+										<%= Regex.Replace(Regex.Replace(Regex.Replace(sNS(RV("REMARK")).Replace(vbCrLf, "<br>"), "(ID:\d+)", "<b class='crimson'>$1</b>"), "(@ \d+(\.\d+)?)", "<b class='crimson'>$1</b>"), "(RunNo: )(\d+)", "RunNo: <b class='crimson'>$2</b>") %>
 									</div>
 								</td><%
 							End If

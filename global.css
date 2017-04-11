@@ -448,4 +448,8 @@ label.checkbox-label input[type=checkbox]{
 	overflow-y: auto;
 	height: 120px;
 	text-align: left;
+	font-size: 1em;
+}
+b.crimson {
+	color:crimson;
 }
