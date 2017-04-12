@@ -10,6 +10,7 @@
     public interface IDroEventRepository
     {
         DroEventMeta GetEventMeta(int meetingId, int eventNumber);
+        int GetMeetingId(string octsCode, string meetingDate);
     }
 
     public class DroEventRepository : IDroEventRepository
@@ -59,6 +60,20 @@
 
             return droEventMeta;
 
+        }
+
+        public int GetMeetingId(string octsCode, string meetingDate)
+        {
+            int meetingId = _database.Query<int>(@"SELECT mt.Meeting_Id
+                                            FROM dbo.MEETING_TAB as mt
+                                            WHERE mt.MEETING_DATE = @meetingDate
+                                            AND mt.BTK_ID = @octsCode",
+                                new
+                                {
+                                    octsCode,
+                                    meetingDate
+                                }, commandType: CommandType.Text).FirstOrDefault();
+            return meetingId;
         }
 
     }

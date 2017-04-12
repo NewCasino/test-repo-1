@@ -14,29 +14,29 @@ namespace Luxbook.MVC.Models
         public string Scr { get; set; }
         public string Tab_Prop { get; set; }
 
-        public string Fx_Bob { get; set; }
-        public string Fx_Wow { get; set; }
-        public string B1y_Fw { get; set; }
-        public string Ezy_Fw { get; set; }
-        public string Lad_Fw { get; set; }
-        public string Spb_Fw { get; set; }
-        public string Ias_Fw { get; set; }
-        public string Top_Fw { get; set; }
-        public string Qld_Fw { get; set; }
-        public string Uni_Fw { get; set; }
-        public string Apn_Fw { get; set; }
-        public string Bfr_Fw_B1 { get; set; }
-        public string Bfr_Fw_L1 { get; set; }
-        public string Pm_Dvp { get; set; }
-        public string Bfr_Tmc { get; set; }
-        public string Bfr_Lpt { get; set; }
-        public string Aus_Tw { get; set; }
-        public string Vic_Tw { get; set; }
-        public string Nsw_Tw { get; set; }
-        public string Qld_Tw { get; set; }
-        public string Sun_Sdp { get; set; }
-        public string Tab_Sdp { get; set; }
-        public string Lux_Sdp { get; set; }
+        public decimal? Fx_Bob { get; set; }
+        public decimal? Fx_Wow { get; set; }
+        public decimal? B1y_Fw { get; set; }
+        public decimal? Ezy_Fw { get; set; }
+        public decimal? Lad_Fw { get; set; }
+        public decimal? Spb_Fw { get; set; }
+        public decimal? Ias_Fw { get; set; }
+        public decimal? Top_Fw { get; set; }
+        public decimal? Qld_Fw { get; set; }
+        public decimal? Uni_Fw { get; set; }
+        public decimal? Apn_Fw { get; set; }
+        public decimal? Bfr_Fw_B1 { get; set; }
+        public decimal? Bfr_Fw_L1 { get; set; }
+        public decimal? Pm_Dvp { get; set; }
+        public decimal? Bfr_Tmc { get; set; }
+        public decimal? Bfr_Lpt { get; set; }
+        public decimal? Aus_Tw { get; set; }
+        public decimal? Vic_Tw { get; set; }
+        public decimal? Nsw_Tw { get; set; }
+        public decimal? Qld_Tw { get; set; }
+        public decimal? Sun_Sdp { get; set; }
+        public decimal? Tab_Sdp { get; set; }
+        public decimal? Lux_Sdp { get; set; }
 
     }
 }
