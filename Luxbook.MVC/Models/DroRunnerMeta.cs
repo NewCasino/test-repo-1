@@ -38,5 +38,10 @@ namespace Luxbook.MVC.Models
         public decimal? Tab_Sdp { get; set; }
         public decimal? Lux_Sdp { get; set; }
 
+        public decimal? HST_VT { get; set; }
+        public decimal? HST_VQ { get; set; }
+        public decimal? HST_VX { get; set; }
+        public decimal? RDB_TW { get; set; }
+
     }
 }

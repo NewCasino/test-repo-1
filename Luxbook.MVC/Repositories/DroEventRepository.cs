@@ -43,8 +43,9 @@
                 _database.Query<DroRunnerMeta>(@"SELECT MEETING_ID, EVENT_NO, RUNNER_NO, NAME, SCR, TAB_PROP,
                                             Fx_Bob, Fx_Wow, B1y_Fw, Ezy_Fw, Lad_Fw, Spb_Fw, Ias_Fw, Top_Fw, Qld_Fw, 
                                             Uni_Fw, Apn_Fw, Bfr_Fw_B1, Bfr_Fw_L1, Pm_Dvp, Bfr_Tmc, Bfr_Lpt, Aus_Tw,
-                                            Vic_Tw, Nsw_Tw, Qld_Tw, Sun_Sdp, Tab_Sdp, Lux_Sdp
-                                            FROM dbo.RUNNER_TAB
+                                            Vic_Tw, Nsw_Tw, Qld_Tw, Sun_Sdp, Tab_Sdp, Lux_Sdp,
+                                            HST_VT, HST_VQ, HST_VX, RDB_TW
+                                            FROM dbo.RUNNER_TAB 
                                             WHERE EVENT_NO = @eventNumber and MEETING_ID = @meetingId
                                             ORDER BY RUNNER_NO",
                     new

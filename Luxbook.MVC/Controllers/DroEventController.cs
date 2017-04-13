@@ -7,20 +7,17 @@
     using Services;
 
     using DTO;
-    using Repositories;
 
     [RequireAuthentication]
     public class DroEventController : ApiController
     {
         private readonly IDroEventService _droEventService;
-        private readonly IDroEventRepository _droEventRepository;
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public DroEventController(IDroEventService droEventService, IDroEventRepository droEventRepository)
+        public DroEventController(IDroEventService droEventService)
         {
             _droEventService = droEventService;
-            _droEventRepository = droEventRepository;
         }
 
         [HttpGet]
@@ -42,11 +39,7 @@
         {
             try
             {
-                int meetingId = _droEventRepository.GetMeetingId(octsCode, meetingDate);
-                if ( meetingId > 0) {
-                    return _droEventService.GetEventMeta(meetingId, eventNumber);
-                }
-                return new DroEventMetaResponse() { Success = false, Message = "matching meeting not found" };
+                return _droEventService.GetEventMeta(octsCode, meetingDate, eventNumber);
             }
             catch (Exception ex)
             {

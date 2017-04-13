@@ -11,7 +11,7 @@
     public interface IDroEventService
     {
         DroEventMetaResponse GetEventMeta(int meetingId, int eventNumber);
-
+        DroEventMetaResponse GetEventMeta(string octsCode, string meetingDate, int eventNumber);
     }
 
     public class DroEventService : IDroEventService
@@ -33,8 +33,17 @@
                 Event = droEventMeta
             };
 
-
             return result;
+        }
+
+        public DroEventMetaResponse GetEventMeta(string octsCode, string meetingDate, int eventNumber)
+        {
+            int meetingId = _droEventRepository.GetMeetingId(octsCode, meetingDate);
+            if (meetingId > 0)
+            {
+                return this.GetEventMeta(meetingId, eventNumber);
+            }
+            return new DroEventMetaResponse() { Success = false, Message = "matching meeting not found" };
         }
 
     }
