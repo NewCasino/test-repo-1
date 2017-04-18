@@ -265,6 +265,7 @@
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\DroEventController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\LiabilityController.cs" />
     <Compile Include="Controllers\MaxExposureController.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Controllers\RunnerController.cs" />
+    <Compile Include="DTO\DroEventMetaResponse.cs" />
     <Compile Include="DTO\RunnerPostDataDTO.cs" />
     <Compile Include="Controllers\StakingController.cs" />
     <Compile Include="Controllers\TradeController.cs" />
@@ -318,6 +320,8 @@
     <Compile Include="Models\Alert.cs" />
     <Compile Include="Models\Bettekk.cs" />
     <Compile Include="Models\BetTypeSummary.cs" />
+    <Compile Include="Models\DroEventMeta.cs" />
+    <Compile Include="Models\DroRunnerMeta.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventMeta.cs" />
     <Compile Include="Models\EventTrading.cs" />
@@ -340,6 +344,7 @@
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
     <Compile Include="Repositories\AlertRepository.cs" />
+    <Compile Include="Repositories\DroEventRepository.cs" />
     <Compile Include="Repositories\EventRepository.cs" />
     <Compile Include="Repositories\EventTradingRepository.cs" />
     <Compile Include="Repositories\IEventTradingRepository.cs" />
@@ -357,6 +362,7 @@
     <Compile Include="Services\AlertService.cs" />
     <Compile Include="Services\CodeService.cs" />
     <Compile Include="Services\CustomAlertsService.cs" />
+    <Compile Include="Services\DroEventService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\MaxExposureService.cs" />
     <Compile Include="Services\MeetingService.cs" />
