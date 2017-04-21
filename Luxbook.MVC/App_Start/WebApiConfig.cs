@@ -13,8 +13,7 @@
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}"
-                );
+            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}");
 
             config.DependencyResolver = new UnityDependencyResolver(UnityConfig.GetConfiguredContainer());
         }

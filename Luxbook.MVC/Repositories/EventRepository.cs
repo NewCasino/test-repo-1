@@ -7,7 +7,6 @@
     using Infrastructure;
     using Models;
     using Services;
-    using DTO;
 
     public interface IEventRepository
     {
