@@ -8,7 +8,7 @@
 
     using DTO;
 
-    [RequireAuthentication]
+    [RequireAuthenticationApi]
     public class DroEventController : ApiController
     {
         private readonly IDroEventService _droEventService;

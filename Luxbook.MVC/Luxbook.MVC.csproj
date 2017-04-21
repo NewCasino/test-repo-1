@@ -295,6 +295,7 @@
     <Compile Include="Infrastructure\IDatabase.cs" />
     <Compile Include="Infrastructure\IGridReader.cs" />
     <Compile Include="Infrastructure\LanguageManager.cs" />
+    <Compile Include="Infrastructure\RequireAuthenticationApiAttribute.cs" />
     <Compile Include="Infrastructure\RequireAuthenticationAttribute.cs" />
     <Compile Include="Infrastructure\RequireAuthenticationWebApiAttribute.cs" />
     <Compile Include="Infrastructure\RequiredLevelAttribute.cs" />
