@@ -1,0 +1,153 @@
+<!doctype html>
+<html ng-app="WebApp">
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Rubix Racing - List Trader Assignments</title>
+
+		<link rel="stylesheet" href="/ui/static/css/bootstrap.min.css" crossorigin="anonymous">
+		<link rel="stylesheet" href="/ui/static/css/bootstrap-theme.min.css" crossorigin="anonymous">
+		<link rel="stylesheet" href="/ui/static/css/font-awesome.min.css" crossorigin="anonymous">
+		<link rel="stylesheet" href="/ui/static/css/toastr.min.css" crossorigin="anonymous">
+		<link rel="stylesheet" href="/ui/static/css/custom.css" media="screen">
+		<style type="text/css" media="print">
+		  @page {size:landscape;}
+		</style>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="/ui/static/js/jquery-2.1.4.min.js" crossorigin="anonymous"></script>
+		<script src="/ui/static/js/jquery.ajax-cross-origin.min.js" crossorigin="anonymous"></script>
+		<script src="/ui/static/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+	</head>
+
+	<body>
+
+		<div class="container-fluid assign-container" ng-controller="TraderCtrl as vm">
+
+			<h3>List Trader Assignments</h3>
+
+			<form class="assign-form">
+				<div class="panel panel-default col-md-11 opt-panel">
+					<div class="panel-body">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="major">Meeting Date</label>
+								<select class="form-control date-list" ng-model="vm.data.date" ng-change="vm.dateChange()">
+									<option ng-selected="$first" ng-repeat="date in vm.dates" value="{{$index}}">{{date | toDisplayDate}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="major">Meeting Type Filter</label><br>
+								<div class="checkbox checkbox-info checkbox-inline">
+									<input id="check1a" type="checkbox" class="styled" ng-model="vm.data.type.horses" >
+									<label for="check1a">Horses</label>
+								</div>
+								<div class="checkbox checkbox-info checkbox-inline">
+									<input id="check1b" type="checkbox" class="styled" ng-model="vm.data.type.harness" >
+									<label for="check1b">Harness</label>
+								</div>
+								<div class="checkbox checkbox-info checkbox-inline">
+									<input id="check1c" type="checkbox" class="styled" ng-model="vm.data.type.greys" >
+									<label for="check1c">Greys</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="major">Meeting Status Filter</label><br>
+								<div class="checkbox checkbox-success checkbox-inline">
+									<input id="check2a" type="checkbox" class="styled" ng-model="vm.data.status.assigned" >
+									<label for="check2a">Assigned</label>
+								</div>
+								<div class="checkbox checkbox-success checkbox-inline">
+									<input id="check2b" type="checkbox" class="styled" ng-model="vm.data.status.unassigned" >
+									<label for="check2b">Unassigned</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="major">Country Filter</label><br>
+								<div class="checkbox checkbox-warning checkbox-inline">
+									<input id="check3a" type="checkbox" class="styled" ng-model="vm.data.country.aunz" >
+									<label for="check3a">AU+NZ</label>
+								</div>
+								<div class="checkbox checkbox-warning checkbox-inline">
+									<input id="check3b" type="checkbox" class="styled" ng-model="vm.data.country.ukir" >
+									<label for="check3b">UK+IR</label>
+								</div>
+								<div class="checkbox checkbox-warning checkbox-inline">
+									<input id="check3c" type="checkbox" class="styled" ng-model="vm.data.country.other" >
+									<label for="check3c">Other</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="major">Text Filter</label><br>
+								<input type="text" ng-model="vm.data.text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="major"></label><br>
+								<button type="button" class="btn btn-small btn-info" ng-click="vm.printAssignments()">Print</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-default col-md-11 data-panel">
+					<div class="panel-body">
+						<table id="assignments" class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th>Cnt</th>
+									<th class="left">Venue</th>
+									<th>Country</th>
+									<th>Type</th>
+									<th>Races</th>
+									<th>Lux Trader</th>
+									<th>Tab Trader</th>
+									<th>Sun Trader</th>
+									<th>Lux MA</th>
+									<th>Tab MA</th>
+									<th>Sun MA</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="item in vm.filteredItems = (vm.dbData.Meetings | filter: vm.typeFilter | filter: vm.countryFilter | filter: vm.data.text)">
+									<td class="gray">{{$index + 1}}</td>
+									<td class="left">{{item.Venue}}</td>
+									<td>{{item.Country}}</td>
+									<td>{{item.Type}}</td>
+									<td>{{item.Events}}</td>
+									<td>{{item.TraderAssignments.Lux}}</td>
+									<td>{{item.TraderAssignments.Tab}}</td>
+									<td>{{item.TraderAssignments.Sun}}</td>
+									<td>{{item.MaAssignments.Lux}}</td>
+									<td>{{item.MaAssignments.Tab}}</td>
+									<td>{{item.MaAssignments.Sun}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- Scripts -->
+		<script src="/ui/static/js/angular.min.js"></script>
+		<script src="/ui/static/js/angular-route.min.js"></script>
+		<script src="/ui/static/js/toastr.min.js"></script>
+		<script src="/ui/static/js/bootbox.min.js" defer async></script>
+
+		<!-- App and Modules -->
+		<script src="/ui/modules/trader/trader.module.js"></script>
+
+		<script src="/ui/app.js"></script>
+
+	</body>
+</html>

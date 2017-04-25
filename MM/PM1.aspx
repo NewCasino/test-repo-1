@@ -178,7 +178,7 @@ End Function
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
 
-			<!-- modal window placeholder for edit event+runner popups -->
+			<!-- modal window placeholder for angular ui components -->
 			<div ng-view></div>
 
 			<script src="/ui/angular.min.js"></script>

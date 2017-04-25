@@ -131,6 +131,8 @@
 						<% End If %>
 					<!--<li onclick="MVC('Luxbook.MVC/MaxExposure/Index')"/> Exposure -->
 					<%	End If  %>
+					<li onclick="MVC('/ui/modules/Trader/AssignTrader.html')" >Assign Trader</li>
+					<li onclick="MVC('/ui/modules/Trader/ListTraderAssigns.html')" >List Assignments</li>
 				</ul>
 				</li>
 				<%  If Session("LVL") < 8		%>	

@@ -1,4 +1,8 @@
-var WebApp = angular.module('WebApp', ['ngRoute'])
+// core angular app
+var WebApp = angular.module('WebApp', [
+    'ngRoute',
+    'WebApp.TraderModule'
+    ])
 
 	// router
     .config(['$routeProvider','$httpProvider', function($routeProvider, $httpProvider) {
@@ -16,7 +20,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
     }])
 
     // runner controller
-    .controller('RunnerCtrl', ['$scope','$http','$routeParams','$location', 'dataFactory', 
+    .controller('RunnerCtrl', ['$scope','$http','$routeParams','$location', 'dataFactory',
                        function($scope, $http, $routeParams, $location, dataFactory) {
 		document.location.href='#';
         $scope.params = $routeParams;
@@ -26,34 +30,34 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         };
 
 		// init controller
-		$scope.init = function() {	
+		$scope.init = function() {
 		};
 
-        // scratch runner 
-        if ($routeParams.Action == 'Scratch') {            
+        // scratch runner
+        if ($routeParams.Action == 'Scratch') {
 			_utils.confirm("Confirm you want to scratch runner ??\n\nRunner: " + $scope.data.runner_num + ' - ' + $scope.data.runner)
 				.then(function(OK) {
 					if (OK) {
                         dataFactory.scratchRunner($scope.data.meeting_id, $scope.data.race_num, $scope.data.runner_num)
-                            .then(function(resp) {                     
+                            .then(function(resp) {
                                 runnerControl.closeWindow();
                             });
 					}
 				});
         }
-        // un-scratch runner 
+        // un-scratch runner
         if ($routeParams.Action == 'UnScratch') {
 			_utils.confirm("Confirm you want to un-scratch runner ??\n\nRunner: " + $scope.data.runner_num + ' - ' + $scope.data.runner)
 				.then(function(OK) {
 					if (OK) {
 						dataFactory.unScratchRunner($scope.data.meeting_id, $scope.data.race_num, $scope.data.runner_num)
-                            .then(function(resp) {                     
+                            .then(function(resp) {
                                 runnerControl.closeWindow();
-                            });                        
+                            });
 					}
 				});
         }
-		
+
         $scope.savePropId = function() {
 			// validate propid
 			var tabProp = parseInt($scope.data.tab_prop);
@@ -65,7 +69,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 				.then(function(OK) {
 					if (OK) {
                         dataFactory.savePropId($scope.data.meeting_id, $scope.data.race_num, $scope.data.runner_num, tabProp)
-                            .then(function(resp) {                     
+                            .then(function(resp) {
                                 runnerControl.closeWindow();
                             });
 					} else {
@@ -73,16 +77,16 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
                     }
 				});
         };
-        
+
         // start controller
 		$scope.init();
         if ($routeParams.Action == 'Edit') {
-			runnerControl.openWindow($scope.data);  
+			runnerControl.openWindow($scope.data);
         }
  	}])
 
     // event controller
-    .controller('EventCtrl', ['$q', '$scope', '$routeParams', 'dataFactory', 
+    .controller('EventCtrl', ['$q', '$scope', '$routeParams', 'dataFactory',
                       function($q, $scope, $routeParams, dataFactory) {
 		document.location.href='#';
         $scope.params = $routeParams;
@@ -94,7 +98,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         $scope.event = {};
 
 		// init controller
-		$scope.init = function() {			
+		$scope.init = function() {
 		};
 
         // fetch event and runner info from DOM
@@ -111,10 +115,23 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 		};
 
         // fetch event and runner data
+        $scope.fetchMeetings = function(eventId) {
+            var defer = $q.defer();
+            dataFactory.getEventMeta($scope.data.meeting_id, $scope.data.race_num)
+                .then(function(resp) {
+                    // console.log(resp);
+                    $scope.event = resp.data.Event;
+                    $scope.runners = resp.data.Runners;
+                    defer.resolve();
+                });
+            return defer.promise;
+        };
+
+        // fetch event and runner data
 		$scope.fetchEventData = function(eventId) {
             var defer = $q.defer();
             dataFactory.getEventMeta($scope.data.meeting_id, $scope.data.race_num)
-                .then(function(resp) {  
+                .then(function(resp) {
 					// console.log(resp);
                     $scope.event = resp.data.Event;
                     $scope.runners = resp.data.Runners;
@@ -132,22 +149,22 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
                 var propid = parseInt(item.Tab_Prop);
                 if (isNaN(propid) || propid < 1) {
                     err = true;
-                    break;                   
+                    break;
                 }
                 buf.push({
-					RunnerNo: item.Runner_No, 
+					RunnerNo: item.Runner_No,
 					PropId: propid
 				});
             }
             if (err) {
                 _utils.error('All Prop Ids must be integer and greater than zero !!');
-                return;                   
+                return;
             }
 			_utils.confirm("Confirm you want to save the Prop Ids ??\n")
 				.then(function(OK) {
 					if (OK) {
                         dataFactory.savePropIds($scope.data.meeting_id, $scope.data.race_num, buf)
-                            .then(function(resp) {                     
+                            .then(function(resp) {
                                 runnerControl.closeWindow();
                             });
                     } else {
@@ -155,13 +172,13 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
                     }
 				});
         };
-        
+
         // start controller
 		$scope.init();
         $scope.fetchEventData($scope.params.EventId)
         	.then(function() {
-        		eventControl.openWindow($scope.event);  
-        	});			
+        		eventControl.openWindow($scope.event);
+        	});
     }])
 
     // data service
@@ -193,22 +210,117 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
 
         dataFactory.savePropId = function (meetingId, eventId, runnerNum, propId) {
             var data = [{
-				RunnerNo: runnerNum, 
+				RunnerNo: runnerNum,
 				PropId: propId
 			}];
             return dataFactory.savePropIds(meetingId, eventId, data);
         };
 
         dataFactory.savePropIds = function (meetingId, eventId, data) {
-            return $http.post(urlBase + '/Runner/Propid', 
-                { 
-                    MeetingId: meetingId, 
+            return $http.post(urlBase + '/Runner/Propid',
+                {
+                    MeetingId: meetingId,
                     EventNumber: eventId,
                     Data: data
                 }, config
              );
         };
-        
+
+        dataFactory.getAssignments = function (meetingDate) {
+            return $http.get(urlBase + '/TraderAssign/Assignments', {
+                headers : {'Accept' : 'application/json'},
+                params: {meetingDate: meetingDate}
+            });
+        };
+
+        dataFactory.saveAssignments = function (data) {
+            return $http.post(urlBase + '/TraderAssign/Assignments',
+                data,
+                config
+             );
+        };
+
         return dataFactory;
-        
-    }]);
+
+    }])
+
+    .filter('toDisplayDate', function () {
+        return function(input) {
+            var a = input.split('-');
+            return a[2] + '/' + a[1] + '/' + a[0];
+        }
+    })
+
+	.directive('dropdownMultiselect', function () {
+
+        var controller = ['$scope', function ($scope) {
+            var ctrl = this;
+			ctrl.openDropdown = function () {
+				ctrl.open = !ctrl.open;
+			};
+
+			ctrl.selectAll = function () {
+				ctrl.model = [];
+				angular.forEach(ctrl.options, function (item, index) {
+					ctrl.model.push(item[ctrl.optkey]);
+				});
+
+			};
+
+			ctrl.deselectAll = function () {
+				ctrl.model = [];
+			};
+
+			ctrl.toggleSelectItem = function (option) {
+				var intIndex = -1;
+				angular.forEach(ctrl.model, function (item, index) {
+					if (item == option[ctrl.optkey]) {
+						intIndex = index;
+					}
+				});
+				if (intIndex >= 0) {
+					ctrl.model.splice(intIndex, 1);
+				}
+				else {
+					ctrl.model.push(option[ctrl.optkey]);
+				}
+			};
+
+            ctrl.getClassName = function (option) {
+                var varClassName = 'glyphicon glyphicon-remove red';
+                angular.forEach(ctrl.model, function (item, index) {
+                    if (item == option[ctrl.optkey]) {
+                        varClassName = 'glyphicon glyphicon-ok green';
+                    }
+                });
+                return (varClassName);
+            };
+        }],
+
+        template = "<div class='btn-group' data-ng-class='{open: ctrl.open}'>" +
+            "<button class='btn btn-small'>Select...</button>" +
+            "<button class='btn btn-small dropdown-toggle' data-ng-click='ctrl.openDropdown()'><span class='caret'></span></button>" +
+            "<ul class='dropdown-menu' aria-labelledby='dropdownMenu'>" +
+                // "<li><a data-ng-click='selectAll()'><span class='glyphicon glyphicon-ok green' aria-hidden='true'></span> Check All</a></li>" +
+                // "<li><a data-ng-click='deselectAll();'><span class='glyphicon glyphicon-remove red' aria-hidden='true'></span> Uncheck All</a></li>" +
+                // "<li class='divider'></li>" +
+                "<li data-ng-repeat='option in ctrl.options'><a data-ng-click='ctrl.toggleSelectItem(option)'><span data-ng-class='ctrl.getClassName(option)' aria-hidden='true'></span> {{option[ctrl.optval]}}</a></li>" +
+            "</ul>" +
+            "</div>";
+
+        return {
+            restrict: 'E',
+            scope: {
+				model: '=',
+				options: '=',
+				optkey: '@',
+				optval: '@'
+			},
+            controller: controller,
+            controllerAs: 'ctrl',
+            bindToController: true,        //required in 1.3+ with controllerAs
+            template: template
+        };
+
+	})
+;
