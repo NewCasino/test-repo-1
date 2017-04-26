@@ -210,12 +210,6 @@ angular.module('WebApp.TraderModule', [])
                             };
                         }
                     }
-
-                    // build trader filter dropdown data
-                    vm.traderList = new Array('All Traders');
-                    for (var i=0, ll=vm.dbData.Traders.length; i<ll; i++) {
-                    	vm.traderList.push(vm.dbData.Traders[i].Lid);
-                    }
                     toastr.clear();
                     defer.resolve();
                 });
