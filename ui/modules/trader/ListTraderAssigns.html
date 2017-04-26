@@ -118,7 +118,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="item in vm.filteredItems = (vm.dbData.Meetings | filter: vm.typeFilter | filter: vm.countryFilter | filter: vm.data.text)">
+								<tr ng-repeat="item in vm.filteredItems = (vm.meetings | filter: vm.typeFilter | filter: vm.statusFilter | filter: vm.countryFilter | filter: vm.data.text)">
 									<td class="gray">{{$index + 1}}</td>
 									<td class="left">{{item.Venue}}</td>
 									<td>{{item.Country}}</td>
