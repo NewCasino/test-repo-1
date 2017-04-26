@@ -27,7 +27,7 @@
             //      select meeting_id from meeting_tab where country not in ('au')) and success = 1
             //group by cast(floor(cast(date_created as float)) as datetime)
 
-            var sql = @"SELECT [RETURN], BET_AMOUNT AS BetAmount, REBATE, DATE_CREATED as DateCreated, BET_TYPE as BetType, [TYPE] as RaceType, ET.MEETING_ID as MeetingId, EVENT_NO as EventNumber FROM 
+            var sql = @"SELECT [RETURN], BET_AMOUNT AS BetAmount, REBATE, ET.DATE_CREATED as DateCreated, BET_TYPE as BetType, [TYPE] as RaceType, ET.MEETING_ID as MeetingId, EVENT_NO as EventNumber FROM 
                 EVENT_TRADING ET 
                 INNER JOIN MEETING_TAB M ON M.MEETING_ID = ET.MEETING_ID AND TYPE IN @raceTypes
                 WHERE ET.DATE_CREATED BETWEEN @startDate AND @endDate";
@@ -49,7 +49,7 @@
 
         public List<EventTrading> GetTradings(IEnumerable<int> meetingIds)
         {
-            var sql = @"SELECT [RETURN], BET_AMOUNT AS BetAmount, DATE_CREATED as DateCreated, BET_TYPE as BetType, [TYPE] as RaceType, ET.MEETING_ID as MeetingId, EVENT_NO as EventNumber, ET.Jurisdiction FROM 
+            var sql = @"SELECT [RETURN], BET_AMOUNT AS BetAmount, ET.DATE_CREATED as DateCreated, BET_TYPE as BetType, [TYPE] as RaceType, ET.MEETING_ID as MeetingId, EVENT_NO as EventNumber, ET.Jurisdiction FROM 
                 EVENT_TRADING ET 
                 INNER JOIN MEETING_TAB M ON M.MEETING_ID = ET.MEETING_ID AND M.MEETING_ID in @meetingIds
                 WHERE SUCCESS = 1";
