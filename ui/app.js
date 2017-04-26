@@ -299,7 +299,7 @@ var WebApp = angular.module('WebApp', [
 
         template = "<div class='btn-group' data-ng-class='{open: ctrl.open}'>" +
             "<button class='btn btn-small'>Select...</button>" +
-            "<button class='btn btn-small dropdown-toggle' data-ng-click='ctrl.openDropdown()'><span class='caret'></span></button>" +
+            "<button class='btn btn-small dropdown-toggle' data-ng-click='ctrl.openDropdown()'><span ng-class=\"(!ctrl.open) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'\"></span></button>" +
             "<ul class='dropdown-menu' aria-labelledby='dropdownMenu'>" +
                 // "<li><a data-ng-click='selectAll()'><span class='glyphicon glyphicon-ok green' aria-hidden='true'></span> Check All</a></li>" +
                 // "<li><a data-ng-click='deselectAll();'><span class='glyphicon glyphicon-remove red' aria-hidden='true'></span> Uncheck All</a></li>" +

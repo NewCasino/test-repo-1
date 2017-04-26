@@ -58,6 +58,11 @@ angular.module('WebApp.TraderModule', [])
 				|| (vm.data.type.greys && item.Type == 'G');
 		};
 
+        vm.statusFilter = function (item) {
+            return (vm.data.status.assigned && item.assigned)
+				|| (vm.data.status.unassigned && !item.assigned);
+		};
+
 		vm.countryFilter = function (item) {
 			return (vm.data.country.aunz && 'AUNZ'.indexOf(item.Country) > -1)
 				|| (vm.data.country.ukir && 'UKIR'.indexOf(item.Country) > -1)
@@ -171,12 +176,14 @@ angular.module('WebApp.TraderModule', [])
                     // index meetings array
                     vm.meetings = new Array();
                     for (var i=0, ll=vm.dbData.Meetings.length; i<ll; i++) {
+                        vm.dbData.Meetings[i].assigned = false;
                         vm.meetings[vm.dbData.Meetings[i].Meeting_Id] = vm.dbData.Meetings[i];
                     }
                     // normalize meeting assignments for later use
                     for (var i=0, ll=vm.dbData.Assignments.length; i<ll; i++) {
                         var assign = vm.dbData.Assignments[i];
                         var mid = assign.Meeting_Id;
+                        vm.meetings[mid].assigned = true;
                         if (parentHref.indexOf('AssignTrader') > -1) {
                             // assign traders
                             vm.meetings[mid].TraderAssignments = {
