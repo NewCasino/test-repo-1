@@ -1,0 +1,22 @@
+<div class="panel panel-default col-md-11 data-panel">
+        <table id="assignments" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Cnt</th>
+                    <th class="left">Trader</th>
+                    <th>Horses Meetings</th>
+                    <th>Harness Meetings</th>
+                    <th>Greys Meetings</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in ctrl.vm.dbData.Traders | filter: ctrl.vm.options.text">
+                    <td class="gray">{{$index + 1}}</td>
+                    <td class="left">{{item.Lid}}</td>
+                    <td>{{item.meetingsR.join(', ')}}</td>
+                    <td>{{item.meetingsH.join(', ')}}</td>
+                    <td>{{item.meetingsG.join(', ')}}</td>
+                </tr>
+            </tbody>
+        </table>
+</div>

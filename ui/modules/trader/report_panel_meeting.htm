@@ -1,0 +1,34 @@
+<div class="panel panel-default col-md-11 data-panel">
+        <table id="assignments" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Cnt</th>
+                    <th class="left">Venue</th>
+                    <th>Country</th>
+                    <th>Type</th>
+                    <th>Races</th>
+                    <th>Lux Trader</th>
+                    <th>Tab Trader</th>
+                    <th>Sun Trader</th>
+                    <th>Lux MA</th>
+                    <th>Tab MA</th>
+                    <th>Sun MA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in ctrl.vm.filteredItems = (ctrl.vm.meetings | filter: ctrl.vm.typeFilter | filter: ctrl.vm.statusFilter | filter: ctrl.vm.countryFilter | filter: ctrl.vm.options.text)">
+                    <td class="gray">{{$index + 1}}</td>
+                    <td class="left">{{item.Venue}}</td>
+                    <td>{{item.Country}}</td>
+                    <td>{{item.Type}}</td>
+                    <td>{{item.Events}}</td>
+                    <td>{{item.TraderAssignments.Lux}}</td>
+                    <td>{{item.TraderAssignments.Tab}}</td>
+                    <td>{{item.TraderAssignments.Sun}}</td>
+                    <td>{{item.MaAssignments.Lux}}</td>
+                    <td>{{item.MaAssignments.Tab}}</td>
+                    <td>{{item.MaAssignments.Sun}}</td>
+                </tr>
+            </tbody>
+        </table>
+</div>

@@ -9,7 +9,7 @@
     public interface ITraderAssignService
     {
         TraderAssignMetaResponse GetAssignments(string meetingDate);
-        void SaveAssignments(TraderAssignPostDataDto postData);
+        TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData);
     }
 
     public class TraderAssignService : ITraderAssignService
@@ -26,12 +26,14 @@
             return _traderAssignRepository.GetAssignments(meetingDate);
         }
 
-        public void SaveAssignments(TraderAssignPostDataDto postData)
+        public TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData)
         {
             foreach (string meetingId in postData.meetings)
             {
                 _traderAssignRepository.SaveAssignment(postData.meetingDate, Int32.Parse(meetingId), postData.env.ToUpper(), postData.traders, postData.analysts);
             }
+
+            return _traderAssignRepository.GetAssignments(postData.meetingDate);
 
             //TODO is logging required ??
         }

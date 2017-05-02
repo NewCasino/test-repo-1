@@ -181,7 +181,7 @@ var WebApp = angular.module('WebApp', [
         	});
     }])
 
-    // data service
+    // db data service
     .factory('dataFactory', ['$http', function($http) {
         var urlBase = '/Luxbook.MVC/api';
         var dataFactory = {};
@@ -251,20 +251,19 @@ var WebApp = angular.module('WebApp', [
         }
     })
 
-	.directive('dropdownMultiselect', function () {
+    .filter('toDisplayTime', function () {
+        return function(input) {
+            var a = input.split('T');
+            return a[1].substr(0,5);
+        }
+    })
 
+	.directive('dropdownMultiselect', function () {
         var controller = ['$scope', function ($scope) {
             var ctrl = this;
+            ctrl.open = false;
 			ctrl.openDropdown = function () {
 				ctrl.open = !ctrl.open;
-			};
-
-			ctrl.selectAll = function () {
-				ctrl.model = [];
-				angular.forEach(ctrl.options, function (item, index) {
-					ctrl.model.push(item[ctrl.optkey]);
-				});
-
 			};
 
 			ctrl.deselectAll = function () {
@@ -282,25 +281,27 @@ var WebApp = angular.module('WebApp', [
 					ctrl.model.splice(intIndex, 1);
 				}
 				else {
+                    console.log(ctrl.model);
 					ctrl.model.push(option[ctrl.optkey]);
 				}
 			};
 
             ctrl.getClassName = function (option) {
                 var varClassName = 'glyphicon glyphicon-remove red';
-                angular.forEach(ctrl.model, function (item, index) {
-                    if (item == option[ctrl.optkey]) {
+                for (var i=0, ll=ctrl.model.length; i<ll; i++) {
+                    if (ctrl.model[i] == option[ctrl.optkey]) {
                         varClassName = 'glyphicon glyphicon-ok green';
+                        break;
                     }
-                });
+                }
                 return (varClassName);
             };
         }],
 
-        template = "<div class='btn-group' data-ng-class='{open: ctrl.open}'>" +
+        template = "<div class='btn-group msdd' data-ng-class='{open: ctrl.open}'>" +
             "<button class='btn btn-small'>Select...</button>" +
             "<button class='btn btn-small dropdown-toggle' data-ng-click='ctrl.openDropdown()'><span ng-class=\"(!ctrl.open) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'\"></span></button>" +
-            "<ul class='dropdown-menu' aria-labelledby='dropdownMenu'>" +
+            "<ul class='dropdown-menu' aria-labelledby='dropdownMenu' style='overflow-y:auto;'>" +
                 // "<li><a data-ng-click='selectAll()'><span class='glyphicon glyphicon-ok green' aria-hidden='true'></span> Check All</a></li>" +
                 // "<li><a data-ng-click='deselectAll();'><span class='glyphicon glyphicon-remove red' aria-hidden='true'></span> Uncheck All</a></li>" +
                 // "<li class='divider'></li>" +

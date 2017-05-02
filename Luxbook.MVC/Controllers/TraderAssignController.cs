@@ -33,11 +33,9 @@
         }
 
         [HttpPost]
-        public JsonResponseBase Assignments(TraderAssignPostDataDto postData)
+        public TraderAssignMetaResponse Assignments(TraderAssignPostDataDto postData)
         {
-            _traderAssignService.SaveAssignments(postData);
-            return new JsonResponseBase { Success = true, Message = "Trader Assignments updated" };
-
+            return _traderAssignService.SaveAssignments(postData);
         }
 
     }

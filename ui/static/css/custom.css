@@ -1,5 +1,7 @@
 html, body {
-    height: 100%;
+    height: 99%;
+    font-size: 0.85em;
+    /* overflow: hidden; */
 }
 
 /* Scroll Bar */
@@ -7,8 +9,8 @@ html, body {
 ::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); }
 ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:window-inactive  { background: orange; }
 
-label, th, h3 {
-	color: maroon;
+th, h3 {
+    color: maroon;
 }
 
 .center {
@@ -16,34 +18,32 @@ label, th, h3 {
 }
 
 .major {
+    font-weight: bold;
 	color: blue;
-}
-
-.assign-container {
-	height:100%;
-}
-
-.assign-form {
-	height:75%;
 }
 
 .date-list {
     width: 8em;
-    height: 1.9em;
+    height: 2em;
     padding: 0;
     line-height: 1em;
     color: maroon;
+    font-size: 1em;
+}
+.dropdown-menu {
+    height: 400px;
+	overflow-y: scroll;
 }
 
-ul.dropdown-menu li {
+.dropdown-menu li {
 	cursor: pointer;
 }
 
-ul.dropdown-menu li span.red {
+.dropdown-menu li span.red {
 	color: red;
 }
 
-ul.dropdown-menu li span.green {
+.dropdown-menu li span.green {
 	color: green;
 }
 
@@ -51,25 +51,70 @@ ul.dropdown-menu li span.green {
     border-width: 8px;
 }
 
-.opt-panel {
-	margin-bottom: 5px;
+.assign-container {
+	height:100%;
+    padding: 2px;
+    margin:0;
+}
+
+.assign-form {
+	height:90%;
+    padding: 0;
+    margin: 0;
+}
+.panel-head {
+    padding: 4px;
+}
+
+/* ASSIGN PANEL */
+.filter-panel {
+	margin-right: 4px;
+    height:100%;
+}
+
+/* MEETINGS PANEL */
+.meetings-panel {
+    height:50%;
+}
+.meeting-row {
+    vertical-align: middle;
+}
+.meeting-row td input[type=checkbox] {
+    display: block;
+    float: left;
+    color: #525252;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight : 500;
+}
+
+/* ASSIGN PANEL */
+.assign-panel {
+	margin-top: 4px;
+    height:50%;
+}
+
+.list-panel {
+    margin-left: 4px;
+    height:100%;
 }
 
 .data-panel {
-	height: 100%;
+    padding: 5px;
+    margin: 0;
 	overflow-y: auto;
-	margin-right: 5px;
+    font-size: 1em;
+    border: 1px solid #ccc;
 }
 
-.instruction {
-	padding: 20px;
-	color: blue;
-	font-family: monospace;
+.pointer {
+    cursor: pointer;
+    color: maroon;
 }
 
 .bootbox-body {
 	padding: 10px;
-	font-size: 1.2em;
+	font-size: 14px;
 	color: black;
 	font-family: monospace;
 }
@@ -88,7 +133,20 @@ button.btn-ok, button.btn-ok:focus, button.btn-ok:hover {
 	color: red;
 	opacity: 1;
 }
+.msdd, .msdd button, .msdd button glyphicon, .msdd ul {
+    font-size: 1em;
+}
+.btn-small {
+    width: auto;
+}
 
+input[type="radio"] {
+    -webkit-appearance: checkbox;
+    -moz-appearance: checkbox;
+}
+.orange {
+    color:orange;
+}
 /* =====================================================================================================*/
 .checkbox {
   padding-left: 20px; }

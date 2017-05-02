@@ -1,0 +1,116 @@
+<div class="panel panel-default col-md-11 assign-container">
+
+    <div class="col-md-8 data-panel">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Cnt</th>
+                    <th class="left">Venue</th>
+                    <th>Country</th>
+                    <th>Type</th>
+                    <th>Races</th>
+                    <th>Traders</th>
+                    <th>MAs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in ctrl.vm.filteredItems = (ctrl.vm.meetings | filter: ctrl.vm.typeFilter | filter: ctrl.vm.statusFilter | filter: ctrl.vm.countryFilter | filter: ctrl.vm.options.text)">
+                    <td class="gray">{{$index + 1}}</td>
+                    <td class="left">{{item.Venue}}</td>
+                    <td>{{item.Country}}</td>
+                    <td>{{item.Type}}</td>
+                    <td>{{item.Events}}</td>
+                    <td class="orange"><span class="major">Lux:</span>{{item.TraderAssignments.Lux}} <span class="major">Tab:</span>{{item.TraderAssignments.Tab}} <span class="major">Sun:</span>{{item.TraderAssignments.Sun}}</td>
+                    <td class="orange"><span class="major">Lux:</span>{{item.MaAssignments.Lux}} <span class="major">Tab:</span>{{item.MaAssignments.Tab}} <span class="major">Sun:</span>{{item.MaAssignments.Sun}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <div class="instruction">
+            Use filters to select meetings in LEFT panel.
+            <br><br>
+            ALL filtered meetings in LEFT panel will be assigned
+            to selected Traders and MAs below.
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Env</th>
+                    <th class="left">Select<br>Traders</th>
+                    <th class="left">Select<br>MAs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="left major">Lux</td>
+                    <td>
+                        <dropdown-multiselect
+                            model="ctrl.vm.traders.Lux"
+                            options="ctrl.vm.dbData.Traders"
+                            optkey="Lid"
+                            optval="Name">
+                        </dropdown-multiselect>
+                    </td>
+                    <td>
+                        <dropdown-multiselect
+                            model="ctrl.vm.analysts.Lux"
+                            options="ctrl.vm.dbData.Traders"
+                            optkey="Lid"
+                            optval="Name">
+                        </dropdown-multiselect>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning msdd" ng-click="ctrl.saveAssignment('Lux')">Assign</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left major">Tab</td>
+                    <td>
+                        <dropdown-multiselect
+                            model="ctrl.vm.traders.Tab"
+                            options="ctrl.vm.dbData.Traders"
+                            optkey="Lid"
+                            optval="Name">
+                        </dropdown-multiselect>
+                    </td>
+                    <td>
+                        <dropdown-multiselect
+                            model="ctrl.vm.analysts.Tab"
+                            options="ctrl.vm.dbData.Traders"
+                            optkey="Lid"
+                            optval="Name">
+                        </dropdown-multiselect>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning msdd" ng-click="ctrl.saveAssignment('Tab')">Assign</button>
+                    </td>
+                </tr>
+            </td>
+                <tr>
+                    <td class="left major">Sun</td>
+                    <td>
+                        <dropdown-multiselect
+                            model="ctrl.vm.traders.Sun"
+                            options="ctrl.vm.dbData.Traders"
+                            optkey="Lid"
+                            optval="Name">
+                        </dropdown-multiselect>
+                    </td>
+                    <td>
+                        <dropdown-multiselect
+                            model="ctrl.vm.analysts.Sun"
+                            options="ctrl.vm.dbData.Traders"
+                            optkey="Lid"
+                            optval="Name">
+                        </dropdown-multiselect>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning msdd" ng-click="ctrl.saveAssignment('Sun')">Assign</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+
+</div>

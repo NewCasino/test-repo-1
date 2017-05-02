@@ -1,0 +1,33 @@
+<div>
+    <div class="col-md-12 panel-head"><h4>Meetings</h4></div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <button class="btn btn-info">Select All</button>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat-start="item in ctrl.vm.filteredItems = (ctrl.vm.meetings | filter: ctrl.vm.typeFilter | filter: ctrl.vm.statusFilter | filter: ctrl.vm.countryFilter)"
+                class="meeting-row">
+                <td width="48px"><input type="checkbox" class="cb-styled" ng-model="item.allEvents" ></td>
+                <td width="48px"><img src="/img/{{item.Country}}.jpg" border="0" /></td>
+                <td width="48px"><img src="/img/{{item.Type}}.png" border="0" /></td>
+                <td width="200px">{{item.Venue}}</td>
+                <td>{{ctrl.vm.region[item.Region]}}</td>
+            </tr>
+            <tr ng-if="!item.allEvents" ng-repeat-end="">
+                <td colspan="5">
+                    <table>
+                        <tr ng-repeat="event in item.Events">
+                            <td width="48px">&nbsp;</td>
+                            <td width="48px"><input type="checkbox" class="cb-styled" ng-model="item.allEvents" ></td>
+                            <td width="48px">R{{event.Event_No}}</td>
+                            <td width="48px">{{event.Start_Time | toDisplayTime}}</td>
+                            <td>{{event.Name}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

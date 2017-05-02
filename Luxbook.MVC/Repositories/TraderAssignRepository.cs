@@ -30,8 +30,9 @@
 
             var meetings =
                 _database.Query<MeetingTags>(@"SELECT m.Meeting_Id, m.Meeting_Date,
-                                            m.Country, m.Type, m.Venue, m.Btk_Id, m.Events, m.Wift_Mtg_Id
+                                                m.Country, m.Type, m.Venue, m.Btk_Id, m.Events as Event_Cnt, m.Wift_Mtg_Id, sb.Region
                                             FROM dbo.MEETING_TAB as m
+                                            LEFT JOIN SYS_BETTEKK sb ON (m.COUNTRY=sb.COUNTRY AND M.TYPE=SB.TYPE and sb.VENUE LIKE Cast(m.VENUE as nvarchar(55)) +  '%')
                                             WHERE m.MEETING_Date = @meetingDate
                                             ORDER BY m.Venue",
                     new
@@ -40,7 +41,7 @@
                     }, commandType: CommandType.Text);
 
             var events =
-                _database.Query<EventTags>(@"SELECT e.Meeting_id, e.Event_No, e.Start_Time, e.Name
+                _database.Query<EventTags>(@"SELECT e.Meeting_id, e.Event_No, e.Start_Time, e.Name, e.Region
                                             FROM dbo.EVENT_TAB as e
                                             INNER JOIN dbo.MEETING_TAB as m ON (e.meeting_id=m.meeting_id)                                            
                                             WHERE m.MEETING_Date = @meetingDate",
@@ -48,6 +49,12 @@
                     {
                         meetingDate
                     }, commandType: CommandType.Text);
+
+            // populate each meeting with an events list
+            foreach (var m in meetings)
+            {
+                m.Events = events.Where(e => e.Meeting_Id == m.Meeting_Id).ToList();
+            }
 
             var traders =
                 _database.Query<TraderTags>(@"SELECT t.Lid, t.Name,
@@ -68,7 +75,7 @@
 
             var assignResponse = new TraderAssignMetaResponse {
                 Meetings = meetings.ToList(),
-                Events = events.ToList(),
+                // Events = events.ToList(),
                 Traders = traders.ToList(),
                 Assignments = assignments.ToList(),
             };

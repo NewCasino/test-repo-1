@@ -3,14 +3,17 @@
 	<head>
 	    <meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Rubix Racing - Assign Trader</title>
+		<title>Rubix Racing - Assignments by Trader<</title>
 
 		<link rel="stylesheet" href="/ui/static/css/bootstrap.min.css" crossorigin="anonymous">
 		<link rel="stylesheet" href="/ui/static/css/bootstrap-theme.min.css" crossorigin="anonymous">
 		<link rel="stylesheet" href="/ui/static/css/font-awesome.min.css" crossorigin="anonymous">
 		<link rel="stylesheet" href="/ui/static/css/toastr.min.css" crossorigin="anonymous">
 		<link rel="stylesheet" href="/ui/static/css/custom.css" media="screen">
-
+		<style type="text/css" media="print">
+		  @page {size:landscape;}
+		</style>
+        
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="/ui/static/js/jquery-2.1.4.min.js" crossorigin="anonymous"></script>
 		<script src="/ui/static/js/jquery.ajax-cross-origin.min.js" crossorigin="anonymous"></script>
@@ -22,27 +25,13 @@
 
 		<div class="container-fluid assign-container">
 
-			<h3>Assign Traders and MAs</h3>
-			
-            <form class="assign-form">
-            
-                <div <div class="col-md-1 data-panel filter-panel">
-                    <options-panel></options-panel>
-                </div>
-                <div <div class="col-md-8" style="height:100%;">
-                    <div <div class="col-md-12 data-panel meetings-panel">
-                        <meetings-panel></meetings-panel>
-                    </div>
-                    <div <div class="col-md-12 data-panel assign-panel">
-                        <h2>Assign Panel</h2>
-                    </div>
-                </div>
-                <div <div class="col-md-3 data-panel list-panel">
-                    <h2>List Panel</h2>
-                </div>
-                
-            </form>
+			<h3>Assignments by Trader</h3>
 
+			<form class="assign-form">
+				<options-panel></options-panel>
+				<trader-report-panel options="ctrl.options"></trader-report-panel>
+            </form>
+            
 		</div>
 
 		<!-- Scripts -->
