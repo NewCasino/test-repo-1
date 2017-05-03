@@ -31,6 +31,7 @@
     {
         public string Lid { get; set; }
         public string Name { get; set; }
+        public int Lvl { get; set; }
         public int Lux { get; set; }
         public int Tab { get; set; }
         public int Sun { get; set; }

@@ -1,58 +1,72 @@
-<div>
-    <div class="col-md-12 filter-head"><h4>Filters</h4></div>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label class="major">Meeting Date</label><br>
-            <select class="form-control date-list" ng-model="ctrl.vm.options.date" ng-change="vm.dateChange()">
-                <option ng-selected="$first" ng-repeat="date in ctrl.vm.options.dates" value="{{$index}}">{{date | toDisplayDate}}</option>
-            </select>
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label class="major">Race Type</label><br>
-            <div class="checkbox checkbox-info">
-                <input id="check1a" type="checkbox" class="styled" ng-model="ctrl.vm.options.type.horses" >
-                <label for="check1a">Horses</label>
-            </div>
-            <div class="checkbox checkbox-info">
-                <input id="check1b" type="checkbox" class="styled" ng-model="ctrl.vm.options.type.harness" >
-                <label for="check1b">Harness</label>
-            </div>
-            <div class="checkbox checkbox-info">
-                <input id="check1c" type="checkbox" class="styled" ng-model="ctrl.vm.options.type.greys" >
-                <label for="check1c">Greys</label>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label class="major">Meeting Status</label><br>
-            <div class="checkbox checkbox-success">
-                <input id="check2a" type="checkbox" class="styled" ng-model="ctrl.vm.options.status.assigned" >
-                <label for="check2a">Assigned</label>
-            </div>
-            <div class="checkbox checkbox-success">
-                <input id="check2b" type="checkbox" class="styled" ng-model="ctrl.vm.options.status.unassigned" >
-                <label for="check2b">Unassigned</label>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label class="major">Country</label><br>
-            <div class="checkbox checkbox-warning">
-                <input id="check3a" type="checkbox" class="styled" ng-model="ctrl.vm.options.country.aunz" >
-                <label for="check3a">AU+NZ</label>
-            </div>
-            <div class="checkbox checkbox-warning">
-                <input id="check3b" type="checkbox" class="styled" ng-model="ctrl.vm.options.country.ukir" >
-                <label for="check3b">UK+IR</label>
-            </div>
-            <div class="checkbox checkbox-warning">
-                <input id="check3c" type="checkbox" class="styled" ng-model="ctrl.vm.options.country.other" >
-                <label for="check3c">Other</label>
-            </div>
-        </div>
-    </div>
+<div class="panel-frame">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <h4 class="panel-title">Filters</h4>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="major">Meeting Date</label><br>
+                            <select class="form-control date-list" ng-model="ctrl.vm.options.date" ng-change="vm.dateChange()">
+                                <option ng-selected="$first" ng-repeat="date in ctrl.vm.options.dates" value="{{$index}}">{{date | toDisplayDate}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="major">Race Type</label><br>
+                            <div class="checkbox checkbox-info">
+                                <input id="check1a" type="checkbox" class="styled" ng-model="ctrl.vm.options.type.horses" >
+                                <label for="check1a">Horses</label>
+                            </div>
+                            <div class="checkbox checkbox-info">
+                                <input id="check1b" type="checkbox" class="styled" ng-model="ctrl.vm.options.type.harness" >
+                                <label for="check1b">Harness</label>
+                            </div>
+                            <div class="checkbox checkbox-info">
+                                <input id="check1c" type="checkbox" class="styled" ng-model="ctrl.vm.options.type.greys" >
+                                <label for="check1c">Greys</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="major">Meeting Status</label><br>
+                            <div class="checkbox checkbox-success">
+                                <input id="check2a" type="checkbox" class="styled" ng-model="ctrl.vm.options.status.assigned" >
+                                <label for="check2a">Assigned</label>
+                            </div>
+                            <div class="checkbox checkbox-success">
+                                <input id="check2b" type="checkbox" class="styled" ng-model="ctrl.vm.options.status.unassigned" >
+                                <label for="check2b">Unassigned</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="major">Country</label><br>
+                            <div class="checkbox checkbox-warning">
+                                <input id="check3a" type="checkbox" class="styled" ng-model="ctrl.vm.options.country.aunz" >
+                                <label for="check3a">AU+NZ</label>
+                            </div>
+                            <div class="checkbox checkbox-warning">
+                                <input id="check3b" type="checkbox" class="styled" ng-model="ctrl.vm.options.country.ukir" >
+                                <label for="check3b">UK+IR</label>
+                            </div>
+                            <div class="checkbox checkbox-warning">
+                                <input id="check3c" type="checkbox" class="styled" ng-model="ctrl.vm.options.country.other" >
+                                <label for="check3c">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <tbody>
+    </table>
 </div>

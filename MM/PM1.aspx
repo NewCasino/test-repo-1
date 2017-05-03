@@ -228,7 +228,7 @@ End Function
 
 
 	Dim DC() As String = { "", "", "", "" }
-	Dim CT As String = RM("COUNTRY"), TP As String = RM("TYPE"), ST As String = RV("STATUS"), EventCnt as Byte = RM("EVENTS")
+	Dim CT As String = RM("COUNTRY"), TP As String = RM("TYPE"), ST As String = RV("STATUS"), EventCnt as Byte = If(NOT RM("EVENTS") Is DBNull.Value, RM("EVENTS"), 0)
 	Dim AUS As Boolean = "AU,NZ".Contains(CT), USA As Boolean = FALSE ' "US,SE".Contains(CT)
 
 	Dim CloseTime as String = sNS(RV("CLOSE_TIME"))
@@ -236,7 +236,9 @@ End Function
 	Dim PP As Long = sN0(RV("PM_POOL")), AP As Long = IIf(USA, sN0(RV("HST_PW")) + sN0(RV("HST_PX")), sN0(RV("VIC_PW")) + sN0(RV("NSW_PW")) + sN0(RV("QLD_PW")))
 	Dim MktPer() As Double = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0,0,0,0,0 , 0, 0}
 
-	Dim Limit as string = getResult("SELECT Limit FROM SYS_MIXER WHERE TYPE = '" & RM("TYPE") & "' AND REGION = '" & RV("REGION") & "' AND RANK = " & RV("RANK") & " AND CONF_LVL = '" &  RV("CONF_LVL") & "'")
+    Dim sql as string = "SELECT Limit FROM SYS_MIXER WHERE TYPE = '" & RM("TYPE") & "' AND REGION = '" & RV("REGION") & "' AND RANK = '" & RV("RANK") & "' AND CONF_LVL = '" &  RV("CONF_LVL") & "'"
+    Logger.LogToFile(sql)
+	Dim Limit as string = getResult(sql)
 	'video replay ID		' "2014/10/20141028GAWG09"
 	Dim VidTrkCode as string = getResult("EXEC sp_GetVidcode @VENUE = '" & RM("VENUE") & "' , @COUNTRY = '" & CT & "', @Type = " & TP)  
 	Dim RcNo as string = EV(1).ToString 

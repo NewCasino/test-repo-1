@@ -34,20 +34,13 @@ angular.module('WebApp.TraderModule', [])
             hidePrintBtn: false
         };
         // meeting and trader assignment data
+        vm.envs = ['Lux','Tab','Sun'];
         vm.region = {C:'Country', M:'Metro', P:'Provincial'};
-        vm.dbData = [];                                     // meetings, events, traders, assignments from db
-        vm.meetings = [];                                   // meeting_id index to vm.dbData.Meetings
+        vm.level = {1:'Level 1', 2:'Level 2', 3:'Level 3', 3:'Level 9'};
+        vm.dbData = [];            // meetings, events, traders, assignments from db
+        vm.meetings = [];          // meeting_id index to vm.dbData.Meetings
         vm.filteredItems = [];
-        vm.traders = {
-            Lux: ['BYRNEJ', 'REDDYJ'],
-            Tab: ['BYRNEJ', 'REDDYJ'],
-            Sun: ['BYRNEJ', 'REDDYJ']
-        };
-        vm.analysts = {
-            Lux: ['BYRNEJ', 'REDDYJ'],
-            Tab: ['BYRNEJ', 'REDDYJ'],
-            Sun: ['BYRNEJ', 'REDDYJ']
-        };
+        vm.traderAssignments = [];
 
         // filters
         vm.typeFilter = function (item) {
@@ -78,21 +71,6 @@ angular.module('WebApp.TraderModule', [])
         vm.filterChanged = function(meeting) {
             if (vm.caller != 'assignPanel') {
                 return;
-            }
-            var m = vm.meetings[meeting.Meeting_Id];
-            ['Lux','Tab','Sun'].forEach(function(env) {
-                vm.traders[env] = [];
-                vm.analysts[env] = [];
-            });
-            if (meeting.TraderAssignments) {
-                ['Lux','Tab','Sun'].forEach(function(env) {
-                    vm.traders[env] = vm.array(meeting.TraderAssignments[env]);
-                });
-            }
-            if (meeting.MaAssignments) {
-                ['Lux','Tab','Sun'].forEach(function(env) {
-                    vm.analysts[env] = vm.array(meeting.MaAssignments[env]);
-                });
             }
         };
 
@@ -134,32 +112,33 @@ angular.module('WebApp.TraderModule', [])
 
         // load model with data from server
         vm.loadModel = function(resp) {
-            console.log(resp);
+            // console.log(resp);
             vm.dbData = resp.data;
 
             // index meetings array
             vm.meetings = new Array();
             for (var i=0, ll=vm.dbData.Meetings.length; i<ll; i++) {
                 var m = vm.dbData.Meetings[i];
-                m.assigned = false;
+                m.selected = false;
                 m.allEvents = true;
                 vm.meetings[m.Meeting_Id] = vm.dbData.Meetings[i];
             }
-            // normalize meeting assignments for later use
-            for (var i=0, ll=vm.dbData.Assignments.length; i<ll; i++) {
-                var a = vm.dbData.Assignments[i];
-                var mid = a.Meeting_Id;
-                vm.meetings[mid].assigned = true;
-                vm.meetings[mid].TraderAssignments = {
-                    Lux: vm.string(a.Lux_Trader),
-                    Tab: vm.string(a.Tab_Trader),
-                    Sun: vm.string(a.Sun_Trader)
-                };
-                vm.meetings[mid].MaAssignments = {
-                    Lux: vm.string(a.Lux_Ma),
-                    Tab: vm.string(a.Tab_Ma),
-                    Sun: vm.string(a.Sun_Ma)
-                };
+
+            // load traderAssignments object
+            vm.traderAssignments = [];
+            for (var i=0, ll=vm.dbData.Traders.length; i<ll; i++) {
+                vm.traderAssignments.push({
+                    Lid: vm.dbData.Traders[i].lid,
+                    Name: vm.dbData.Traders[i].Name,
+                    Lvl: vm.dbData.Traders[i].Lvl,
+                    Dates: '',
+                    LuxMa: false,
+                    LuxTrader: false,
+                    TabMa: false,
+                    TabTrader: false,
+                    SunMa: false,
+                    SunTrader: false
+                });
             }
         };
 
@@ -167,7 +146,6 @@ angular.module('WebApp.TraderModule', [])
         vm.getAssignments = function() {
             var defer = $q.defer();
             setTimeout(function(){              // allow enough time for initDates()
-                console.log('getAssignments()');
                 var date = vm.options.dates[vm.options.date];
                 toastr.info('fetching meetings for: ' + date);
                 dataFactory.getAssignments(date)
@@ -182,7 +160,6 @@ angular.module('WebApp.TraderModule', [])
 
         // init options date array
         vm.initDates = function() {
-            console.log('initDates()');
             var dt = new Date();
             for (var i=0; i<5; i++ ) {    // previous 5 days
                 var a = dt.toLocaleDateString('en-AU').split('/');
@@ -199,7 +176,6 @@ angular.module('WebApp.TraderModule', [])
      */
     .directive('optionsPanel', function() {
         var controller = ['$scope', 'assignViewModel',  function ($scope, assignViewModel) {
-            console.log('optionsPanel');
             var ctrl = this;
             ctrl.vm = assignViewModel;
             // init controller
@@ -218,6 +194,174 @@ angular.module('WebApp.TraderModule', [])
             templateUrl: '/ui/modules/trader/options_panel.htm'
         };
     })
+
+    /**
+     * meetings panel
+     */
+    .directive('meetingsPanel', function() {
+        var controller = ['$scope', '$q', '$timeout', 'dataFactory', 'assignViewModel', function($scope, $q, $timeout, dataFactory, assignViewModel) {
+            var ctrl = this;
+            ctrl.vm = assignViewModel;
+            ctrl.vm.caller = 'meetingsPanel';
+            ctrl.options = ctrl.vm.options;
+
+            // init controller
+            ctrl.init = function() {
+                ctrl.options.hidePrintBtn = true;
+                // watch filters for change, so we can bind assignments
+                $scope.$watch(
+                    function(scope) { return ctrl.vm.filteredItems },
+                    function(newValue, oldValue) {
+                        if (newValue && newValue.length > 0) {
+                            $timeout(function() {
+                                ctrl.vm.filterChanged(newValue[0]);
+                            }, 10);
+                        }
+                    },
+                    true
+                );
+            };
+
+            // select/unselect all events
+            ctrl.selectAll = function(meetingId) {
+                ctrl.vm.filteredItems.map(function(item){
+                    item.selected = !item.selected;
+                });
+            };
+
+            // start controller
+            ctrl.vm.getAssignments()
+                .then(function() {
+                    ctrl.init();
+            });
+        }];
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: false,
+            controller: controller,
+            controllerAs: 'ctrl',
+            bindToController: true,                             // required in 1.3+ with controllerAs
+            templateUrl: '/ui/modules/trader/meetings_panel.htm'
+        };
+
+    })
+
+    /**
+     * assign panel
+     */
+    .directive('assignPanel', function() {
+        var controller = ['$scope', '$q', '$timeout', 'dataFactory', 'assignViewModel', function($scope, $q, $timeout, dataFactory, assignViewModel) {
+            var ctrl = this;
+            ctrl.vm = assignViewModel;
+            ctrl.vm.caller = 'assignPanel';
+            ctrl.options = ctrl.vm.options;
+            ctrl.traderFilter = '';
+
+            // init controller
+            ctrl.init = function() {
+                ctrl.options.hidePrintBtn = true;
+/*
+                $('#assign-table').dataTable({
+                    scrollY: 200,
+                    paging: false,
+                    ordering: false,
+                    searching: false,
+                    info: false,
+                    language: {
+                      infoEmpty: ""
+                    }
+                });
+*/
+            };
+            // save assignment to db
+            ctrl.saveAssignment = function(env) {
+                bootbox.confirm({
+                    size: "small",
+                    message: 'Save ' + env.toUpperCase() + ' Assignments ?',
+                    callback: function(answer) {
+                        if (answer) {
+                            var buffer = {
+                                meetingDate: ctrl.options.dates[ctrl.options.date],
+                                env: env,
+                                traders: ctrl.vm.traders[env].join(','),
+                                analysts: ctrl.vm.analysts[env].join(','),
+                                meetings: ctrl.vm.filteredItems.map(function(x) {
+                                   return x.Meeting_Id;
+                                })
+                            };
+                            dataFactory.saveAssignments(buffer)
+                                .then(function(resp) {
+                                    ctrl.vm.loadModel(resp);
+                                    toastr.info('assignments saved');
+                                });
+                        }
+                    }
+                });
+            };
+            // start controller
+            ctrl.vm.getAssignments()
+                .then(function() {
+                    ctrl.init();
+            });
+        }];
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: false,
+            controller: controller,
+            controllerAs: 'ctrl',
+            bindToController: true,                             // required in 1.3+ with controllerAs
+            templateUrl: '/ui/modules/trader/assign_panel.htm'
+        };
+
+    })
+
+        /**
+         * list panel
+         */
+        .directive('listPanel', function() {
+            var controller = ['$scope', '$q', '$timeout', 'dataFactory', 'assignViewModel', function($scope, $q, $timeout, dataFactory, assignViewModel) {
+                var ctrl = this;
+                ctrl.vm = assignViewModel;
+                ctrl.vm.caller = 'listPanel';
+                ctrl.options = ctrl.vm.options;
+                ctrl.traderFilter = '';
+
+                // init controller
+                ctrl.init = function() {
+                    ctrl.options.hidePrintBtn = true;
+    /*
+                    $('#list-table').dataTable({
+                        scrollY: 200,
+                        paging: false,
+                        ordering: false,
+                        searching: false,
+                        info: false,
+                        language: {
+                          infoEmpty: ""
+                        }
+                    });
+    */
+                };
+
+                // start controller
+                ctrl.vm.getAssignments()
+                    .then(function() {
+                        ctrl.init();
+                });
+            }];
+            return {
+                restrict: 'E',
+                replace: true,
+                scope: false,
+                controller: controller,
+                controllerAs: 'ctrl',
+                bindToController: true,                             // required in 1.3+ with controllerAs
+                templateUrl: '/ui/modules/trader/list_panel.htm'
+            };
+
+        })
 
     /**
      * report by meeting panel
@@ -352,124 +496,4 @@ angular.module('WebApp.TraderModule', [])
             bindToController: true                             // required in 1.3+ with controllerAs
         };
     })
-
-    /**
-     * meetings panel
-     */
-    .directive('meetingsPanel', function() {
-        var controller = ['$scope', '$q', '$timeout', 'dataFactory', 'assignViewModel', function($scope, $q, $timeout, dataFactory, assignViewModel) {
-            console.log('meetingsPanel');
-            var ctrl = this;
-            ctrl.vm = assignViewModel;
-            ctrl.vm.caller = 'meetingsPanel';
-            ctrl.options = ctrl.vm.options;
-
-            // init controller
-            ctrl.init = function() {
-                ctrl.options.hidePrintBtn = true;
-                // watch filters for change, so we can bind assignments
-                $scope.$watch(
-                    function(scope) { return ctrl.vm.filteredItems },
-                    function(newValue, oldValue) {
-                        if (newValue && newValue.length > 0) {
-                            $timeout(function() {
-                                ctrl.vm.filterChanged(newValue[0]);
-                            }, 10);
-                        }
-                    },
-                    true
-                );
-            };
-
-            // toggle events listing
-            ctrl.toggleEvents = function(meetingId) {
-                alert('toggleEvents('+meetingId+')');
-            };
-
-            // start controller
-            ctrl.vm.getAssignments()
-                .then(function() {
-                    console.log(ctrl.vm.dbData);
-                    ctrl.init();
-            });
-        }];
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: false,
-            controller: controller,
-            controllerAs: 'ctrl',
-            bindToController: true,                             // required in 1.3+ with controllerAs
-            templateUrl: '/ui/modules/trader/meetings_panel.htm'
-        };
-
-    })
-
-    /**
-     * assign panel
-     */
-    .directive('assignPanel', function() {
-        var controller = ['$scope', '$q', '$timeout', 'dataFactory', 'assignViewModel', function($scope, $q, $timeout, dataFactory, assignViewModel) {
-            var ctrl = this;
-            ctrl.vm = assignViewModel;
-            ctrl.vm.caller = 'assignPanel';
-            ctrl.options = ctrl.vm.options;
-
-            // init controller
-            ctrl.init = function() {
-                ctrl.options.hidePrintBtn = true;
-                // watch filters for change, so we can bind assignments
-                $scope.$watch(
-                    function(scope) { return ctrl.vm.filteredItems },
-                    function(newValue, oldValue) {
-                        if (newValue && newValue.length > 0) {
-                            $timeout(function() {
-                                ctrl.vm.filterChanged(newValue[0]);
-                            }, 10);
-                        }
-                    },
-                    true
-                );
-            };
-            // save assignment to db
-            ctrl.saveAssignment = function(env) {
-                bootbox.confirm({
-                    size: "small",
-                    message: 'Save ' + env.toUpperCase() + ' Assignments ?',
-                    callback: function(answer) {
-                        if (answer) {
-                            var buffer = {
-                                meetingDate: ctrl.options.dates[ctrl.options.date],
-                                env: env,
-                                traders: ctrl.vm.traders[env].join(','),
-                                analysts: ctrl.vm.analysts[env].join(','),
-                                meetings: ctrl.vm.filteredItems.map(function(x) {
-                                   return x.Meeting_Id;
-                                })
-                            };
-                            dataFactory.saveAssignments(buffer)
-                                .then(function(resp) {
-                                    ctrl.vm.loadModel(resp);
-                                    toastr.info('assignments saved');
-                                });
-                        }
-                    }
-                });
-            };
-            // start controller
-            ctrl.vm.getAssignments()
-                .then(function() {
-                    ctrl.init();
-            });
-        }];
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: false,
-            controller: controller,
-            controllerAs: 'ctrl',
-            bindToController: true,                             // required in 1.3+ with controllerAs
-            templateUrl: '/ui/modules/trader/assign_panel.htm'
-        };
-
-    });
+;

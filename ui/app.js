@@ -254,7 +254,14 @@ var WebApp = angular.module('WebApp', [
     .filter('toDisplayTime', function () {
         return function(input) {
             var a = input.split('T');
-            return a[1].substr(0,5);
+            var tt = a[1].substr(0,5).split(':');
+            if (tt[0] < 12) {
+                return a[1].substr(0,5) + 'am';
+            }
+            if (tt[0] == 12) {
+                return a[1].substr(0,5) + 'pm';
+            }
+            return (tt[0] - 12) + ':' + tt[1] + 'pm';
         }
     })
 

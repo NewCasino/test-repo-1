@@ -9,7 +9,7 @@ html, body {
 ::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); }
 ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:window-inactive  { background: orange; }
 
-th, h3 {
+th, h4 {
     color: maroon;
 }
 
@@ -52,29 +52,33 @@ th, h3 {
 }
 
 .assign-container {
-	height:100%;
-    padding: 2px;
+	height:95%;
+    padding: 8px;
     margin:0;
 }
 
 .assign-form {
-	height:90%;
+    border:0px dashed orange;
+	height:100%;
     padding: 0;
     margin: 0;
 }
-.panel-head {
-    padding: 4px;
+
+.panel-frame {
+    border: 1px solid #ccc;
+    height: 100%;
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 
-/* ASSIGN PANEL */
+/* FILTER PANEL */
 .filter-panel {
-	margin-right: 4px;
-    height:100%;
+    height:99%;
 }
 
 /* MEETINGS PANEL */
 .meetings-panel {
-    height:50%;
+    height:99%;
 }
 .meeting-row {
     vertical-align: middle;
@@ -90,26 +94,44 @@ th, h3 {
 
 /* ASSIGN PANEL */
 .assign-panel {
-	margin-top: 4px;
-    height:50%;
+    height:99%;
 }
 
 .list-panel {
-    margin-left: 4px;
-    height:100%;
+    height:99%;
 }
-
+.panel-title {
+    display:inline-block;
+    line-height:2em;
+}
 .data-panel {
-    padding: 5px;
+    border: 0px solid #fcc;
+    padding: 4px;
+    padding-top: 0px;
     margin: 0;
-	overflow-y: auto;
     font-size: 1em;
-    border: 1px solid #ccc;
 }
 
 .pointer {
     cursor: pointer;
     color: maroon;
+}
+
+.table > thead > tr > th {
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+.table > thead.panel-title > tr > th {
+    border: 0px solid #ccc;
+}
+.border {
+    border: 1px solid #ccc;
+}
+.border-left {
+    border-left: 1px solid #ccc;
+}
+.no-border {
+    border: 0px solid #fff;
 }
 
 .bootbox-body {

@@ -57,8 +57,7 @@
             }
 
             var traders =
-                _database.Query<TraderTags>(@"SELECT t.Lid, t.Name,
-                                            t.Lux, t.Tab, t.Sun
+                _database.Query<TraderTags>(@"SELECT t.Lid, t.Name, t.Lvl, t.Lux, t.Tab, t.Sun
                                             FROM dbo.TRADER as t",
                     new 
                     {
