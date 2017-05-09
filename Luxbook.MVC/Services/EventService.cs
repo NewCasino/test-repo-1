@@ -42,6 +42,9 @@
         /// <param name="product"></param>
         /// <param name="places">Overrides how many places to payout, or to reset to the default calculated value</param>
         void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
+
+        void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
+            EventService.SdpType sdpType, bool isChecked);
     }
 
     public class EventService : IEventService
@@ -51,6 +54,12 @@
             Sun,
             Lux,
             Tab
+        }
+
+        public enum SdpType
+        {
+            Win,
+            Place
         }
 
         private readonly IEventRepository _eventRepository;
@@ -118,6 +127,11 @@
         public void UpdatePlacePays(int meetingId, int eventNumber, Product product, int? places)
         {
             _eventRepository.UpdatePlacePays(meetingId, eventNumber, product, places);
+        }
+
+        public void UpdateAutoRedistribute(int meetingId, int eventNumber, Product product, SdpType sdpType, bool isChecked)
+        {
+            _eventRepository.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked);
         }
     }
 }
