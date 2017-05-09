@@ -1238,7 +1238,7 @@ Function GenerateAutoRedistributeCheckbox(meetingId as String, eventNumber as St
   Dim checkBoxStatus as String = If(isChecked, "checked", "")
   Dim result as New StringBuilder
 
-  result.AppendFormat("<input type='checkbox' {0} onfocus='pauseTimer();' onchange=""updateAutoRedistribute(this,{1},{2},'{3}','{4}');getEVN(curVNL); resumeTimer();"" />", 
+  result.AppendFormat("<input type='checkbox' {0} onchange=""updateAutoRedistribute(this,{1},{2},'{3}','{4}');getEVN(curVNL);"" />", 
 	checkboxStatus, meetingId, eventNumber, productName, sdpType)
 
   Return result.ToString()
