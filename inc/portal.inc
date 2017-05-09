@@ -1233,6 +1233,18 @@ Function GenerateSdpBoundaryTextbox(runnerRow as Object, boundaryColumn as Strin
 
 End Function
 
+Function GenerateAutoRedistributeCheckbox(meetingId as String, eventNumber as String, productName as String, sdpType as String, isChecked As Boolean) as String
+  
+  Dim checkBoxStatus as String = If(isChecked, "checked", "")
+  Dim result as New StringBuilder
+
+  result.AppendFormat("<input type='checkbox' {0} onchange=""updateAutoRedistribute(this,{1},{2},'{3}','{4}');getEVN(curVNL);"" />", 
+	checkboxStatus, meetingId, eventNumber, productName, sdpType)
+
+  Return result.ToString()
+
+End Function
+
 Function GenerateRollDropdown(runnerRow as Object, rollColumn as string) as String
 
   Dim result as New StringBuilder
@@ -1364,6 +1376,39 @@ Function ColPools(ColList() As String, RV As DataRow, CT As String,MktPer() As D
 
 	Return PoolHTML
 End Function
+
+'Render opt-in checkboxes for auto redistribution
+Function ColAutoRedistribute(ColList() As String, RV As DataRow) As String
+	Dim AutoHTML As String = ""
+	Dim meetingId as String = RV("MEETING_ID")
+	Dim eventNumber As String = RV("EVENT_NO")
+	For Each Col As String In ColList
+		Dim I As Byte
+
+		Select Case Col
+			Case "SDP" : AutoHTML &= "<td>" & 
+				GenerateAutoRedistributeCheckbox(meetingId, eventNumber, "Lux", "Win", RV("AUTO_DIST_LUX_WIN_SDP"))
+			Case "LUX_SDP_PLACE" : AutoHTML &= "<td>" & 
+				GenerateAutoRedistributeCheckbox(meetingId, eventNumber, "Lux", "Place", RV("AUTO_DIST_LUX_PLACE_SDP"))
+			Case "TAB" : AutoHTML &= "<td>" & 
+				GenerateAutoRedistributeCheckbox(meetingId, eventNumber, "Tab", "Win", RV("AUTO_DIST_TAB_WIN_SDP"))
+
+			Case "TAB_SDP_PLACE" : AutoHTML &= "<td>" & 
+				GenerateAutoRedistributeCheckbox(meetingId, eventNumber, "Tab", "Place", RV("AUTO_DIST_TAB_PLACE_SDP"))
+			Case "SUN" : AutoHTML &= "<td>" & 
+				GenerateAutoRedistributeCheckbox(meetingId, eventNumber, "Sun", "Win", RV("AUTO_DIST_SUN_WIN_SDP"))
+			Case "SUN_SDP_PLACE" : AutoHTML &= "<td>" & 
+				GenerateAutoRedistributeCheckbox(meetingId, eventNumber, "Sun", "Place", RV("AUTO_DIST_SUN_PLACE_SDP"))
+			Case Else
+				AutoHTML &= "<td>"
+				Continue For
+		End Select
+
+	Next
+
+	Return AutoHTML
+End Function
+
 
 'Popup graph used on Exotics
 Function XTgraph (Hist as string )

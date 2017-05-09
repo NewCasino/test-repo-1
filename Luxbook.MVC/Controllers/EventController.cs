@@ -34,7 +34,24 @@
 
             return new JsonResponseBase {Success = true};
         }
-        
+
+        [HttpGet]
+        public JsonResponseBase UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
+            EventService.SdpType sdpType, bool isChecked)
+        {
+            try
+            {
+                _eventService.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return new JsonResponseBase { Success = false, Message = ex.Message };
+            }
+
+            return new JsonResponseBase { Success = true };
+        }
+
         [HttpGet]
         public EventMetaResponse EventMeta(int meetingId, int eventNumber)
         {

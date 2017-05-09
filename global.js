@@ -446,6 +446,26 @@ function updatePlacePays(dropdown, meetingId, eventNumber, productName){
                 });
 }
 
+function updateAutoRedistribute(checkbox, meetingId, eventNumber, productName, sdpType) {
+
+    var optInData = { "meetingId": meetingId, "eventNumber": eventNumber, "product": productName, "sdpType":sdpType, "isChecked": checkbox.checked };
+
+    jQuery.ajax({
+        type: "GET",
+        url: "/Luxbook.MVC/api/event/UpdateAutoRedistribute",
+        contentType: "application/json; charset=utf-8",
+        data: optInData,
+        async: false,
+        dataType: "jsonp",
+        success: function (data) {
+
+        },
+        error: function (data) {
+
+        }
+    });
+}
+
 function pauseTimer(){
   console.log('pausing timer');
   timerPause = true;
