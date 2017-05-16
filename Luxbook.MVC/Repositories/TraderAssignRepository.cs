@@ -6,14 +6,14 @@
     using System.Linq;
     using Infrastructure;
     using Models;
-    using Services;
-
     using DTO;
 
     public interface ITraderAssignRepository
     {
         TraderAssignMetaResponse GetAssignments(string meetingDate);
-        void SaveAssignment(string meetingDate, int meetingId, string env, string traders, string analysts);
+        List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date);
+        void SaveAssignments(string meetingDate, DtoSelectedEvent dtoEvent, List<DtoAssignments> dtoAssignments);
+        void SaveAssignment(string meetingDate, DtoSelectedEvent dtoEvent, string assignmentDate, DtoAssignedTraders dtoTraders);
     }
 
     public class TraderAssignRepository : ITraderAssignRepository
@@ -66,7 +66,8 @@
             var assignments =
                 _database.Query<TraderAssign>(@"SELECT ta.*
                                             FROM dbo.TRADER_ASSIGN as ta
-                                            WHERE ta.Meeting_Date = @meetingDate",
+                                            WHERE ta.Meeting_Date = @meetingDate
+                                            ORDER BY MEETING_ID, EVENT_NO;",
                     new
                     {
                         meetingDate
@@ -74,7 +75,6 @@
 
             var assignResponse = new TraderAssignMetaResponse {
                 Meetings = meetings.ToList(),
-                // Events = events.ToList(),
                 Traders = traders.ToList(),
                 Assignments = assignments.ToList(),
             };
@@ -83,43 +83,104 @@
 
         }
 
-        public void SaveAssignment(string meetingDate, int meetingId, string env, string traders, string analysts)
+        public void SaveAssignments(string meetingDate, DtoSelectedEvent dtoEvent, List<DtoAssignments> dtoAssignments)
         {
-            var pk = _database.Query<int>("SELECT TRADER_ASSIGN_ID FROM TRADER_ASSIGN WHERE MEETING_ID=@MeetingId;", 
-                    new {
-                        MeetingId = meetingId
-                        }, commandType: CommandType.Text).FirstOrDefault();
+            foreach (DtoAssignments i in dtoAssignments)
+            {
+                this.SaveAssignment(meetingDate, dtoEvent, i.AssignedDate, i.AssignedTraders);
+            }
+        }
 
-            // update existing assignments for meeting_id
+        public void SaveAssignment(string meetingDate, DtoSelectedEvent dtoEvent, string assignmentDate, DtoAssignedTraders dtoTraders)
+        {
+            var pk = _database.Query<int>("SELECT TRADER_ASSIGN_ID FROM TRADER_ASSIGN WHERE MEETING_ID=@MeetingId AND EVENT_NO=@EventNo AND ASSIGNED_DATE=@AssignedDate;", 
+                    new {
+                        MeetingId = dtoEvent.MeetingId,
+                        EventNo = dtoEvent.EventNo,
+                        AssignedDate = assignmentDate
+                    }, commandType: CommandType.Text).FirstOrDefault();
+
+            // update existing assignments for meeting_id+event_no
             if (pk > 0)
             {
-                var sqlUpdate = "UPDATE TRADER_ASSIGN SET " + env + "_TRADER=@trader, " + env + "_MA=@ma " +
-                          "WHERE TRADER_ASSIGN_ID = @traderAssignId;";
+                var sqlUpdate = @"UPDATE TRADER_ASSIGN 
+                                  SET LUX_TRADER=@LuxTrader, LUX_MA=@LuxMa,
+                                  SET TAB_TRADER=@TabTrader, TAB_MA=@TabMa,
+                                  SET SUN_TRADER=@SunTrader, SUN_MA=@SunMa
+                                  WHERE TRADER_ASSIGN_ID = @traderAssignId;
+                ";
                 _database.Execute(sqlUpdate,
                     new
                     {
                         traderAssignId = pk,
-                        trader = traders,
-                        ma = analysts
+                        LuxTrader = dtoTraders.LuxTrader,
+                        LuxMa = dtoTraders.LuxMa,
+                        TabTrader = dtoTraders.TabTrader,
+                        TabMa = dtoTraders.TabMa,
+                        SunTrader = dtoTraders.SunTrader,
+                        SunMa = dtoTraders.SunMa
                     },
                     commandType: CommandType.Text);
                 return;
             }
 
             // insert new assignments for meeting_id
-            var sql = "INSERT INTO TRADER_ASSIGN (MEETING_DATE, MEETING_ID, " + env + "_TRADER, " + env + "_MA) " +
-                      "VALUES (@meetingDate, @meetingId, @traders, @analysts);";
+            var sql = @"INSERT INTO TRADER_ASSIGN 
+                        (MEETING_DATE, ASSIGNED_DATE, MEETING_ID, EVENT_NO, LUX_TRADER, LUX_MA, TAB_TRADER, TAB_MA, SUN_TRADER, SUN_MA)
+                        VALUES (@meetingDate, @AssignedDate, @MeetingId, @EventNo, @LuxTrader, @LuxMa, @TabTrader, @TabMa, @SunTrader, @SunMa);
+            ";
             _database.Execute(sql,
                 new
                 {
                     meetingDate,
-                    meetingId,
-                    traders,
-                    analysts
+                    MeetingId = dtoEvent.MeetingId,
+                    EventNo = dtoEvent.EventNo,
+                    AssignedDate = assignmentDate,
+                    LuxTrader = dtoTraders.LuxTrader,
+                    LuxMa = dtoTraders.LuxMa,
+                    TabTrader = dtoTraders.TabTrader,
+                    TabMa = dtoTraders.TabMa,
+                    SunTrader = dtoTraders.SunTrader,
+                    SunMa = dtoTraders.SunMa
                 },
                 commandType: CommandType.Text);
 
         }
 
+        public List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date)
+        {
+            // note:- this may change in future
+            var sql = (Mode == "meeting" ?
+                            @"SELECT ta.Meeting_Date, 
+                                    e.Meeting_id, e.Event_No, ta.Assigned_Date, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
+                                    ta.Lux_Trader, ta.Tab_Trader, ta.Sun_Trader, ta.Lux_Ma, ta.Tab_Ma, ta.Sun_Ma
+                                    FROM dbo.TRADER_ASSIGN as ta
+                                    INNER JOIN EVENT_TAB e ON (ta.MEETING_ID=e.MEETING_ID and ta.EVENT_NO=e.EVENT_NO)
+                                    INNER JOIN MEETING_TAB m ON (ta.MEETING_ID=m.MEETING_ID)
+                                    LEFT JOIN SYS_BETTEKK sb ON (m.COUNTRY=sb.COUNTRY AND m.TYPE=SB.TYPE and sb.VENUE LIKE Cast(m.VENUE as nvarchar(55)) +  '%')
+                                    WHERE ta.Meeting_Date = @Date
+                                    ORDER BY 2, 3, 4;"
+                        :
+                            @"SELECT ta.Meeting_Date, 
+                                    e.Meeting_id, e.Event_No, ta.Assigned_Date, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
+                                    ta.Lux_Trader, ta.Tab_Trader, ta.Sun_Trader, ta.Lux_Ma, ta.Tab_Ma, ta.Sun_Ma
+                                    FROM dbo.TRADER_ASSIGN as ta
+                                    INNER JOIN EVENT_TAB e ON (ta.MEETING_ID=e.MEETING_ID and ta.EVENT_NO=e.EVENT_NO)
+                                    INNER JOIN MEETING_TAB m ON (ta.MEETING_ID=m.MEETING_ID)
+                                    LEFT JOIN SYS_BETTEKK sb ON (m.COUNTRY=sb.COUNTRY AND m.TYPE=SB.TYPE and sb.VENUE LIKE Cast(m.VENUE as nvarchar(55)) +  '%')
+                                    WHERE ta.Assigned_Date = @Date
+                                    ORDER BY 2, 3, 4;"
+                );
+            var assignments =
+                _database.Query<EventAssignMetaResponse>(sql,
+                    new
+                    {
+                        Date
+                    }, commandType: CommandType.Text);
+
+            return assignments.ToList();
+
+        }
     }
+
 }

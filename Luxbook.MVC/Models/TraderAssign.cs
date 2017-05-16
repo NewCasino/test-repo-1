@@ -11,6 +11,7 @@ namespace Luxbook.MVC.Models
         public DateTime Meeting_Date { get; set; }
         public int Meeting_Id { get; set; }
         public int Event_No { get; set; }
+        public DateTime Assigned_Date { get; set; }
         public string Lux_Trader { get; set; }        
         public string Tab_Trader { get; set; }
         public string Sun_Trader { get; set; }

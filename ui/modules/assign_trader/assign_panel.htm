@@ -1,0 +1,64 @@
+<div class="panel-frame">
+    <style>
+    </style>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <h4 class="panel-title">Trader/MA Assignment</h4>
+                    <span class="pull-right">
+                        <button class="btn btn-info" ng-click="clearAssigns()">Clear</button>&nbsp;
+                        <button class="btn btn-success" ng-click="saveAssigns()">Save</button>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <table id="assign-table-head" class="table table-head">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="border-left:0;border-top:0;">&nbsp;</td>
+                                <td colspan="2">SUN</td>
+                                <td colspan="2">TAB</td>
+                                <td colspan="2">LUX</td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td>Date Assigned</td>
+                                <td>MA</td>
+                                <td>Trader</td>
+                                <td>MA</td>
+                                <td>Trader</td>
+                                <td>MA</td>
+                                <td>Trader</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table-scroller offset="230">
+                        <table id="assign-table-body" class="table table-striped table-body">
+                            <tbody>
+                                <tr ng-repeat="item in ctrl.vm.traderAssignments">
+                                    <td class="left">{{item.Name}}</td>
+                                    <td width="110px">									
+										<select multiple class="form-control date-list assigned-date-list" 
+											ng-options="option for option in ctrl.vm.options.assignDates"
+											ng-model="item.AssignedDates">
+										</select>										
+                                    </td>
+                                    <td width="50px"><input type="checkbox" ng-model="item.SunMa" /></td>
+                                    <td width="50px"><input type="checkbox" ng-model="item.SunTrader" /></td>
+                                    <td width="50px"><input type="checkbox" ng-model="item.TabMa" /></td>
+                                    <td width="50px"><input type="checkbox" ng-model="item.TabTrader" /></td>
+                                    <td width="50px"><input type="checkbox" ng-model="item.LuxMa" /></td>
+                                    <td width="50px"><input type="checkbox" ng-model="item.LuxTrader" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    <table-scroller>
+                </td>
+            </tr>
+        <tbody>
+    </table>
+</div>

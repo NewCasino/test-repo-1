@@ -6,6 +6,7 @@
     using Infrastructure;
     using NLog;
     using Services;
+    using System.Collections.Generic;
 
     [RequireAuthentication]
     public class TraderAssignController : ApiController
@@ -30,6 +31,12 @@
                 _logger.Error(ex);
                 return new TraderAssignMetaResponse() { Success = false, Message = ex.Message };
             }
+        }
+
+        [HttpGet]
+        public List<EventAssignMetaResponse> AssignmentsByDate(string Mode, string Date)
+        {
+            return _traderAssignService.GetAssignmentsByDate(Mode, Date);
         }
 
         [HttpPost]

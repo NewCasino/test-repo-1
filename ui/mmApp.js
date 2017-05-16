@@ -1,11 +1,11 @@
 // core angular app
 var WebApp = angular.module('WebApp', [
-    'ngRoute',
-    'WebApp.TraderModule'
+    'ngRoute'
     ])
 
 	// router
-    .config(['$routeProvider','$httpProvider', function($routeProvider, $httpProvider) {
+    .config(['$routeProvider','$httpProvider','$compileProvider', function($routeProvider, $httpProvider, $compileProvider) {
+		$compileProvider.debugInfoEnabled(false);
         $httpProvider.defaults.useXDomain = true;
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
         $routeProvider
@@ -19,6 +19,11 @@ var WebApp = angular.module('WebApp', [
             });
     }])
 
+    // application controller (in <html> element)
+    .controller('AppCtrl', ['$scope', '$sce', function($scope, $sce) {
+		$scope.ver = $sce.trustAsHtml('v0.'+(new Date()).getTime());
+    }])
+ 	
     // runner controller
     .controller('RunnerCtrl', ['$scope','$http','$routeParams','$location', 'dataFactory',
                        function($scope, $http, $routeParams, $location, dataFactory) {
@@ -226,109 +231,7 @@ var WebApp = angular.module('WebApp', [
              );
         };
 
-        dataFactory.getAssignments = function (meetingDate) {
-            return $http.get(urlBase + '/TraderAssign/Assignments', {
-                headers : {'Accept' : 'application/json'},
-                params: {meetingDate: meetingDate}
-            });
-        };
-
-        dataFactory.saveAssignments = function (data) {
-            return $http.post(urlBase + '/TraderAssign/Assignments',
-                data,
-                config
-             );
-        };
-
         return dataFactory;
 
     }])
-
-    .filter('toDisplayDate', function () {
-        return function(input) {
-            var a = input.split('-');
-            return a[2] + '/' + a[1] + '/' + a[0];
-        }
-    })
-
-    .filter('toDisplayTime', function () {
-        return function(input) {
-            var a = input.split('T');
-            var tt = a[1].substr(0,5).split(':');
-            if (tt[0] < 12) {
-                return a[1].substr(0,5) + 'am';
-            }
-            if (tt[0] == 12) {
-                return a[1].substr(0,5) + 'pm';
-            }
-            return (tt[0] - 12) + ':' + tt[1] + 'pm';
-        }
-    })
-
-	.directive('dropdownMultiselect', function () {
-        var controller = ['$scope', function ($scope) {
-            var ctrl = this;
-            ctrl.open = false;
-			ctrl.openDropdown = function () {
-				ctrl.open = !ctrl.open;
-			};
-
-			ctrl.deselectAll = function () {
-				ctrl.model = [];
-			};
-
-			ctrl.toggleSelectItem = function (option) {
-				var intIndex = -1;
-				angular.forEach(ctrl.model, function (item, index) {
-					if (item == option[ctrl.optkey]) {
-						intIndex = index;
-					}
-				});
-				if (intIndex >= 0) {
-					ctrl.model.splice(intIndex, 1);
-				}
-				else {
-                    console.log(ctrl.model);
-					ctrl.model.push(option[ctrl.optkey]);
-				}
-			};
-
-            ctrl.getClassName = function (option) {
-                var varClassName = 'glyphicon glyphicon-remove red';
-                for (var i=0, ll=ctrl.model.length; i<ll; i++) {
-                    if (ctrl.model[i] == option[ctrl.optkey]) {
-                        varClassName = 'glyphicon glyphicon-ok green';
-                        break;
-                    }
-                }
-                return (varClassName);
-            };
-        }],
-
-        template = "<div class='btn-group msdd' data-ng-class='{open: ctrl.open}'>" +
-            "<button class='btn btn-small'>Select...</button>" +
-            "<button class='btn btn-small dropdown-toggle' data-ng-click='ctrl.openDropdown()'><span ng-class=\"(!ctrl.open) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'\"></span></button>" +
-            "<ul class='dropdown-menu' aria-labelledby='dropdownMenu' style='overflow-y:auto;'>" +
-                // "<li><a data-ng-click='selectAll()'><span class='glyphicon glyphicon-ok green' aria-hidden='true'></span> Check All</a></li>" +
-                // "<li><a data-ng-click='deselectAll();'><span class='glyphicon glyphicon-remove red' aria-hidden='true'></span> Uncheck All</a></li>" +
-                // "<li class='divider'></li>" +
-                "<li data-ng-repeat='option in ctrl.options'><a data-ng-click='ctrl.toggleSelectItem(option)'><span data-ng-class='ctrl.getClassName(option)' aria-hidden='true'></span> {{option[ctrl.optval]}}</a></li>" +
-            "</ul>" +
-            "</div>";
-
-        return {
-            restrict: 'E',
-            scope: {
-				model: '=',
-				options: '=',
-				optkey: '@',
-				optval: '@'
-			},
-            controller: controller,
-            controllerAs: 'ctrl',
-            bindToController: true,        //required in 1.3+ with controllerAs
-            template: template
-        };
-
-	})
 ;

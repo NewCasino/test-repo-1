@@ -43,4 +43,26 @@
         public List<TraderTags> Traders { get; set; }
         public List<TraderAssign> Assignments { get; set; }
     }
+
+    public class EventAssignMetaResponse : JsonResponseBase
+    {
+        public DateTime Meeting_Date { get; set; }
+        public int Meeting_Id { get; set; }
+        public int Event_No { get; set; }
+        public string Name { get; set; }
+        public DateTime Assigned_Date { get; set; }
+        public DateTime Start_Time { get; set; }
+        public string Country { get; set; }
+        public string Type { get; set; }
+        public string Region { get; set; }
+        public string Venue { get; set; }
+        public string Lux_Trader { get; set; }
+        public string Tab_Trader { get; set; }
+        public string Sun_Trader { get; set; }
+        public string Lux_Ma { get; set; }
+        public string Tab_Ma { get; set; }
+        public string Sun_Ma { get; set; }
+
+    }
+
 }

@@ -1,6 +1,6 @@
 <div class="panel-frame">
     <table class="table">
-        <thead>
+        <thead class="border:0;">
             <tr>
                 <th>
                     <h4 class="panel-title">Filters</h4>
@@ -10,12 +10,13 @@
         <tbody>
             <tr>
                 <td>
-                    <div class="col-md-12">
+                    <div class="col-md-12" >
                         <div class="form-group">
-                            <label class="major">Meeting Date</label><br>
-                            <select class="form-control date-list" ng-model="ctrl.vm.options.date" ng-change="vm.dateChange()">
-                                <option ng-selected="$first" ng-repeat="date in ctrl.vm.options.dates" value="{{$index}}">{{date | toDisplayDate}}</option>
-                            </select>
+                            <label class="major">{{ctrl.vm.dateText}} Date</label><br>
+							<select class="form-control date-list" 
+								ng-options="option for option in ctrl.vm.options.dates" ng-change="dateChange()"
+								ng-model="ctrl.vm.date">
+							</select>							
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -35,20 +36,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-show="ctrl.vm.parent.indexOf('assign_trader') > -1">
                         <div class="form-group">
                             <label class="major">Meeting Status</label><br>
                             <div class="checkbox checkbox-success">
                                 <input id="check2a" type="checkbox" class="styled" ng-model="ctrl.vm.options.status.assigned" >
-                                <label for="check2a">Assigned</label>
+                                <label for="check2a">Trader Assigned</label>
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="check2b" type="checkbox" class="styled" ng-model="ctrl.vm.options.status.unassigned" >
-                                <label for="check2b">Unassigned</label>
+                                <label for="check2b">Trader Not Assigned</label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-show="ctrl.vm.parent.indexOf('assign_trader') > -1">
                         <div class="form-group">
                             <label class="major">Country</label><br>
                             <div class="checkbox checkbox-warning">

@@ -9,6 +9,7 @@
     public interface ITraderAssignService
     {
         TraderAssignMetaResponse GetAssignments(string meetingDate);
+        List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date);
         TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData);
     }
 
@@ -26,17 +27,21 @@
             return _traderAssignRepository.GetAssignments(meetingDate);
         }
 
+        public List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date)
+        {
+            return _traderAssignRepository.GetAssignmentsByDate(Mode, Date);
+        }
+
         public TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData)
         {
-            foreach (string meetingId in postData.meetings)
+            foreach (DtoSelectedEvent dtoEvent in postData.SelectedEvents)
             {
-                _traderAssignRepository.SaveAssignment(postData.meetingDate, Int32.Parse(meetingId), postData.env.ToUpper(), postData.traders, postData.analysts);
+                _traderAssignRepository.SaveAssignments(postData.MeetingDate, dtoEvent, postData.Assignments);
             }
 
-            return _traderAssignRepository.GetAssignments(postData.meetingDate);
+            return _traderAssignRepository.GetAssignments(postData.MeetingDate);
 
             //TODO is logging required ??
         }
-
     }
 }

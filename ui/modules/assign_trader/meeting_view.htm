@@ -1,0 +1,71 @@
+<div class="panel-frame">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <h4 class="panel-title">Meetings for Date : <span class="navy">{{ctrl.vm.date}}</span></h4>
+					<span class="pull-right">
+						<button type="button" class="btn btn-small btn-success" ng-click="ctrl.closeEvents()">Events</button> &nbsp; 
+						<button type="button" class="btn btn-small btn-info" ng-click="ctrl.export()">Export</button>
+					</span>					
+                </th>
+            </tr>
+        </thead>
+        <tbody id="meeting-view">
+            <tr>
+                <td>
+                    <table-scroller offset="180">
+                       <table class="table table-striped list-table">
+                            <tbody>
+                                <tr ng-repeat-start="item in ctrl.meetingAssignments | filter: ctrl.vm.typeFilter" class="list-row">                           
+                                    <td width="48px"><img src="/img/{{item.country}}.jpg" border="0" /></td>
+                                    <td width="48px"><img src="/img/{{item.Type}}.png" border="0" /></td>
+                                    <td width="48px"><span class="pointer" ng-class="(!item.showEvents) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'" ng-click="item.showEvents=!item.showEvents"></span></td>
+                                    <td>{{item.venue}}</td>  							
+                                </tr>
+                                <tr ng-if="item.showEvents" ng-repeat-end="">
+                                    <td colspan="4">
+										<div ng-repeat="adate in item.assign_dates">
+											<div style="display:inline-block;">
+												<label class="subhead"> &nbsp; &nbsp; Assignment Date: </label>
+												<span class="navy">{{adate.assign_date |toDisplayDate}}</span>
+											</div>
+											<table class="table table-striped list-table">    
+											   <thead>
+													<tr>
+														<th width="38px">Race No</th>                                
+														<th width="118px">Start Time</th>
+														<th width="350px">Name</th>
+														<th width="100px">Sun Ma</th>
+														<th width="100px">Sun Trader</th>
+														<th width="100px">Tab Ma</th>
+														<th width="100px">Tab Trader</th>
+														<th width="100px">Lux Ma</th>
+														<th width="100px">Lux Trader</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="event in adate.events">
+														<td>R{{event.event_no}}</td>
+														<td>{{event.start_time | utcToDisplayDateTime}}</td>
+														<td>{{event.name}}</td>
+														<td>{{event.sun_ma}}</td>
+														<td>{{event.sun_trader}}</td>
+														<td>{{event.tab_ma}}</td>
+														<td>{{event.tab_trader}}</td>
+														<td>{{event.lux_ma}}</td>
+														<td>{{event.lux_trader}}</td>
+													</tr>
+												</tbody>                                                
+											</table>
+										</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                     <table-scroller>
+                </td>
+            </tr>
+        <tbody>
+    </table>
+</div>

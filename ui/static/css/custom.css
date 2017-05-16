@@ -1,34 +1,68 @@
+/** reports rendering **/
+
+table {
+    -fs-table-paginate: paginate;
+}
+
+/** media screen **/
 html, body {
     height: 99%;
     font-size: 0.85em;
-    /* overflow: hidden; */
 }
 
-/* Scroll Bar */
+/** scroll bar **/
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); }
 ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:window-inactive  { background: orange; }
 
+h3 {
+    color: darkorange;
+	margin-left:40px;
+}
 th, h4 {
     color: maroon;
 }
-
+.pull-right {
+  float: right !important;
+}
+.left {
+	text-align: left;
+}
 .center {
 	text-align: center;
 }
-
+.navy {
+    color: navy;
+}
+.blue {
+    color: blue;
+}
+.maroon {
+    color: maroon;
+}
+.orange {
+    color: darkorange;
+}
+.subhead {
+    color: darkorange;
+	font-weight: 900;
+	letter-spacing:1.5px;
+}
 .major {
     font-weight: bold;
 	color: blue;
 }
 
 .date-list {
-    width: 8em;
-    height: 2em;
+    width: 80px;
+    height: 20px;
     padding: 0;
     line-height: 1em;
     color: maroon;
     font-size: 1em;
+}
+.assigned-date-list {
+    max-height: 44px;
 }
 .dropdown-menu {
     height: 400px;
@@ -53,12 +87,12 @@ th, h4 {
 
 .assign-container {
 	height:95%;
-    padding: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
     margin:0;
 }
 
 .assign-form {
-    border:0px dashed orange;
 	height:100%;
     padding: 0;
     margin: 0;
@@ -67,42 +101,59 @@ th, h4 {
 .panel-frame {
     border: 1px solid #ccc;
     height: 100%;
-    overflow-y:auto;
-    overflow-x:hidden;
 }
 
-/* FILTER PANEL */
+/** FILTER PANEL **/
 .filter-panel {
     height:99%;
 }
 
-/* MEETINGS PANEL */
+/** MEETINGS PANEL **/
 .meetings-panel {
     height:99%;
 }
 .meeting-row {
     vertical-align: middle;
 }
-.meeting-row td input[type=checkbox] {
-    display: block;
-    float: left;
-    color: #525252;
-    cursor: pointer;
-    white-space: nowrap;
-    font-weight : 500;
-}
 
-/* ASSIGN PANEL */
+/** ASSIGN PANEL **/
 .assign-panel {
     height:99%;
 }
+#assign-table-head td {
+    border: 1px solid #ccc;
+}
+#assign-table-body td {
+    border-left:1px solid #ccf;
+    text-align:center;
+}
+#assign-table-body > tbody tr > td:first-child {
+    text-align:left;
+}
+#assign-table-body td input[type=checkbox] {
+    float:none;
+    padding:0;
+    margin:0;
+}
 
+/** LIST PANEL **/
 .list-panel {
     height:99%;
 }
+.list-table, .list-row {
+	border: 0;
+}
+.assigns-table {
+    border: 2px solid #444;
+    width: 80%;
+}
+.assigns-table th, .assigns-table td {
+    border-left: 1px solid #444;
+}
 .panel-title {
     display:inline-block;
-    line-height:2em;
+    line-height:2.15em;
+    border:0;
 }
 .data-panel {
     border: 0px solid #fcc;
@@ -117,21 +168,19 @@ th, h4 {
     color: maroon;
 }
 
-.table > thead > tr > th {
-    border: 1px solid #ccc;
-    vertical-align: middle;
+/** SCROLLING TABLES **/
+.table-head, .table-body {
+    margin: 0;
 }
-.table > thead.panel-title > tr > th {
-    border: 0px solid #ccc;
+.table-head {
+    width: 99%;
 }
-.border {
-    border: 1px solid #ccc;
+.table-head, .table-head td {
+    /* border: 1px solid #ccc; */
 }
-.border-left {
-    border-left: 1px solid #ccc;
-}
-.no-border {
-    border: 0px solid #fff;
+.table-head tbody td {
+    color: maroon;
+    text-align: center;
 }
 
 .bootbox-body {

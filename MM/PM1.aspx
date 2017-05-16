@@ -154,7 +154,7 @@ End Function
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
-			<link rel="stylesheet" href="/ui/modal.css">
+			<link rel="stylesheet" href="/ui/static/css/modal.css">
 
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
@@ -182,12 +182,11 @@ End Function
 			<div ng-view></div>
 
             <!-- ui libraries -->
-			<script src="/ui/angular.min.js"></script>
-			<script src="/ui/angular-route.min.js"></script>
-			<script src="/ui/utilsLibrary.js"></script>
-            <!-- ui app and modules -->
-            <script src="/ui/modules/trader/trader.module.js"></script>
-            <script src="/ui/app.js"></script>
+            <script src="/ui/static/js/angular.min.js"></script>
+            <script src="/ui/static/js/angular-route.min.js"></script>
+			<script src="/ui/static/js/utilsLibrary.js"></script>
+            <!-- ui app -->
+            <script src="/ui/mmApp.js"></script>
 
 			<script type="text/javascript">
 				var eventCtrl = {
@@ -237,7 +236,6 @@ End Function
 	Dim MktPer() As Double = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0,0,0,0,0 , 0, 0}
 
     Dim sql as string = "SELECT Limit FROM SYS_MIXER WHERE TYPE = '" & RM("TYPE") & "' AND REGION = '" & RV("REGION") & "' AND RANK = '" & RV("RANK") & "' AND CONF_LVL = '" &  RV("CONF_LVL") & "'"
-    Logger.LogToFile(sql)
 	Dim Limit as string = getResult(sql)
 	'video replay ID		' "2014/10/20141028GAWG09"
 	Dim VidTrkCode as string = getResult("EXEC sp_GetVidcode @VENUE = '" & RM("VENUE") & "' , @COUNTRY = '" & CT & "', @Type = " & TP)  
