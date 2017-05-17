@@ -771,7 +771,10 @@ End Function
 			  <!-- Dyn Pool Sizes (Max 26 Cols)  ----------------------------->
 			  <%=  ColPools(ColList, RV, CT, MktPer) %>
 			  <td><!-- No col -->
-	  
+        <!-- Auto Redistribute Opt-in -->
+			  <tr height=23 class=TOT>
+				<td colspan=11 class=TFN>Auto Redistribute
+				<%=  ColAutoRedistribute(ColList ,RV)  %>
 		</table>
 	  </div>
 	  
