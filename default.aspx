@@ -133,25 +133,6 @@
 					<%	End If  %>
 				</ul>
 				</li>
-				<%  If Session("LVL") < 8		%>	
-					<li onclick="">Diagnostics
-					<ul>
-						<li onclick="GO('_soon')">Trading P & L</li>
-						<li onclick="GO('_soon')">Operational Risk</li>
-						<li onclick="GO('_soon')">Model Simulation</li>
-						<li onclick="GO('_soon')">Model Diagnostics</li>
-					</ul>
-					</li>
-					
-					<li onclick="">Video
-					<ul>
-						<li onclick="GO('_soon')">FOX 1</li>
-						<li onclick="GO('_soon')">FOX 2</li>
-						<li onclick="GO('_soon')">FOX 3</li>
-					</ul>
-					</li>
-					
-				<%	End If  %>
 			<%	End If  %>
 				
 			<li onclick="">Account
