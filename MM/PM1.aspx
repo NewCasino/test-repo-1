@@ -104,10 +104,15 @@ Function GetLiabVWM(RunNo As Integer)
 	Return RunLbVWM		
 End Function
 
-Function GetLiabilitys(BetType As string, RunNo As Integer)    
+Function GetLiabilitys(liabilities As DataTable, RunNo As Integer)    
 
 	dim Run_Liab as Double
-	Run_Liab = getResult("EXEC sp_GetRunLiability " & EV(0) & "," & EV(1) & "," & RunNo & ",'" & BetType & "','" & RiskProf & "'," & Session("LUX") & "," & Session("SUN") & "," & Session("TAB")  ,,0)
+	Dim liabilityRows = liabilities.Select(String.format("RUNNER_NO ={0}", RunNo))
+
+	if liabilityRows.Count > 0 Then
+		Run_Liab = liabilityRows(0)("LIABILITY")
+	End If
+	
 	if Run_Liab <> 0 then 
 		Return if (Run_Liab < 0 , "<Div class=RD>" &  FormatNumber(Run_Liab,0,,TriState.UseDefault) & "</Div>", "<Div class=GR>" &  FormatNumber(Run_Liab,0,,TriState.UseDefault) & "</Div>")		'set colour of text
 	'ELSE
@@ -220,8 +225,7 @@ End Function
     ''    "FROM dbo.EVENT_PM " &
     ''    "WHERE MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1))
 		
-	Dim DV As DataTable = makeDataSet("SELECT * FROM RESULTS(nolock) WHERE GAME IN('W','P') AND MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1)).Tables(0)
-	DV.PrimaryKey = New DataColumn() { DV.Columns(2), DV.Columns(3) }
+
 
 
 	Dim DC() As String = { "", "", "", "" }
@@ -246,11 +250,19 @@ End Function
 	Dim KL As Byte = getENum("KLY_FRC")
 	Dim RT As Byte = getENum("RDC_ST_" & CT & TP)
 
-	Dim MX   As DataTable = makeDataSet("SELECT * FROM SYS_MATRIX(nolock) WHERE COUNTRY='" & CT.Replace("NZ","AU") & "'").Tables(0)
-	Dim LV() As DataRow   = makeDataSet("SELECT * FROM SYS_LEVEL(nolock) WHERE LVL_ID IN(1,2) ORDER BY 1").Tables(0).Select() ' 0 = Bet, 1 = Eat
 
 	Dim MATarget = IIf(IsDbnull(RV("MA_TARGET")), 135, RV("MA_TARGET"))
 
+	Dim WinLiabilities as new DataTable 
+	Dim PlaceLiabilities as new DataTable 
+
+	If Session("LVL") < 10 Then
+		dim winLiabilityRecord = getRecord(String.Format("exec [sp_GetRunLiability] @MtgId = {0}, @EventNo = {1}, @Bet = 'WIN', @Profile = '', @Lux = {2}, @Sun = {3}, @Tab = {4}", EV(0), EV(1), Session("LUX"), Session("SUN"),Session("TAB") ))
+		WinLiabilities.Load(winLiabilityRecord)
+
+		dim placeLiabilityRecord = getRecord(String.Format("exec [sp_GetRunLiability] @MtgId = {0}, @EventNo = {1}, @Bet = 'PLACE', @Profile = '', @Lux = {2}, @Sun = {3}, @Tab = {4}", EV(0), EV(1), Session("LUX"), Session("SUN"),Session("TAB") ))
+		PlaceLiabilities.Load(placeLiabilityRecord)
+	End If
 	'getCitibet(RM, RV)
 	
 	
@@ -408,7 +420,7 @@ End Function
 				<td><td><td>		<!--  Hide from Media user -->
 			<% Else %>
 				<!-- td  class=SML>< %= sTtP(RS("MAX_EXPOS")) % -->
-				<td class=FF><%= GetLiabilitys("WIN",RN)  & "<div class=RKSML>" & GetLiabilitys("PLACE",RN) & "</div>" %>
+				<td class=FF><%= GetLiabilitys(WinLiabilities,RN)  & "<div class=RKSML>" & GetLiabilitys(PlaceLiabilities,RN) & "</div>" %>
 				<td  class=SML><b><%= sDiv(GetLiabVWM(RN)) %><!--  VWM -->
 			<% End If %>  
 			  
@@ -514,7 +526,11 @@ End Function
 %>
 <%
 			  ' Populating Trade Data --------------------------------------------------------------------- 
-			  If sNS(RV("CONF_LVL")) <> "E" AndAlso sN0(RS("PM_WIN")) > 0 AndAlso RS("PM_TICK") AndAlso Not RS("PM_RISK") Then
+			  If sNS(RV("CONF_LVL")) <> "E" AndAlso sN0(RS("PM_WIN")) > 0 AndAlso RS("PM_TICK") AndAlso Not RS("PM_RISK") andalso (Session("LVL") < 2 OrElse Session("LVL") = 5) Then
+
+				Dim LV() As DataRow   = makeDataSet("SELECT * FROM SYS_LEVEL(nolock) WHERE LVL_ID IN(1,2) ORDER BY 1").Tables(0).Select() ' 0 = Bet, 1 = Eat
+				Dim MX   As DataTable = makeDataSet("SELECT * FROM SYS_MATRIX(nolock) WHERE COUNTRY='" & CT.Replace("NZ","AU") & "'").Tables(0)
+
 
 				' BET Strategy 1 (Exchange WIN Only)
 				If AM(0) >= 1 Then 
@@ -927,7 +943,10 @@ End Function
 	</form>
 
 	<%'-- Auto Trade Handling -------------------------------------------------------------------------
-	If Not VM and (Session("LVL") < 2 OrElse Session("LVL") = 5) Then		%>
+	If Not VM and (Session("LVL") < 2 OrElse Session("LVL") = 5) Then		
+		Dim DV As DataTable = makeDataSet("SELECT * FROM RESULTS(nolock) WHERE GAME IN('W','P') AND MEETING_ID=" & EV(0) & " AND EVENT_NO=" & EV(1)).Tables(0)
+		DV.PrimaryKey = New DataColumn() { DV.Columns(2), DV.Columns(3) }%>
+
 		<table id=TDG><%
 
 		
