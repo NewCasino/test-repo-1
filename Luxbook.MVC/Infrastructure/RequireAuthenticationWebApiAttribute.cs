@@ -4,6 +4,9 @@
     using System.Web.Http;
     using System.Web.Http.Controllers;
 
+    /// <summary>
+    /// This is used for user to server API calls (e.g. ajax endpoints)
+    /// </summary>
     public class RequireAuthenticationWebApiAttribute : AuthorizeAttribute
     {
         protected override bool IsAuthorized(HttpActionContext actionContext)

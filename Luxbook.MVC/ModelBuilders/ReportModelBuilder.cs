@@ -113,7 +113,7 @@
                 return viewModel;
             }
 
-            viewModel.Dates.AddRange(meetings.Select(x => x.MeetingDate.Value));
+            viewModel.Dates.AddRange(meetings.Where(x=>x.MeetingDate.HasValue).Select(x => x.MeetingDate.Value));
 
             return viewModel;
         }

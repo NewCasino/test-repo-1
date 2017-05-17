@@ -7,7 +7,6 @@
     using Infrastructure;
     using Models;
     using Services;
-
     using DTO;
 
     public interface IEventRepository
@@ -25,6 +24,8 @@
         void SetReducedStaking(int meetingId, int eventNumber);
 
         void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
+
+        void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product, EventService.SdpType sdpType, bool isChecked);
     }
 
     public class EventRepository : IEventRepository
@@ -150,6 +151,17 @@
             sql = string.Format(sql, product.ToString(), places.HasValue ? places.Value.ToString() : "null");
 
             _database.Execute(sql, new { meetingId, eventNumber }, commandType: CommandType.Text);
+
+        }
+
+        public void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
+            EventService.SdpType sdpType, bool isChecked)
+        {
+            var columnName = $"AUTO_DIST_{product}_{sdpType}_SDP";
+            var sql =
+                $"UPDATE EVENT_TAB SET {columnName}=@isChecked WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber";
+
+            _database.Execute(sql, new { meetingId, eventNumber, isChecked }, commandType: CommandType.Text);
 
         }
     }

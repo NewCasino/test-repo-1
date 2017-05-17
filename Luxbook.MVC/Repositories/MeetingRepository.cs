@@ -32,7 +32,10 @@
         {
             return
                 _database.Query<Meeting>(
-                    "SELECT DISTINCT MEETING_DATE as MeetingDate FROM MEETING(nolock) ORDER BY MEETING_DATE DESC",
+                    "SELECT DISTINCT MEETING_DATE as MeetingDate " +
+                    "FROM MEETING(nolock) " +
+                    "WHERE MEETING_DATE IS NOT NULL " +
+                    "ORDER BY MEETING_DATE DESC",
                     commandType: CommandType.Text)
                     .ToList();
         }
