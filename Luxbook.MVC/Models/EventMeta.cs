@@ -27,7 +27,7 @@ namespace Luxbook.MVC.Models
         public string Bfr_Mkt_Id_Fp { get; set; }
         public string Book_Spec_Id { get; set; }
         public string Match_Spec_Id { get; set; }
-        public string Ls_Event_Id { get; set; }
+        public int? Ls_Event_Id { get; set; }
 
         public List<RunnerMeta> Runners { get; set; }
 
