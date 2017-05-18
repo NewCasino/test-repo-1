@@ -14,7 +14,7 @@ namespace Luxbook.MVC.Services
         public int EventNumber { get; set; }
         public int RunnerNumber { get; set; }
         public int PropId { get; set; }
-        public string LsportsEventId { get; set; }
+        public int? LsportsEventId { get; set; }
     }
 
     public interface IRunnerService
