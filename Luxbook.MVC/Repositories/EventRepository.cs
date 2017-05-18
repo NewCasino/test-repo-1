@@ -25,6 +25,7 @@
         void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
 
         void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product, EventService.SdpType sdpType, bool isChecked);
+        void UpdateEventMeta(EventMeta metaData);
     }
 
     public class EventRepository : IEventRepository
@@ -93,14 +94,14 @@
         public EventMeta GetEventMeta(int meetingId, int eventNumber)
         {
             var eventMeta =
-                _database.Query<EventMeta>(@"SELECT mv.Meeting_Id, mv.Event_No, mv.Start_Time, mv.Type,
-                                            mv.Country, mv.Venue, mv.Name, mv.Btk_Id, 
-                                            m.Wift_Mtg_Id, m.Fxo_Id, m.Pa_Mtg_Id, 
-                                            e.Wift_Evt_Id, e.Wift_Src_Id, e.Wp_EventId, e.Pa_Evt_Id, e.Gtx_Id, e.Bfr_Mkt_Id 
-                                            FROM dbo.MEETING_VIEW as mv
-                                            INNER JOIN dbo.MEETING as m ON (mv.MEETING_ID = m.MEETING_ID)
-                                            INNER JOIN dbo.EVENT as e ON (mv.MEETING_ID = e.MEETING_ID AND mv.EVENT_NO = e.EVENT_NO)
-                                            WHERE mv.EVENT_NO = @eventNumber and mv.MEETING_ID = @meetingId",
+                _database.Query<EventMeta>(@"SELECT e.Meeting_Id, e.Event_No, e.Start_Time, m.Type,
+                                            m.Country, m.Venue, e.Name, m.Btk_Id, 
+                                            m.Wift_Unq_Mtg_Id, m.Fxo_Id, m.Pa_Mtg_Id, 
+                                            e.Wift_Unq_Evt_Id, e.Wift_Src_Id, e.Wp_EventId, e.Pa_Evt_Id, e.Gtx_Id, e.Bfr_Mkt_Id , e.Bfr_Mkt_Id_Fp,
+                                            e.Book_Spec_id, e.Match_Spec_Id
+                                            FROM  dbo.MEETING_TAB as m with (nolock) 
+                                            INNER JOIN dbo.EVENT_TAB as e with (nolock)  ON (m.MEETING_ID = e.MEETING_ID AND e.EVENT_NO = e.EVENT_NO)
+                                            WHERE e.EVENT_NO = @eventNumber and e.MEETING_ID = @meetingId",
                     new
                     {
                         eventNumber,
@@ -108,7 +109,7 @@
                     }, commandType: CommandType.Text).FirstOrDefault();
 
             var runnerMeta =
-                _database.Query<RunnerMeta>(@"SELECT MEETING_ID, EVENT_NO, RUNNER_NO, NAME, SCR, TAB_PROP
+                _database.Query<RunnerMeta>(@"SELECT MEETING_ID, EVENT_NO, RUNNER_NO, NAME, SCR, TAB_PROP , Ls_Event_id
                                             FROM dbo.RUNNER_TAB
                                             WHERE EVENT_NO = @eventNumber and MEETING_ID = @meetingId
                                             ORDER BY RUNNER_NO",
@@ -121,10 +122,17 @@
             if (eventMeta != null)
             {
                 eventMeta.Runners = runnerMeta.ToList();
+                eventMeta.Ls_Event_Id = eventMeta.Runners.First().Ls_Event_Id;
             }
 
             return eventMeta;
 
+        }
+
+        public void UpdateEventMeta(EventMeta metaData)
+        {
+            _database.Execute($"UPDATE EVENT_TAB SET BFR_MKT_ID = @Bfr_Mkt_Id , BFR_MKT_ID_FP = @Bfr_Mkt_Id_Fp, BOOK_SPEC_ID = @Book_Spec_Id , MATCH_SPEC_ID = @Match_Spec_Id WHERE MEETING_ID = @Meeting_Id AND EVENT_NO = @Event_No",
+                metaData, commandType: CommandType.Text);
         }
 
         /// <summary>

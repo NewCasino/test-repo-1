@@ -274,7 +274,7 @@
     <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Controllers\RunnerController.cs" />
     <Compile Include="DTO\DroEventMetaResponse.cs" />
-    <Compile Include="DTO\RunnerPostDataDTO.cs" />
+    <Compile Include="DTO\MetaDataUpdateDto.cs" />
     <Compile Include="Controllers\StakingController.cs" />
     <Compile Include="Controllers\TradeController.cs" />
     <Compile Include="Controllers\TradeManagementController.cs" />

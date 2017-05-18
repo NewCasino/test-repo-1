@@ -7,13 +7,15 @@ namespace Luxbook.MVC.Repositories
 {
     using System.Data;
     using Infrastructure;
+    using Services;
 
     public interface IRunnerRepository
     {
         void UpdateRunnerRoll(int meetingId, int eventNumber, int runnerNumber, string rollType, int roll, string currentUser);
         void UpdateRunnerBoundary(int meetingId, int eventNumber, int runnerNumber, string boundaryType, decimal? boundary, string currentUser);
         void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
-        void UpdatePropId(int meetingId, int eventNumber, int runnerNumber, int propId, string currentUser);
+        void UpdatePropIds(List<RunnerUpdateParameters> parameters,
+            string currentUser);
     }
 
     public class RunnerRepository : IRunnerRepository
@@ -37,7 +39,7 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_ADJ_SUN":
                     type = "SUN SDP roll";
-                    priorityColumns.AddRange(new[] {  "SUN" });
+                    priorityColumns.AddRange(new[] { "SUN" });
                     break;
                 case "SDP_ADJ_MASTER":
                     type = "Master  SDP roll";
@@ -54,12 +56,12 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "PLACE_SDP_ADJ_SUN":
                     type = "Sun Place roll";
-                    priorityColumns.AddRange(new[] {  "SUN" });
+                    priorityColumns.AddRange(new[] { "SUN" });
 
                     break;
                 case "PLACE_SDP_ADJ_MASTER":
                     type = "Master Place roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" , "TAB"});
+                    priorityColumns.AddRange(new[] { "LUX", "SUN", "TAB" });
 
                     break;
                 case "PLACE_SDP_ADJ_TAB":
@@ -114,7 +116,7 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_MIN_SUN":
                     type = "SUN SDP minimum";
-                    priorityColumns.AddRange(new[] {  "SUN" });
+                    priorityColumns.AddRange(new[] { "SUN" });
                     break;
                 case "SDP_MAX_SUN":
                     type = "SUN SDP maximum";
@@ -126,7 +128,7 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "SDP_MAX_MASTER":
                     type = "Master SDP maximum";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" ,"TAB" });
+                    priorityColumns.AddRange(new[] { "LUX", "SUN", "TAB" });
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boundaryType), boundaryType, "Boundary type not valid");
@@ -167,18 +169,12 @@ namespace Luxbook.MVC.Repositories
             );
         }
 
-        public void UpdatePropId(int meetingId, int eventNumber, int runnerNumber, int propId, string currentUser)
+        public void UpdatePropIds(List<RunnerUpdateParameters> parameters, string currentUser)
         {
-            var sql = "UPDATE RUNNER_TAB SET TAB_PROP = @propId " +
-                      "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;";
+            var sql = "UPDATE RUNNER_TAB SET TAB_PROP = @PropId, LS_EVENT_ID = @LsportsEventId " +
+                      "WHERE MEETING_ID = @MeetingId AND EVENT_NO = @EventNumber AND RUNNER_NO = @RunnerNumber;";
             _database.Execute(sql,
-                new
-                {
-                    propId,
-                    meetingId,
-                    eventNumber,
-                    runnerNumber
-                },
+               parameters,
                 commandType: CommandType.Text
             );
         }

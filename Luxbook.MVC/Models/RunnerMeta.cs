@@ -13,5 +13,6 @@ namespace Luxbook.MVC.Models
         public string Name { get; set; }
         public string Scr { get; set; }
         public string Tab_Prop { get; set; }
+        public string Ls_Event_Id { get; set; }
     }
 }

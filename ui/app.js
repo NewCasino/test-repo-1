@@ -126,27 +126,25 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         $scope.savePropIds = function() {
 			// validate propids
             var err = false;
-            var buf = new Array();
+            var runnerMetadata = new Array();
             for (var i=0; i<$scope.runners.length; i++) {
                 var item = $scope.runners[i];
                 var propid = parseInt(item.Tab_Prop);
                 if (isNaN(propid) || propid < 1) {
-                    err = true;
-                    break;                   
+                    _utils.error('All prop ids must be integer and greater than zero !!');
+                    return;                   
                 }
-                buf.push({
-					RunnerNo: item.Runner_No, 
+                runnerMetadata.push({
+					RunnerNumber: item.Runner_No, 
+                    LSportsEventId: $scope.event.Ls_Event_Id,
 					PropId: propid
 				});
             }
-            if (err) {
-                _utils.error('All Prop Ids must be integer and greater than zero !!');
-                return;                   
-            }
-			_utils.confirm("Confirm you want to save the Prop Ids ??\n")
+
+			_utils.confirm("Do you want to save your changes?\n")
 				.then(function(OK) {
 					if (OK) {
-                        dataFactory.savePropIds($scope.data.meeting_id, $scope.data.race_num, buf)
+                        dataFactory.savePropIds($scope.data.meeting_id, $scope.data.race_num, runnerMetadata,$scope.event)
                             .then(function(resp) {                     
                                 runnerControl.closeWindow();
                             });
@@ -199,12 +197,13 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
             return dataFactory.savePropIds(meetingId, eventId, data);
         };
 
-        dataFactory.savePropIds = function (meetingId, eventId, data) {
-            return $http.post(urlBase + '/Runner/Propid', 
+        dataFactory.savePropIds = function (meetingId, eventId, runnerData,eventData) {
+            return $http.post(urlBase + '/Runner/MetadataUpdate', 
                 { 
                     MeetingId: meetingId, 
                     EventNumber: eventId,
-                    Data: data
+                    RunnerData: runnerData,
+                    EventData: eventData
                 }, config
              );
         };

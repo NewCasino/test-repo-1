@@ -5,22 +5,26 @@
 	</div>
     <div class="modal-content">
 	    <table cellpadding="2" width="100%">
-	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Meeting Identifiers</td></tr>
+	        <tr><td colspan="2" align="center" class="modal-subtitle">Meeting Identifiers</td></tr>
 	        <tr><td width="150px">Meeting Name</td><td class="modal-data">{{event.Venue}}</td></tr>
 	        <tr><td>Meeting Id</td><td class="modal-data">{{event.Meeting_Id}}</td></tr>
 	        <tr><td>OCTS</td><td class="modal-data">{{event.Btk_Id}}</td></tr>
 	        <tr><td>PA Meeting Id</td><td class="modal-data">{{event.Pa_Mtg_Id}}</td></tr>
-	        <tr><td>WIFT Meeting Id</td><td class="modal-data">{{event.Wift_Mtg_Id}}</td></tr>
+	        <tr><td>WIFT Meeting GUID</td><td class="modal-data">{{event.Wift_Unq_Mtg_Id}}</td></tr>
 	        <tr><td colspan="2"><hr /></td></tr>
 	        
-	        <tr><td colspan="2" align="center" class="modal-subtitle">Race Event Identifiers</td></tr>
+	        <tr><td colspan="2" align="center" class="modal-subtitle">Event Identifiers</td></tr>
 	        <tr><td>Event Number</td><td class="modal-data">{{event.Event_No}}
 	        			<span style="float:right;margin-right:80px;">{{event.Start_Time | date:'dd/MM/yyyy @ h:mma'}}</span>
 	        </td></tr>
 	        <tr><td>Event Name</td><td class="modal-data">{{event.Name}}</td></tr>
-	        <tr><td>Betfair Win Market Id</td><td class="modal-data">{{event.Bfr_Mkt_Id}}</td></tr>
+	        <tr><td>Betfair Win Market Id</td><td class="modal-data"><input type="text" ng-model="event.Bfr_Mkt_Id"/></td></tr>
+			<tr><td>Betfair Place Market Id</td><td class="modal-data"><input type="text" ng-model="event.Bfr_Mkt_Id_Fp"/></td></tr>
+			<tr><td>LSport Event Id</td><td class="modal-data"><input type="text" ng-model="event.Ls_Event_Id"/></td></tr>
+			<tr><td>Book Spec Id</td><td class="modal-data"><input type="text" ng-model="event.Book_Spec_Id"/></td></tr>
+			<tr><td>Match Spec Id</td><td class="modal-data"><input type="text" ng-model="event.Match_Spec_Id"/></td></tr>
 	        <tr><td>PA Event Id</td><td class="modal-data">{{event.Pa_Evt_Id}}</td></tr>
-	        <tr><td>WIFT Event Id</td><td class="modal-data">{{event.Wift_Evt_Id}}</td></tr>
+	        <tr><td>WIFT Event GUID</td><td class="modal-data">{{event.Wift_Unq_Evt_Id}}</td></tr>
 	        <tr><td colspan="2"><hr /></td></tr>
 	        <tr><td colspan="2">
 	        	<div id="event-runners">
