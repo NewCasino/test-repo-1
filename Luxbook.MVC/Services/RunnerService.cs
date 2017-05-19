@@ -5,12 +5,16 @@ using System.Web;
 
 namespace Luxbook.MVC.Services
 {
+    using DTO;
     using Repositories;
 
-    public class RunnerPropid
+    public class RunnerUpdateParameters
     {
-        public int RunnerNo;
-        public int PropId;
+        public int MeetingId { get; set; }
+        public int EventNumber { get; set; }
+        public int RunnerNumber { get; set; }
+        public int PropId { get; set; }
+        public int? LsportsEventId { get; set; }
     }
 
     public interface IRunnerService
@@ -21,17 +25,19 @@ namespace Luxbook.MVC.Services
 
         void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
 
-        void UpdatePropIds(int meetingId, int eventNumber, List<RunnerPropid> runnerList, string currentUser);
+        void UpdatePropIds(MetadataUpdateDto updateParameters, string currentUser);
     }
 
     public class RunnerService : IRunnerService
     {
         private readonly IRunnerRepository _runnerRepository;
-       
+        private readonly IEventRepository _eventRepository;
 
-        public RunnerService(IRunnerRepository runnerRepository)
+
+        public RunnerService(IRunnerRepository runnerRepository, IEventRepository eventRepository)
         {
             _runnerRepository = runnerRepository;
+            _eventRepository = eventRepository;
         }
 
         public void UpdateRunnerRoll(int meetingId, int eventNumber, int runnerNumber, string rollType, int roll, string currentUser)
@@ -53,15 +59,18 @@ namespace Luxbook.MVC.Services
             //TODO is logging required ??
         }
 
-        // update runners propids
-        public void UpdatePropIds(int meetingId, int eventNumber, List<RunnerPropid> runnerList, string currentUser)
+      
+        public void UpdatePropIds(MetadataUpdateDto updateParameters, string currentUser)
         {
-            foreach (RunnerPropid runner in runnerList)
+            foreach (var runner in updateParameters.RunnerData)
             {
-                _runnerRepository.UpdatePropId(meetingId, eventNumber, runner.RunnerNo, runner.PropId, currentUser);
+                runner.MeetingId = updateParameters.MeetingId;
+                runner.EventNumber = updateParameters.EventNumber;
             }
-            //TODO is logging required ??
-        }
 
+            _runnerRepository.UpdatePropIds(updateParameters.RunnerData, currentUser);
+            _eventRepository.UpdateEventMeta(updateParameters.EventData);
+
+        }
     }
 }
