@@ -44,7 +44,7 @@
         void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
 
         void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
-            EventService.SdpType sdpType, bool isChecked);
+            EventService.SdpType sdpType, bool isChecked, string currentUser);
     }
 
     public class EventService : IEventService
@@ -129,9 +129,9 @@
             _eventRepository.UpdatePlacePays(meetingId, eventNumber, product, places);
         }
 
-        public void UpdateAutoRedistribute(int meetingId, int eventNumber, Product product, SdpType sdpType, bool isChecked)
+        public void UpdateAutoRedistribute(int meetingId, int eventNumber, Product product, SdpType sdpType, bool isChecked, string currentUser)
         {
-            _eventRepository.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked);
+            _eventRepository.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked, currentUser);
         }
     }
 }
