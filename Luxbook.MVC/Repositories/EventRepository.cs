@@ -24,7 +24,7 @@
 
         void UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product, int? places);
 
-        void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product, EventService.SdpType sdpType, bool isChecked);
+        void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product, EventService.SdpType sdpType, bool isChecked, string currentUser);
     }
 
     public class EventRepository : IEventRepository
@@ -154,13 +154,41 @@
         }
 
         public void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
-            EventService.SdpType sdpType, bool isChecked)
+            EventService.SdpType sdpType, bool isChecked, string currentUser)
         {
+            // Update relevant priority flag
+            var priorityColumns = new List<string>();
+            switch (product)
+            {
+                case EventService.Product.Lux:
+                    priorityColumns.Add("LUX");
+                    break;
+                case EventService.Product.Sun:
+                    priorityColumns.Add("SUN");
+                    break;
+                case EventService.Product.Tab:
+                    priorityColumns.Add("TAB");
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException("Product not valid");
+            }
+
+            var state = isChecked ? "ON" : "OFF";
+            var notification = $"[{DateTime.Now.ToString("h:mm:ss tt")}] {currentUser} turned {product} {sdpType} auto-redistribute {state}<br/>";
+
+            string priorityUpdates = string.Empty;
+            if (isChecked && priorityColumns.Any())
+            {
+                priorityUpdates = "," + string.Join(",", priorityColumns.Select(x => $"{x}_PRIORITY_UPDATE = 1"));
+            }
+
+
             var columnName = $"AUTO_DIST_{product}_{sdpType}_SDP";
             var sql =
-                $"UPDATE EVENT_TAB SET {columnName}=@isChecked WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber";
+                $"UPDATE EVENT_TAB SET {columnName}=@isChecked, NOTIFICATIONS = ISNULL(NOTIFICATIONS,'') + @notification {priorityUpdates} WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber";
 
-            _database.Execute(sql, new { meetingId, eventNumber, isChecked }, commandType: CommandType.Text);
+            _database.Execute(sql, new { meetingId, eventNumber, isChecked, notification }, commandType: CommandType.Text);
 
         }
     }

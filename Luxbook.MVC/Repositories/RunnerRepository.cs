@@ -33,11 +33,11 @@ namespace Luxbook.MVC.Repositories
             {
                 case "SDP_ADJ":
                     type = "Lux SDP roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.Add("LUX");
                     break;
                 case "SDP_ADJ_SUN":
                     type = "SUN SDP roll";
-                    priorityColumns.AddRange(new[] {  "SUN" });
+                    priorityColumns.Add("SUN");
                     break;
                 case "SDP_ADJ_MASTER":
                     type = "Master  SDP roll";
@@ -49,13 +49,12 @@ namespace Luxbook.MVC.Repositories
                     break;
                 case "PLACE_SDP_ADJ_LUX":
                     type = "Lux Place roll";
-                    priorityColumns.AddRange(new[] { "LUX", "SUN" });
+                    priorityColumns.Add("LUX");
 
                     break;
                 case "PLACE_SDP_ADJ_SUN":
                     type = "Sun Place roll";
-                    priorityColumns.AddRange(new[] {  "SUN" });
-
+                    priorityColumns.Add("SUN");
                     break;
                 case "PLACE_SDP_ADJ_MASTER":
                     type = "Master Place roll";
