@@ -11,11 +11,13 @@
     public class EventController : ApiController
     {
         private readonly IEventService _eventService;
+        private readonly ISecurityService _securityService;
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public EventController(IEventService eventService)
+        public EventController(IEventService eventService, ISecurityService securityService)
         {
             _eventService = eventService;
+            _securityService = securityService;
         }
 
         [HttpGet]
@@ -34,7 +36,25 @@
 
             return new JsonResponseBase {Success = true};
         }
-        
+
+        [HttpGet]
+        public JsonResponseBase UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
+            EventService.SdpType sdpType, bool isChecked)
+        {
+            try
+            {
+                var currentUser = _securityService.GetCurrentUser();
+                _eventService.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked, currentUser);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return new JsonResponseBase { Success = false, Message = ex.Message };
+            }
+
+            return new JsonResponseBase { Success = true };
+        }
+
         [HttpGet]
         public EventMetaResponse EventMeta(int meetingId, int eventNumber)
         {
