@@ -41,7 +41,9 @@ If Request("DT") = "" Then
 	<html>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<link rel="stylesheet" href="/global.css">
-		<script src="/global.js"></script>
+		<script src="/js/moment.min.js"> </script>
+		<script src="/js/jquery.min.js"></script> 
+		<script src="/global.js"></script>	
 		<script>
 			top.setTitle("Pari-Mutuel Market History"); VW = "/MM/PM1"; 
 			function tSH( X ) { var P = X.childNodes[2], B = X.parentNode.nextSibling; 

@@ -11,11 +11,13 @@
     public class EventController : ApiController
     {
         private readonly IEventService _eventService;
+        private readonly ISecurityService _securityService;
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public EventController(IEventService eventService)
+        public EventController(IEventService eventService, ISecurityService securityService)
         {
             _eventService = eventService;
+            _securityService = securityService;
         }
 
         [HttpGet]
@@ -41,7 +43,8 @@
         {
             try
             {
-                _eventService.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked);
+                var currentUser = _securityService.GetCurrentUser();
+                _eventService.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked, currentUser);
             }
             catch (Exception ex)
             {

@@ -60,11 +60,11 @@
         }
 
         [HttpPost]
-        public JsonResponseBase PropId(RunnerPostDataDto postData)
+        public JsonResponseBase MetadataUpdate(MetadataUpdateDto postData)
         {
             var currentUser = _securityService.GetCurrentUser();
 
-            _runnerService.UpdatePropIds(postData.MeetingId, postData.EventNumber, postData.Data, currentUser);
+            _runnerService.UpdatePropIds(postData, currentUser);
 
             return new JsonResponseBase {Success = true, Message = "Runner propids updated"};
         }
