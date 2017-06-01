@@ -58,7 +58,8 @@
 
             var traders =
                 _database.Query<TraderTags>(@"SELECT t.Lid, t.Name, t.Lvl, t.Lux, t.Tab, t.Sun
-                                            FROM dbo.TRADER as t",
+                                            FROM dbo.TRADER as t
+                                            WHERE LVL < 10;", // ignore media users
                     new 
                     {
                     }, commandType: CommandType.Text);
