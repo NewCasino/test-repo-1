@@ -76,6 +76,12 @@ angular.module('WebApp.AssignTraderViewModel', [])
     vm.loadModel = function(resp) {
         vm.dbData = resp.data;
 
+        vm.sortReverse = false;
+
+        vm.sort = function() {
+            vm.sortReverse = !vm.sortReverse;
+        };
+
         // create index for event assignments
         vm.eventAssignIndex = {};
         for (var i = 0; i < vm.dbData.Assignments.length; i++) {
