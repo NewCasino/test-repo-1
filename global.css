@@ -210,21 +210,31 @@ iframe[name=vrtPOST] {	display:none }
 .LST td.PD {	background:#efa !important }
 .LST td.PE {	background:#df8 !important }
 .LST td.PF {	background:#cf6 !important }
+
 .LST td.RD {
+    font-size: 11px;
     background: red;
     color: black !important
-    }
+}
 .LST td.OR {
+    font-size: 11px;
     background: orange;
     color: black !important
-    }
+}
 .LST td.YL {
+    font-size: 11px;
     background: yellow !important
-    }
+}
 .LST td.BL {
-    background: lightblue; 
-    color:black !important
-    }
+    font-size: 11px;
+    background: lightblue;
+    color: black !important
+}
+.LST td.LM {
+    font-size: 11px;
+    background: #cf6;
+    color: black !important
+}
 
 .PLS td {	color:#ddd }
 .PLS td.P1, .PLS td.P2, .PLS td.P4, .PLS td.P5, .PLS td.P6 {
