@@ -406,7 +406,10 @@ End Function
 						<option><%= makeList("SELECT", "", "SYS_CODE", "RNR_CMT", "NAME", "NAME", sNS(RS("COMMENT"))) %>
 					</select>
 			<% Else        %>
-				<td<%= ICase(sNS(RS("COMMENT")), "1st Str"," class=PF", "Data?"," class=HL", "") %>><%= sNR(RS("COMMENT"), "&nbsp;") %>
+				<td <%= ICase(sNS(RS("COMMENT")), "1st Str", "class=PF","Data?","class=HL", 
+                    "LteFeed", "class=OR","EarlyFeed","class=OR",
+                    "WseMulti","class=RD","LgeBet", "class=YL","OwnBet", "class=YL",
+                    "SftFeed", "class=BL","VIPBet", "class=BL", "") %>><%= sNR(RS("COMMENT"), "&nbsp;") %>
 					<div class=INV>
 						<span>
 							<%= RS("SKY_RT_V") %>

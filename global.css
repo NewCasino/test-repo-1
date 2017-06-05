@@ -210,6 +210,21 @@ iframe[name=vrtPOST] {	display:none }
 .LST td.PD {	background:#efa !important }
 .LST td.PE {	background:#df8 !important }
 .LST td.PF {	background:#cf6 !important }
+.LST td.RD {
+    background: red;
+    color: black !important
+    }
+.LST td.OR {
+    background: orange;
+    color: black !important
+    }
+.LST td.YL {
+    background: yellow !important
+    }
+.LST td.BL {
+    background: lightblue; 
+    color:black !important
+    }
 
 .PLS td {	color:#ddd }
 .PLS td.P1, .PLS td.P2, .PLS td.P4, .PLS td.P5, .PLS td.P6 {
