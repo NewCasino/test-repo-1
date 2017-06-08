@@ -1,12 +1,12 @@
 <%@ OutputCache Duration=8 VaryByParam="*" Location="Server" %>
-<!-- #include file="/inc/page.inc" --><%
+    <!-- #include file="/inc/page.inc" -->
+    <%
 
 Response.ContentType = "text/plain"
 
 'If IsNothing(Application("EVENT_M2R_MAX")) Then Application("EVENT_M2R_MAX") = 60
 Application("EVENT_M2R_MAX") = 8*60
-Dim RS As Object = getRecord("SELECT * FROM dbo.EVENT_VIEW WHERE M2R >= -" & Application("EVENT_M2R_MAX") & _
-  " OR STATUS NOT IN('DONE','SKIP','ABANDONED') ORDER BY M2R")
+Dim RS As Object = getRecord(String.Format("SELECT * FROM dbo.EVENT_VIEW WHERE START_TIME >= dateadd(minute,-{0},getdate()) OR STATUS NOT IN('DONE','SKIP','ABANDONED') ORDER BY M2R", Application("EVENT_M2R_MAX")))
 'Dim RS As Object = getRecord("SELECT * FROM dbo.EVENT_VIEW WHERE TYPE='G' AND (M2R >= -600" & _
 '  " OR STATUS NOT IN('DONE','SKIP','ABANDONED')) ORDER BY M2R")
 
