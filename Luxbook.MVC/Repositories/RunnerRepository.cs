@@ -13,13 +13,14 @@ namespace Luxbook.MVC.Repositories
     {
         void UpdateRunnerRoll(int meetingId, int eventNumber, int runnerNumber, string rollType, int roll, string currentUser);
         void UpdateRunnerBoundary(int meetingId, int eventNumber, int runnerNumber, string boundaryType, decimal? boundary, string currentUser);
-        void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
+        void UpdateScratchStatus(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser);
         void UpdatePropIds(List<RunnerUpdateParameters> parameters,
             string currentUser);
     }
 
     public class RunnerRepository : IRunnerRepository
     {
+        public const int PricingPriority = 1;
         private readonly IDatabase _database;
         public RunnerRepository(IDatabase database)
         {
@@ -152,17 +153,20 @@ namespace Luxbook.MVC.Repositories
             }, commandType: CommandType.Text);
         }
 
-        public void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser)
+        public void UpdateScratchStatus(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser)
         {
             var sql = (!unscratch) ? "UPDATE RUNNER SET SCR=1, SCRATCH=3, SCR_TIMESTAMP = getdate() " :
                                      "UPDATE RUNNER SET SCR=0, SCRATCH=0, SCR_TIMESTAMP = NULL ";
             sql += "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber AND RUNNER_NO = @runnerNumber;";
+            sql += "UPDATE EVENT_TAB SET LUX_PRIORITY_UPDATE = @PricingPriority, SUN_PRIORITY_UPDATE = @PricingPriority, TAB_PRIORITY_UPDATE = @PricingPriority " +
+                   "WHERE MEETING_ID = @meetingId AND EVENT_NO = @eventNumber;";
+               
             _database.Execute(sql,
                 new
                 {
+                    PricingPriority,
                     meetingId,
-                    eventNumber,
-                    runnerNumber
+                    eventNumber
                 },
                 commandType: CommandType.Text
             );
