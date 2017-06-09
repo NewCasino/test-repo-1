@@ -166,7 +166,8 @@ namespace Luxbook.MVC.Repositories
                 {
                     PricingPriority,
                     meetingId,
-                    eventNumber
+                    eventNumber,
+                    runnerNumber
                 },
                 commandType: CommandType.Text
             );
