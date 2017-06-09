@@ -55,7 +55,7 @@ namespace Luxbook.MVC.Services
 
         public void ScratchRunner(int meetingId, int eventNumber, int runnerNumber, bool unscratch, string currentUser)
         {
-            _runnerRepository.ScratchRunner(meetingId, eventNumber, runnerNumber, unscratch, currentUser);
+            _runnerRepository.UpdateScratchStatus(meetingId, eventNumber, runnerNumber, unscratch, currentUser);
             //TODO is logging required ??
         }
 
