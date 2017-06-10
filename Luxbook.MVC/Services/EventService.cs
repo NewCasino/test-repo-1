@@ -6,6 +6,8 @@
     using DTO;
     using Models;
     using Repositories;
+    using System.Text;
+    using System.Globalization;
 
     public interface IEventService
     {
@@ -45,6 +47,8 @@
 
         void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
             EventService.SdpType sdpType, bool isChecked, string currentUser);
+
+        string GetNavigationList();
     }
 
     public class EventService : IEventService
@@ -132,6 +136,42 @@
         public void UpdateAutoRedistribute(int meetingId, int eventNumber, Product product, SdpType sdpType, bool isChecked, string currentUser)
         {
             _eventRepository.UpdateAutoRedistribute(meetingId, eventNumber, product, sdpType, isChecked, currentUser);
+        }
+
+        public string GetNavigationList()
+        {
+            var events = _eventRepository.GetNavigationList();
+            var venueBuilder = new StringBuilder();
+            foreach (var @event in events)
+            {
+                venueBuilder.Append($"{@event.Country}\t{@event.Type}\t{@event.Meeting_Id}\t" +
+                    $"{HexDate(@event.Start_Time.ToUniversalTime())}\t{@event.Event_No.ToString().PadLeft(2,'0')}\t{TitleCase(@event.Venue)}\t{TitleCase(@event.Status)}\t{@event.M2r}\t{@event.NoLxb}\t{@event.FxCount}\t{@event.ProductEnablementFlag}\n");
+            }
+
+
+            return venueBuilder.ToString();
+  //          RS("COUNTRY") & vbTab & RS("TYPE") & vbTab & RS("MEETING_ID") & vbTab & _
+  //HexDate(CDate(RS("START_TIME")).ToUniversalTime) & vbTab & _
+  //RS("EVENT_NO").ToString.PadLeft(2, "0") & vbTab & _
+  //sVar(RS("VENUE"), "PTC") & vbTab & _
+  //sVar(RS("STATUS"), "PTC") & vbTab & _
+  //IIf(RS("M2R") > 99, 99, IIf(RS("M2R") < -99, -99, RS("M2R"))) & vbTab & _
+  //RS("NOLXB") & vbTab & _
+  //RS("FX_COUNT") & vbTab & _
+  //RS("PRODUCT_ENABLEMENT_FLAG") & vbTab & _
+  //vbLf %><%
+
+        }
+
+        private static TextInfo auCulture = new CultureInfo("en-AU", false).TextInfo;
+        private string TitleCase(string target)
+        {
+            return auCulture.ToTitleCase(target); //War And Peace
+        }
+
+        private string HexDate(DateTime time)
+        {
+            return ((int)(DateTime.Parse("1970-01-01") - time).TotalSeconds).ToString("X");
         }
     }
 }

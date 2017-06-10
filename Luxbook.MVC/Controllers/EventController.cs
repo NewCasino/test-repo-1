@@ -6,6 +6,7 @@
     using Infrastructure;
     using NLog;
     using Services;
+    using System.Net.Http;
 
     [RequireAuthentication]
     public class EventController : ApiController
@@ -68,6 +69,16 @@
                 return new EventMetaResponse() { Success = false, Message = ex.Message };
             }            
         }
+
+
+        [HttpGet]
+        public HttpResponseMessage Navigation()
+        {
+            var response = new HttpResponseMessage();
+            response.Content = new StringContent(_eventService.GetNavigationList());
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, _eventService.GetNavigationList());
+        }
+
 
     }
 }
