@@ -76,7 +76,7 @@
         {
             var response = new HttpResponseMessage();
             response.Content = new StringContent(_eventService.GetNavigationList());
-            return Request.CreateResponse(System.Net.HttpStatusCode.OK, _eventService.GetNavigationList());
+            return response;
         }
 
 

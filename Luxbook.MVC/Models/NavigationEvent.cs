@@ -23,9 +23,9 @@ namespace Luxbook.MVC.Models
         /// </summary>
         public int M2r { get; set; }
 
-        public int NoLxb { get; set; }
-        public int FxCount { get; set; }
+        public bool? NoLxb { get; set; }
+        public int? FxCount { get; set; }
         public string Type { get; set; }
-        public bool ProductEnablementFlag { get; set; }
+        public int ProductEnablementFlag { get; set; }
     }
 }

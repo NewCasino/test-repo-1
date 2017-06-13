@@ -204,7 +204,7 @@
 
         public List<NavigationEvent> GetNavigationList()
         {
-            var sql = $"SELECT * FROM dbo.EVENT_VIEW WHERE START_TIME >= dateadd(minute, -{480},getdate()) OR STATUS NOT IN('DONE','SKIP','ABANDONED') ORDER BY M2R";
+            var sql = $"SELECT * FROM dbo.EVENT_VIEW WHERE START_TIME >= dateadd(minute, -480,getdate()) OR STATUS NOT IN('DONE','SKIP','ABANDONED') ORDER BY M2R";
             return _database.Query<NavigationEvent>(sql, commandType: CommandType.Text).ToList();
         }
     }

@@ -4,6 +4,7 @@ namespace Luxbook.MVC.App_Start
     using System.Web;
     using Microsoft.Practices.ServiceLocation;
     using Microsoft.Practices.Unity;
+    using RubixRacing.Cache;
     using Unity.AutoRegistration;
 
     /// <summary>
@@ -32,6 +33,7 @@ namespace Luxbook.MVC.App_Start
 
 
             container.RegisterType<HttpContextBase, HttpContextWrapper>(new InjectionFactory(c => (object) GetHttpContextBase()));
+            container.RegisterInstance<ICacheProvider>(new InMemoryCacheProvider());
         }
 
         private static HttpContextBase GetHttpContextBase()
