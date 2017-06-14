@@ -191,7 +191,7 @@ function vSPD( x, y ) { if(x) x.style.display = "none"; if($(y)) $(y).style.disp
 
 //F[] defined in venues.aspx. 0=Cty 1=RType 2=MtgID 3=St_time 4=EvNo 5=venue 6=Status 7=M2R 8=MissingLXB 9=FX count 10= product enablement flag 11= ??
 function getVNL( G, C, FX ) {
-  $R("/venues.aspx", function(R) {
+  $R("/luxbook.mvc/api/event/navigation", function(R) {
     var i, j, k = 0, S = "", F;
     if( memVNL != R ) { memVNL = R; R = R.split("\n");
       var D = C.replace(/1/,"AU").replace(/2/,"HK,JP,MO,MY,SG,UA,KO").replace(/3/,"FR,IR,UK,NO,SW,DE,FI").replace(/4/,"ZA").replace(/5/,"US,SE,CH,AR,UR,CA").replace(/6/,"NZ");
