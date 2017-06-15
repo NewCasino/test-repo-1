@@ -163,7 +163,7 @@ End Function
 
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
-			<script src="/global.js"></script>
+			<script src="/global.js?v=1.3.14.1"></script>
             
 			<script language='javascript'>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
