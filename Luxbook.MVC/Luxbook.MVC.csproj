@@ -304,6 +304,7 @@
     <Compile Include="Models\MaxExposureParameter.cs" />
     <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\MonthlyReportParameter.cs" />
+    <Compile Include="Models\NavigationEvent.cs" />
     <Compile Include="Models\PoolReportParameters.cs" />
     <Compile Include="Models\Property.cs" />
     <Compile Include="Models\ReportParameters.cs" />
@@ -426,6 +427,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RubixRacing.Cache\RubixRacing.Cache.csproj">
+      <Project>{e5a89803-cf7a-4019-b471-5a3644cc568b}</Project>
+      <Name>RubixRacing.Cache</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -437,7 +444,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>11868</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

@@ -27,6 +27,7 @@
 
         void UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product, EventService.SdpType sdpType, bool isChecked, string currentUser);
         void UpdateEventMeta(EventMeta metaData);
+        List<NavigationEvent> GetNavigationList();
     }
 
     public class EventRepository : IEventRepository
@@ -36,6 +37,7 @@
         public EventRepository(IDatabase database)
         {
             _database = database;
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
 
         public List<RunnerLiability> GetAllEventLiabilities()
@@ -178,7 +180,7 @@
                 case EventService.Product.Tab:
                     priorityColumns.Add("TAB");
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException("Product not valid");
             }
@@ -199,6 +201,12 @@
 
             _database.Execute(sql, new { meetingId, eventNumber, isChecked, notification }, commandType: CommandType.Text);
 
+        }
+
+        public List<NavigationEvent> GetNavigationList()
+        {
+            var sql = $"SELECT * FROM dbo.EVENT_VIEW WHERE START_TIME >= dateadd(minute, -480,getdate()) OR STATUS NOT IN('DONE','SKIP','ABANDONED') ORDER BY M2R";
+            return _database.Query<NavigationEvent>(sql, commandType: CommandType.Text).ToList();
         }
     }
 }

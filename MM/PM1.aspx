@@ -163,7 +163,7 @@ End Function
 
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
-			<script src="/global.js"></script>
+			<script src="/global.js?v=1.3.14.1"></script>
             
 			<script language='javascript'>
 				top.setTitle("Market Maker"); curVNL = "<%= Join(EV, "_") %><%=  IIf(HighlightNo = "", "", "&HighlightNo=" & HighlightNo) %>"
@@ -284,7 +284,7 @@ End Function
 		<%If VM Then        %>
 			<col width=22></col>
 		<% End If %>
-			<col   width=350><col width=20><col width=25><col width=45>		<!-- 'Name-FP-tick-Form-Expos  <col width=45>-->
+			<col   width=345><col width=20><col width=25><col width=50>		<!-- 'Name-FP-tick-Form-Expos  <col width=45>-->
 			<col width=50><col width=36><!-- Risk  -->	<!--colgroup span=1 width=50></colgroup-->
 			<colgroup span=4 width=36></colgroup>
 			
@@ -409,7 +409,10 @@ End Function
 						<option><%= makeList("SELECT", "", "SYS_CODE", "RNR_CMT", "NAME", "NAME", sNS(RS("COMMENT"))) %>
 					</select>
 			<% Else        %>
-				<td<%= ICase(sNS(RS("COMMENT")), "1st Str"," class=PF", "Data?"," class=HL", "") %>><%= sNR(RS("COMMENT"), "&nbsp;") %>
+				<td <%= ICase(sNS(RS("COMMENT")), "1st Str", "class=LM","Data?","class=OR", 
+                    "LteFeed", "class=OR","EarlyFeed","class=OR",
+                    "WseMulti","class=RD","LgeBet", "class=YL","OwnBet", "class=YL",
+                    "SftFeed", "class=BL","VIPBet", "class=BL", "class=SML") %>><%= sNR(RS("COMMENT"), "&nbsp;") %>
 					<div class=INV>
 						<span>
 							<%= RS("SKY_RT_V") %>

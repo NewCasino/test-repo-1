@@ -148,7 +148,7 @@ Public Type As String, EventID As String, Odds As String
 						<%= RS("STARTERS") %><%= IIf(Odds = "FX" And RS("FX_MODE") > 0, " / " & RS("FX_STARTERS"), "") %> Runners<%
 						%> | <%= RS("DISTANCE") %>m<%
 						If sNN(RS("CLASS")) Then %> | Class: <%= RS("CLASS") %><% End If
-						If RS("PRIZE") > 0 Then %> | $<%= sVar(RS("PRIZE"), "NUM") %><% End If
+						If SN0(RS("PRIZE")) > 0 Then %> | $<%= sVar(RS("PRIZE"), "NUM") %><% End If
 						If sNN(RS("TRK_COND")) Then %> | <%= RS("TRK_COND") %><%= IIf(sNN(RS("TRK_RATE")), " (" & RS("TRK_RATE") & ")", "") %><% End If	%>
 						<%= " | " & sVar(RS("BTK_ID")) & " | " & sVar(RS("QLD_ID"))	%>
 					</div>
