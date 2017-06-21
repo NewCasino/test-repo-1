@@ -134,7 +134,7 @@ angular.module('WebApp.AssignTraderViewModel', [])
 
         // load traderAssignments object
         vm.traderAssignments = [];
-        for (var i = 0, ; i < vm.dbData.Traders.length; i++) {
+        for (var i = 0 ; i < vm.dbData.Traders.length; i++) {
             vm.traderAssignments.push({
                 Lid: vm.dbData.Traders[i].Lid,
                 Name: vm.dbData.Traders[i].Name,
