@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RubixRacing.Cache
+﻿namespace RubixRacing.Cache
 {
+    using System;
     using System.Collections.Concurrent;
     using NLog;
 
     public class InMemoryCacheProvider : ICacheProvider
     {
-        private static ConcurrentDictionary<string, InMemoryCacheItem> Cache { get; set; } = new ConcurrentDictionary<string, InMemoryCacheItem>();
+        private static readonly object CacheLock = new object();
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private static object CacheLock = new object();
 
         public InMemoryCacheProvider()
         {
-
         }
 
         public InMemoryCacheProvider(ConcurrentDictionary<string, InMemoryCacheItem> cache)
@@ -25,21 +18,29 @@ namespace RubixRacing.Cache
             Cache = cache;
         }
 
+        private static ConcurrentDictionary<string, InMemoryCacheItem> Cache { get; set; } =
+            new ConcurrentDictionary<string, InMemoryCacheItem>();
+
         public T GetItem<T>(Func<T> getItemFunc, CachePolicy cachePolicy, string key)
         {
             T result;
-            if (!GetItem(key, out result))
+
+            lock (CacheLock)
             {
-                result = getItemFunc();
-                var cacheItem = new InMemoryCacheItem()
+                if (!GetItem(key, out result))
                 {
-                    Item = result,
-                    CachePolicy = cachePolicy,
-                    Key = key,
-                };
-                TouchCacheItem(cacheItem);
-                Cache[key] = cacheItem;
+                    result = getItemFunc();
+                    var cacheItem = new InMemoryCacheItem
+                    {
+                        Item = result,
+                        CachePolicy = cachePolicy,
+                        Key = key
+                    };
+                    TouchCacheItem(cacheItem);
+                    Cache[key] = cacheItem;
+                }
             }
+
             return result;
         }
 
@@ -47,7 +48,7 @@ namespace RubixRacing.Cache
         {
             if (Cache.ContainsKey(key))
             {
-                var cacheItem = Cache[key];
+                InMemoryCacheItem cacheItem = Cache[key];
                 // if item is expired then treat it as missing from cache
                 if (cacheItem.ExpiryTime.HasValue && cacheItem.ExpiryTime.Value < DateTime.Now)
                 {
@@ -57,7 +58,7 @@ namespace RubixRacing.Cache
                     return false;
                 }
 
-                result = (T)cacheItem.Item;
+                result = (T) cacheItem.Item;
                 TouchCacheItem(cacheItem);
 
                 _logger.Trace($"Cache HIT for {key}");
@@ -71,30 +72,27 @@ namespace RubixRacing.Cache
             return false;
         }
 
+        public void RemoveItem(string key)
+        {
+            InMemoryCacheItem item;
+            Cache.TryRemove(key, out item);
+        }
+
         /// <summary>
-        /// If expirytime needs to be updated, update it according to policy
+        ///     If expirytime needs to be updated, update it according to policy
         /// </summary>
         /// <param name="cacheItem"></param>
         private void TouchCacheItem(InMemoryCacheItem cacheItem)
         {
             // if we have a sliding window then set expiry to the now + window
             if (cacheItem.CachePolicy != null && cacheItem.CachePolicy.SlidingWindowExpiration.HasValue)
-            {
                 cacheItem.ExpiryTime = DateTime.Now.Add(cacheItem.CachePolicy.SlidingWindowExpiration.Value);
-            }
 
             // if we are looking at absolute expiration and no expiry time is set
             // if expiry time is set we don't update the absolute expiry
-            if (!cacheItem.ExpiryTime.HasValue && cacheItem.CachePolicy != null && cacheItem.CachePolicy.AbsoluteExpiration.HasValue)
-            {
+            if (!cacheItem.ExpiryTime.HasValue && cacheItem.CachePolicy != null &&
+                cacheItem.CachePolicy.AbsoluteExpiration.HasValue)
                 cacheItem.ExpiryTime = cacheItem.CachePolicy.AbsoluteExpiration.Value.DateTime;
-            }
-        }
-
-        public void RemoveItem(string key)
-        {
-            InMemoryCacheItem item;
-            Cache.TryRemove(key, out item);
         }
     }
 }
