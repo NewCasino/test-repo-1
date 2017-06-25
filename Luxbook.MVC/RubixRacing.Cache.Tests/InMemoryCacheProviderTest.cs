@@ -1,6 +1,7 @@
 ﻿namespace RubixRacing.Cache.Tests
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using NUnit.Framework;
 
@@ -10,12 +11,12 @@
         [SetUp]
         public void Setup()
         {
-            _cacheItems = new Dictionary<string, InMemoryCacheItem>();
+            _cacheItems = new ConcurrentDictionary<string, InMemoryCacheItem>();
             _provider = new InMemoryCacheProvider(_cacheItems);
         }
 
         private InMemoryCacheProvider _provider;
-        private Dictionary<string, InMemoryCacheItem> _cacheItems;
+        private ConcurrentDictionary<string, InMemoryCacheItem> _cacheItems;
 
         [Test]
         public void GetItem_NoRetrieve_ShouldGetCachedItem()

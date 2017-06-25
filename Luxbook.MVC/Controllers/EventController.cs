@@ -7,8 +7,10 @@
     using NLog;
     using Services;
     using System.Net.Http;
+    using System.Web.Mvc;
 
-    [RequireAuthentication]
+    [RequireAuthenticationWebApi]
+    [SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class EventController : ApiController
     {
         private readonly IEventService _eventService;
@@ -21,7 +23,7 @@
             _securityService = securityService;
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResponseBase UpdatePlacePays(int meetingId, int eventNumber, EventService.Product product,
             int? placePays)
         {
@@ -38,7 +40,7 @@
             return new JsonResponseBase {Success = true};
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResponseBase UpdateAutoRedistribute(int meetingId, int eventNumber, EventService.Product product,
             EventService.SdpType sdpType, bool isChecked)
         {
@@ -56,7 +58,7 @@
             return new JsonResponseBase { Success = true };
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public EventMetaResponse EventMeta(int meetingId, int eventNumber)
         {
             try
@@ -71,7 +73,7 @@
         }
 
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public HttpResponseMessage Navigation()
         {
             var response = new HttpResponseMessage();
