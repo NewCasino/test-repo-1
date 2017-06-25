@@ -253,7 +253,6 @@
     <Compile Include="Controllers\StakingController.cs" />
     <Compile Include="Controllers\TradeController.cs" />
     <Compile Include="Controllers\TradeManagementController.cs" />
-    <Compile Include="Controllers\TraderAssignmentController.cs" />
     <Compile Include="DTO\JsonResponseBase.cs" />
     <Compile Include="DTO\Liability.cs" />
     <Compile Include="DTO\TraderAssignMetaResponse.cs" />
@@ -422,7 +421,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\TraderAssignment\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
