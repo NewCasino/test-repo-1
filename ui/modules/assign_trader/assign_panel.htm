@@ -38,7 +38,7 @@
                     <table id="assign-table-head" class="table table-head">
                         <tbody>
                             <tr>
-                                <td colspan="2" style="border-left:0;border-top:0;text-align:left;"><input type="Text" placeholder="Search trader" /> </td>
+                                <td colspan="2" style="border-left:0;border-top:0;text-align:left;"><input type="Text" placeholder="Search trader" ng-model="traderFilter" ng-model-options="{debounce: 200}" /> </td>
                                 <td colspan="2">ALL</td>
                                 <td colspan="2"><img class="small-badge" src="/img/badge-sun.png" /></td>
                                 <td colspan="2"><img class="small-badge" src="/img/badge-tab.png" /></td>
@@ -61,7 +61,7 @@
                     <table-scroller offset="230 ">
                         <table id="assign-table-body" class="table table-striped table-body">
                             <tbody>
-                                <tr ng-repeat="item in ctrl.vm.traderAssignments | orderBy: 'Name'">
+                                <tr ng-repeat="item in ctrl.vm.traderAssignments | orderBy: 'Name' | filter: traderFilter">
                                     <td class="left">{{item.Name}}</td>
                                     <td width="110px">
                                         <select multiple class="form-control date-list assigned-date-list" ng-options="option for option in ctrl.vm.options.assignDates" ng-model="item.AssignedDates">

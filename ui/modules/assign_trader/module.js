@@ -1,4 +1,4 @@
-angular.module('WebApp.AssignTraderModule', [])
+angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
 
     /**
      * options panel
@@ -167,7 +167,7 @@ angular.module('WebApp.AssignTraderModule', [])
             // validate trader+ma assignments
             ctrl.validateAssignments = function() {
                 var assign = false;
-                var AssignedTraders = {};
+                var filteredTraders = new Array(); // only traders with assignments get in
                 for (var i=0, ii=ctrl.vm.traderAssignments.length; i<ii; i++) {
                     var t = ctrl.vm.traderAssignments[i];
                     t.AssignedDates.forEach(function(dt) {
@@ -175,15 +175,16 @@ angular.module('WebApp.AssignTraderModule', [])
                         ['Lux', 'Tab', 'Sun'].forEach(function(env) {      // the object member order must mirror webapi DtoAssignedTraders onject
                             ['Ma', 'Trader'].forEach(function(role) {
                                 var envrole = env+role;
-                                AssignedTraders[date] = AssignedTraders[date] || {};
-                                AssignedTraders[date][envrole] = AssignedTraders[date][envrole] || [];
                                 if (t[envrole]) {
-                                    AssignedTraders[date][envrole].push(t.Lid);
                                     assign = true;
                                 }
                             });
                         });
                     });
+
+                    if(t.AssignedDates.length > 0 && (t.LuxMa || t.TabMa || t.LuxTrader || t.TabTrader || t.SunMa || t.SunTrader) ){
+                        filteredTraders.push(t);
+                    }
                 }
                 if (!assign) {
                     return {error:'Please assign traders'};
@@ -205,18 +206,12 @@ angular.module('WebApp.AssignTraderModule', [])
                 if (SelectedEvents.length == 0) {
                     return {error:'Please select meetings and events'};
                 }
-                // convert assignments object to array
-                var arr = [];
-                for (var key in AssignedTraders) {
-                    arr.push({
-                        AssignedDate: key,
-                        AssignedTraders: AssignedTraders[key]
-                    });
-                }
+                console.log(filteredTraders);
+             
                 return {
                     data: {
                         SelectedEvents: SelectedEvents,
-                        Assignments: arr
+                        Assignments: filteredTraders
                     },
                     error: ''
                 };

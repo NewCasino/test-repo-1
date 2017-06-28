@@ -365,9 +365,6 @@
     <Compile Include="TradeManagementController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
-    <Compile Include="TraderAssignmentController.generated.cs">
-      <DependentUpon>T4MVC.tt</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\Alerts\IndexViewModel.cs" />
     <Compile Include="ViewModels\Liability\LiabilityIndexViewModel.cs" />
     <Compile Include="ViewModels\MaxExposure\MaxExposureIndexViewModel.cs" />

@@ -12,8 +12,7 @@
     {
         TraderAssignMetaResponse GetAssignments(string meetingDate);
         List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date);
-        void SaveAssignments(string meetingDate, DtoSelectedEvent dtoEvent, List<DtoAssignments> dtoAssignments);
-        void SaveAssignment(string meetingDate, DtoSelectedEvent dtoEvent, string assignmentDate, DtoAssignedTraders dtoTraders);
+        void SaveAssignments(List<TraderAssign> assignments);
     }
 
     public class TraderAssignRepository : ITraderAssignRepository
@@ -32,7 +31,7 @@
                 _database.Query<MeetingTags>(@"SELECT m.Meeting_Id, m.Meeting_Date,
                                                 m.Country, m.Type, m.Venue, m.Btk_Id, m.Events as Event_Cnt, m.Wift_Mtg_Id, sb.Region
                                             FROM dbo.MEETING_TAB as m
-                                            LEFT JOIN SYS_BETTEKK sb ON (m.COUNTRY=sb.COUNTRY AND M.TYPE=SB.TYPE and sb.VENUE LIKE Cast(m.VENUE as nvarchar(55)) +  '%')
+                                            LEFT JOIN SYS_BETTEKK sb ON sb.CODE = m.BTK_ID
                                             WHERE m.MEETING_Date = @meetingDate
                                             ORDER BY m.Venue",
                     new
@@ -60,21 +59,23 @@
                 _database.Query<TraderTags>(@"SELECT t.Lid, t.Name, t.Lvl, t.Lux, t.Tab, t.Sun
                                             FROM dbo.TRADER as t
                                             WHERE LVL < 10;", // ignore media users
-                    new 
+                    new
                     {
                     }, commandType: CommandType.Text);
 
             var assignments =
                 _database.Query<TraderAssign>(@"SELECT ta.*
                                             FROM dbo.TRADER_ASSIGN as ta
-                                            WHERE ta.Meeting_Date = @meetingDate
+                                            INNER JOIN MEETING_TAB M ON M.MEETING_ID = ta.MEETING_ID
+                                            WHERE m.Meeting_Date = @meetingDate
                                             ORDER BY MEETING_ID, EVENT_NO;",
                     new
                     {
                         meetingDate
                     }, commandType: CommandType.Text);
 
-            var assignResponse = new TraderAssignMetaResponse {
+            var assignResponse = new TraderAssignMetaResponse
+            {
                 Meetings = meetings.ToList(),
                 Traders = traders.ToList(),
                 Assignments = assignments.ToList(),
@@ -84,92 +85,33 @@
 
         }
 
-        public void SaveAssignments(string meetingDate, DtoSelectedEvent dtoEvent, List<DtoAssignments> dtoAssignments)
+        public void RemoveAssignment(int traderAssignmentId)
         {
-            foreach (DtoAssignments i in dtoAssignments)
-            {
-                this.SaveAssignment(meetingDate, dtoEvent, i.AssignedDate, i.AssignedTraders);
-            }
-        }
-
-        public void SaveAssignment(string meetingDate, DtoSelectedEvent dtoEvent, string assignmentDate, DtoAssignedTraders dtoTraders)
-        {
-            var pk = _database.Query<int>("SELECT TRADER_ASSIGN_ID FROM TRADER_ASSIGN WHERE MEETING_ID=@MeetingId AND EVENT_NO=@EventNo AND ASSIGNED_DATE=@AssignedDate;", 
-                    new {
-                        MeetingId = dtoEvent.MeetingId,
-                        EventNo = dtoEvent.EventNo,
-                        AssignedDate = assignmentDate
-                    }, commandType: CommandType.Text).FirstOrDefault();
-
-            // update existing assignments for meeting_id+event_no
-            if (pk > 0)
-            {
-                var sqlUpdate = @"UPDATE TRADER_ASSIGN 
-                                  SET LUX_TRADER=@LuxTrader, LUX_MA=@LuxMa,
-                                  SET TAB_TRADER=@TabTrader, TAB_MA=@TabMa,
-                                  SET SUN_TRADER=@SunTrader, SUN_MA=@SunMa
-                                  WHERE TRADER_ASSIGN_ID = @traderAssignId;
-                ";
-                _database.Execute(sqlUpdate,
-                    new
-                    {
-                        traderAssignId = pk,
-                        LuxTrader = dtoTraders.LuxTrader,
-                        LuxMa = dtoTraders.LuxMa,
-                        TabTrader = dtoTraders.TabTrader,
-                        TabMa = dtoTraders.TabMa,
-                        SunTrader = dtoTraders.SunTrader,
-                        SunMa = dtoTraders.SunMa
-                    },
-                    commandType: CommandType.Text);
-                return;
-            }
-
-            // insert new assignments for meeting_id
-            var sql = @"INSERT INTO TRADER_ASSIGN 
-                        (MEETING_DATE, ASSIGNED_DATE, MEETING_ID, EVENT_NO, LUX_TRADER, LUX_MA, TAB_TRADER, TAB_MA, SUN_TRADER, SUN_MA)
-                        VALUES (@meetingDate, @AssignedDate, @MeetingId, @EventNo, @LuxTrader, @LuxMa, @TabTrader, @TabMa, @SunTrader, @SunMa);
-            ";
-            _database.Execute(sql,
-                new
-                {
-                    meetingDate,
-                    MeetingId = dtoEvent.MeetingId,
-                    EventNo = dtoEvent.EventNo,
-                    AssignedDate = assignmentDate,
-                    LuxTrader = dtoTraders.LuxTrader,
-                    LuxMa = dtoTraders.LuxMa,
-                    TabTrader = dtoTraders.TabTrader,
-                    TabMa = dtoTraders.TabMa,
-                    SunTrader = dtoTraders.SunTrader,
-                    SunMa = dtoTraders.SunMa
-                },
-                commandType: CommandType.Text);
-
+            
         }
 
         public List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date)
         {
             // note:- this may change in future
             var sql = (Mode == "meeting" ?
-                            @"SELECT ta.Meeting_Date, 
-                                    e.Meeting_id, e.Event_No, ta.Assigned_Date, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
+                            @"SELECT m.Meeting_Date, 
+                                    e.Meeting_id, e.Event_No, ta.ASSIGNMENT_DATE, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
                                     ta.Lux_Trader, ta.Tab_Trader, ta.Sun_Trader, ta.Lux_Ma, ta.Tab_Ma, ta.Sun_Ma
                                     FROM dbo.TRADER_ASSIGN as ta
                                     INNER JOIN EVENT_TAB e ON (ta.MEETING_ID=e.MEETING_ID and ta.EVENT_NO=e.EVENT_NO)
                                     INNER JOIN MEETING_TAB m ON (ta.MEETING_ID=m.MEETING_ID)
-                                    LEFT JOIN SYS_BETTEKK sb ON (m.COUNTRY=sb.COUNTRY AND m.TYPE=SB.TYPE and sb.VENUE LIKE Cast(m.VENUE as nvarchar(55)) +  '%')
-                                    WHERE ta.Meeting_Date = @Date
+                                    INNER JOIN SYS_BETTEKK sb ON m.BTK_ID = sb.CODE
+                                    WHERE m.Meeting_Date = @Date
                                     ORDER BY 2, 3, 4;"
                         :
-                            @"SELECT ta.Meeting_Date, 
-                                    e.Meeting_id, e.Event_No, ta.Assigned_Date, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
+                            @"SELECT m.Meeting_Date, 
+                                    e.Meeting_id, e.Event_No, ta.ASSIGNMENT_DATE, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
                                     ta.Lux_Trader, ta.Tab_Trader, ta.Sun_Trader, ta.Lux_Ma, ta.Tab_Ma, ta.Sun_Ma
                                     FROM dbo.TRADER_ASSIGN as ta
                                     INNER JOIN EVENT_TAB e ON (ta.MEETING_ID=e.MEETING_ID and ta.EVENT_NO=e.EVENT_NO)
                                     INNER JOIN MEETING_TAB m ON (ta.MEETING_ID=m.MEETING_ID)
-                                    LEFT JOIN SYS_BETTEKK sb ON (m.COUNTRY=sb.COUNTRY AND m.TYPE=SB.TYPE and sb.VENUE LIKE Cast(m.VENUE as nvarchar(55)) +  '%')
-                                    WHERE ta.Assigned_Date = @Date
+                                    INNER JOIN SYS_BETTEKK sb ON m.BTK_ID = sb.CODE
+                                    WHERE ta.ASSIGNMENT_DATE = @Date
                                     ORDER BY 2, 3, 4;"
                 );
             var assignments =
@@ -181,6 +123,19 @@
 
             return assignments.ToList();
 
+        }
+
+        public void SaveAssignments(List<TraderAssign> assignments)
+        {
+            // insert new assignments for meeting_id
+            var sql = @"INSERT INTO TRADER_ASSIGN 
+                        (ASSIGNMENT_DATE, MEETING_ID,LID, EVENT_NO, LUX_TRADER, LUX_MA, TAB_TRADER, TAB_MA, SUN_TRADER, SUN_MA)
+                        VALUES (@meetingDate, @AssignedDate, @MeetingId, @EventNo, @LuxTrader, @LuxMa, @TabTrader, @TabMa, @SunTrader, @SunMa);";
+
+            // remove duplicate assignments
+
+
+            _database.Execute(sql, assignments, commandType: CommandType.Text);
         }
     }
 

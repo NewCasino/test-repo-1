@@ -34,9 +34,34 @@
 
         public TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData)
         {
-            foreach (DtoSelectedEvent dtoEvent in postData.SelectedEvents)
+            var assignments = new List<TraderAssign>();
+
+            foreach (var dtoEvent in postData.SelectedEvents)
             {
-                _traderAssignRepository.SaveAssignments(postData.MeetingDate, dtoEvent, postData.Assignments);
+                // events can be assigned to multiple traders
+                foreach (var assignment in postData.Assignments)
+                {
+                    // traders can be assigned on multiple days
+                    foreach (var date in assignment.AssignedDates)
+                    {
+                        var traderAssign = new TraderAssign()
+                        {
+                            LID = assignment.Lid,
+                            Assignment_Date = date,
+                            Event_No = dtoEvent.EventNo,
+                            Meeting_Id = dtoEvent.MeetingId,
+                            Lux_Ma = assignment.LuxMa,
+                            Lux_Trader = assignment.LuxTrader,
+                            Sun_Ma = assignment.SunMa,
+                            Sun_Trader = assignment.SunTrader,
+                            Tab_Ma = assignment.TabMa,
+                            Tab_Trader = assignment.TabTrader,
+                        };
+                        assignments.Add(traderAssign);
+                    }
+
+                }
+                _traderAssignRepository.SaveAssignments(assignments);
             }
 
             return _traderAssignRepository.GetAssignments(postData.MeetingDate);

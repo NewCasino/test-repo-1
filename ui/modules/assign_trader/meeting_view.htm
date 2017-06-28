@@ -17,7 +17,7 @@
                     <table-scroller offset="180">
                        <table class="table table-striped list-table">
                             <tbody>
-                                <tr ng-repeat-start="item in ctrl.meetingAssignments | filter: ctrl.vm.typeFilter" class="list-row">                           
+                                <tr ng-repeat-start="item in ctrl.meetingAssignments | filter: ctrl.vm.typeFilter | orderBy: 'name'" class="list-row">                           
                                     <td width="48px"><img src="/img/{{item.country}}.jpg" border="0" /></td>
                                     <td width="48px"><img src="/img/{{item.Type}}.png" border="0" /></td>
                                     <td width="48px"><span class="pointer" ng-class="(!item.showEvents) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'" ng-click="item.showEvents=!item.showEvents"></span></td>

@@ -17,7 +17,7 @@
                     <table-scroller offset="160">
                         <table class="table table-striped">
                             <tbody>
-                                <tr ng-repeat-start="item in ctrl.vm.filteredItems = (ctrl.vm.meetings | filter: ctrl.vm.typeFilter | filter: ctrl.vm.statusFilter | filter: ctrl.vm.countryFilter)"
+                                <tr ng-repeat-start="item in ctrl.vm.filteredItems = (ctrl.vm.meetings | filter: ctrl.vm.typeFilter | filter: ctrl.vm.statusFilter | filter: ctrl.vm.countryFilter) | orderBy: 'Name'"
                                     class="meeting-row">
                                     <td width="48px"><input type="checkbox" class="cb-styled" ng-model="item.selected" ng-change="selectMeeting(item)" ></td>
                                     <td width="48px"><span class="pointer" ng-class="(!item.showEvents) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'" ng-click="item.showEvents=!item.showEvents"></span>

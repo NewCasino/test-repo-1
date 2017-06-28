@@ -20,11 +20,11 @@
         }
 
         [HttpGet]
-        public TraderAssignMetaResponse Assignments(string MeetingDate)
+        public TraderAssignMetaResponse Assignments(string meetingDate)
         {
             try
             {
-                return _traderAssignService.GetAssignments(MeetingDate);
+                return _traderAssignService.GetAssignments(meetingDate);
             }
             catch (Exception ex)
             {
@@ -34,9 +34,9 @@
         }
 
         [HttpGet]
-        public List<EventAssignMetaResponse> AssignmentsByDate(string Mode, string Date)
+        public List<EventAssignMetaResponse> AssignmentsByDate(string mode, string date)
         {
-            return _traderAssignService.GetAssignmentsByDate(Mode, Date);
+            return _traderAssignService.GetAssignmentsByDate(mode, date);
         }
 
         [HttpPost]

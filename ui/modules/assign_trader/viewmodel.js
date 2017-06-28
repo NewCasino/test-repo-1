@@ -39,12 +39,14 @@ angular.module('WebApp.AssignTraderViewModel', [])
     vm.region = { C: 'Country', M: 'Metro', P: 'Provincial' };
     vm.level = { 1: 'Trader', 2: 'MA', 3: '', 3: 'Senior' };
     vm.date = '';
+    vm.assignmentDate = '';
     vm.dateString = 'Meeting';
     vm.dbData = []; // meetings, events, traders, assignments from db
     vm.meetings = []; // meeting_id index to vm.dbData.Meetings
     vm.filteredItems = [];
     vm.traderAssignments = [];
     vm.eventAssignments = [];
+    vm.traderFilter;
 
     // filters
     vm.typeFilter = function(item) {
