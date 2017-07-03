@@ -3,6 +3,9 @@
     using System.Collections.Generic;
     using Models;
     using System;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
 
     public class MeetingTags
     {
@@ -46,22 +49,47 @@
 
     public class EventAssignMetaResponse : JsonResponseBase
     {
-        public DateTime Meeting_Date { get; set; }
-        public int Meeting_Id { get; set; }
-        public int Event_No { get; set; }
-        public string Name { get; set; }
-        public DateTime Assigned_Date { get; set; }
-        public DateTime Start_Time { get; set; }
-        public string Country { get; set; }
-        public string Type { get; set; }
-        public string Region { get; set; }
-        public string Venue { get; set; }
-        public string Lux_Trader { get; set; }
-        public string Tab_Trader { get; set; }
-        public string Sun_Trader { get; set; }
-        public string Lux_Ma { get; set; }
-        public string Tab_Ma { get; set; }
-        public string Sun_Ma { get; set; }
+
+        public List<EventMeta> Events { get; set; } = new List<EventMeta>();
+
+        public class EventMeta
+        {
+            public int MeetingId { get; set; }
+
+            public int Event_No { get; set; }
+            // venue name
+            public string Name { get; set; }
+
+            public int EventsInMeeting { get; set; }
+
+            public DateTime StartTime { get; set; }
+            public DateTime MeetingDate { get; set; }
+
+            public List<TraderAssign> Traders { get; set; }
+            public string Country { get; set; }
+
+            /// <summary>
+            /// Returns the SHA1 hash of all ordered trader assignments
+            /// This can be used to compare against other events and see if they have the same assignments
+            /// </summary>
+            public string TraderAssignmentHash
+            {
+                get
+                {
+                    var orderedTraders = Traders.OrderBy(x => x.LID).ThenBy(x => x.Assignment_Date);
+
+                    using (var sha1 = new SHA1Managed())
+                    {
+                        var joinedHashes = string.Join("-", orderedTraders.Select(x => x.GetAssignmentString()));
+                        var hashed = sha1.ComputeHash(Encoding.ASCII.GetBytes(joinedHashes));
+
+                        return string.Join("",hashed.Select(x=> x.ToString("x2")));
+                    }
+                }
+            }
+        }
+
+
 
     }
 

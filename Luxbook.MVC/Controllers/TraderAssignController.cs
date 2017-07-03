@@ -34,7 +34,7 @@
         }
 
         [HttpGet]
-        public List<EventAssignMetaResponse> AssignmentsByDate(string mode, string date)
+        public EventAssignMetaResponse AssignmentsByDate(string mode, string date)
         {
             return _traderAssignService.GetAssignmentsByDate(mode, date);
         }

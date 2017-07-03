@@ -11,7 +11,7 @@
     public interface ITraderAssignRepository
     {
         TraderAssignMetaResponse GetAssignments(string meetingDate);
-        List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date);
+        List<TraderAssignWithMeta> GetAssignmentsByDate(string mode, string date);
         void SaveAssignments(List<TraderAssign> assignments);
     }
 
@@ -87,20 +87,21 @@
 
         public void RemoveAssignment(int traderAssignmentId)
         {
-            
+
         }
 
-        public List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date)
+        public List<TraderAssignWithMeta> GetAssignmentsByDate(string mode, string date)
         {
             // note:- this may change in future
-            var sql = (Mode == "meeting" ?
+            var sql = (mode == "meeting" ?
                             @"SELECT m.Meeting_Date, 
                                     e.Meeting_id, e.Event_No, ta.ASSIGNMENT_DATE, e.Start_Time, m.Country, m.Type, e.Name, sb.Region, m.Venue,
-                                    ta.Lux_Trader, ta.Tab_Trader, ta.Sun_Trader, ta.Lux_Ma, ta.Tab_Ma, ta.Sun_Ma
+                                    ta.Lux_Trader, ta.Tab_Trader, ta.Sun_Trader, ta.Lux_Ma, ta.Tab_Ma, ta.Sun_Ma, m.events as EventsInMeeting, ta.LID, ta.TRADER_ASSIGN_ID, t.NAME as TraderName    
                                     FROM dbo.TRADER_ASSIGN as ta
                                     INNER JOIN EVENT_TAB e ON (ta.MEETING_ID=e.MEETING_ID and ta.EVENT_NO=e.EVENT_NO)
                                     INNER JOIN MEETING_TAB m ON (ta.MEETING_ID=m.MEETING_ID)
                                     INNER JOIN SYS_BETTEKK sb ON m.BTK_ID = sb.CODE
+                                    INNER JOIN TRADER t ON t.LID  = ta.LID
                                     WHERE m.Meeting_Date = @Date
                                     ORDER BY 2, 3, 4;"
                         :
@@ -115,10 +116,10 @@
                                     ORDER BY 2, 3, 4;"
                 );
             var assignments =
-                _database.Query<EventAssignMetaResponse>(sql,
+                _database.Query<TraderAssignWithMeta>(sql,
                     new
                     {
-                        Date
+                        Date = date
                     }, commandType: CommandType.Text);
 
             return assignments.ToList();
@@ -130,12 +131,22 @@
             // insert new assignments for meeting_id
             var sql = @"INSERT INTO TRADER_ASSIGN 
                         (ASSIGNMENT_DATE, MEETING_ID,LID, EVENT_NO, LUX_TRADER, LUX_MA, TAB_TRADER, TAB_MA, SUN_TRADER, SUN_MA)
-                        VALUES (@meetingDate, @AssignedDate, @MeetingId, @EventNo, @LuxTrader, @LuxMa, @TabTrader, @TabMa, @SunTrader, @SunMa);";
+                        VALUES (@Assignment_Date, @Meeting_Id,@Lid, @Event_No, @Lux_Trader, @Lux_Ma, @Tab_Trader, @Tab_Ma, @Sun_Trader, @Sun_Ma);";
 
-            // remove duplicate assignments
 
 
             _database.Execute(sql, assignments, commandType: CommandType.Text);
+
+            // remove duplicate assignments
+            var dupeSql = @"WITH CTE AS(
+                    SELECT ASSIGNMENT_DATE, MEETING_ID,LID, EVENT_NO, LUX_TRADER, LUX_MA, TAB_TRADER, TAB_MA, SUN_TRADER, SUN_MA,
+                    RN = ROW_NUMBER()OVER(PARTITION BY ASSIGNMENT_DATE, MEETING_ID,LID, EVENT_NO, LUX_TRADER, LUX_MA, TAB_TRADER, TAB_MA, SUN_TRADER, SUN_MA order by LID)
+                    FROM dbo.TRADER_ASSIGN
+                        )
+                    DELETE FROM CTE WHERE RN > 1";
+
+            _database.Execute(dupeSql, assignments, commandType: CommandType.Text);
+
         }
     }
 

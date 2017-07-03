@@ -315,6 +315,7 @@
     <Compile Include="Models\SystemEnum.cs" />
     <Compile Include="Models\Trader.cs" />
     <Compile Include="Models\TraderAssign.cs" />
+    <Compile Include="Models\TraderAssignWithMeta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportsController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>

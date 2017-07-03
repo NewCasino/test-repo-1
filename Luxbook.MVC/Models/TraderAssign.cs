@@ -22,5 +22,16 @@ namespace Luxbook.MVC.Models
         /// </summary>
         public string LID { get; set; }
 
+        public string TraderName { get; set; }
+
+        /// <summary>
+        /// Returns the assignment string (e.g. this trader has been assigned these roles) 
+        /// that can be used as a hash to compare against assignments in other events
+        /// </summary>
+        /// <returns></returns>
+        public string GetAssignmentString()
+        {
+            return $"{LID}~{Lux_Trader}~{Lux_Ma}~{Tab_Trader}~{Tab_Ma}~{Sun_Ma}~{Sun_Trader}";
+        }
     }
 }

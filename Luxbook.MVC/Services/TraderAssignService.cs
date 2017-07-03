@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using AutoMapper;
     using Models;
     using Repositories;
     using DTO;
@@ -9,7 +11,7 @@
     public interface ITraderAssignService
     {
         TraderAssignMetaResponse GetAssignments(string meetingDate);
-        List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date);
+        EventAssignMetaResponse GetAssignmentsByDate(string mode, string date);
         TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData);
     }
 
@@ -20,6 +22,7 @@
         public TraderAssignService(ITraderAssignRepository traderAssignRepository)
         {
             _traderAssignRepository = traderAssignRepository;
+            Mapper.Initialize(cfg => cfg.CreateMap<TraderAssignWithMeta, TraderAssign>());
         }
 
         public TraderAssignMetaResponse GetAssignments(string meetingDate)
@@ -27,9 +30,29 @@
             return _traderAssignRepository.GetAssignments(meetingDate);
         }
 
-        public List<EventAssignMetaResponse> GetAssignmentsByDate(string Mode, string Date)
+        public EventAssignMetaResponse GetAssignmentsByDate(string mode, string date)
         {
-            return _traderAssignRepository.GetAssignmentsByDate(Mode, Date);
+            List<TraderAssignWithMeta> assignments = _traderAssignRepository.GetAssignmentsByDate(mode, date);
+
+
+            var assignmentsByEvent = assignments.GroupBy(x => new { x.Meeting_Id, x.Event_No, x.Start_Time, x.Meeting_Date, x.Venue, x.EventsInMeeting, x.Country });
+            var result = new EventAssignMetaResponse() { Success = true };
+
+            foreach (var eventAssignments in assignmentsByEvent)
+            {
+                var @event = new EventAssignMetaResponse.EventMeta();
+                @event.MeetingId = eventAssignments.Key.Meeting_Id;
+                @event.Event_No = eventAssignments.Key.Event_No;
+                @event.StartTime = eventAssignments.Key.Start_Time;
+                @event.MeetingDate = eventAssignments.Key.Meeting_Date;
+                @event.Name = eventAssignments.Key.Venue;
+                @event.EventsInMeeting = eventAssignments.Key.EventsInMeeting;
+                @event.Traders = Mapper.Map<List<TraderAssign>>(eventAssignments);
+                @event.Country = eventAssignments.Key.Country;
+                result.Events.Add(@event);
+            }
+
+            return result;
         }
 
         public TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData)
@@ -61,8 +84,10 @@
                     }
 
                 }
-                _traderAssignRepository.SaveAssignments(assignments);
             }
+
+            _traderAssignRepository.SaveAssignments(assignments);
+
 
             return _traderAssignRepository.GetAssignments(postData.MeetingDate);
 
