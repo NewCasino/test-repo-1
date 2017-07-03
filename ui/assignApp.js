@@ -72,33 +72,19 @@ var WebApp = angular.module('WebApp', [
 
 .filter('toDisplayDate', function() {
     return function(input) {
-        if (input) {
-            var a = input.split('-');
-            var s = a[2] + '/' + a[1] + '/' + a[0];
-            return s;
-        }
+       return moment(input).format("dd/MM/YY");
     }
 })
 
 .filter('toShortDisplayDate', function() {
     return function(input) {
-        var a = input.substr(0, 10).split('-');
-        var s = a[2] + '/' + a[1] + '/' + a[0].substr(2, 2);
-        return s;
+          return moment(input).format("dd/MM/YY");
     }
 })
 
 .filter('toDisplayTime', function() {
     return function(input) {
-        var a = input.split('T');
-        var tt = a[1].substr(0, 5).split(':');
-        if (tt[0] < 12) {
-            return a[1].substr(0, 5) + 'am';
-        }
-        if (tt[0] == 12) {
-            return a[1].substr(0, 5) + 'pm';
-        }
-        return (tt[0] - 12) + ':' + tt[1] + 'pm';
+        return moment(input).format("hh:mma");
     }
 })
 
