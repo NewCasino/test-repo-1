@@ -58,9 +58,10 @@
 
             public int Event_No { get; set; }
             // venue name
-            public string Name { get; set; }
+            public string Venue { get; set; }
 
             public int EventsInMeeting { get; set; }
+            public string Type { get; set; }
 
             public DateTime StartTime { get; set; }
             public DateTime MeetingDate { get; set; }

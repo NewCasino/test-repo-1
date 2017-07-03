@@ -72,13 +72,13 @@ var WebApp = angular.module('WebApp', [
 
 .filter('toDisplayDate', function() {
     return function(input) {
-       return moment(input).format("dd/MM/YY");
+       return moment(input).format("DD/MM/YY");
     }
 })
 
 .filter('toShortDisplayDate', function() {
     return function(input) {
-          return moment(input).format("dd/MM/YY");
+        return moment(input).format("DD/MM/YY");
     }
 })
 
@@ -204,8 +204,8 @@ var WebApp = angular.module('WebApp', [
         });
     };
     obj.dbDate = function(dt) {
-        var a = dt.split('/');
-        return a[2] + '-' + a[1] + '-' + a[0];
+        // db always needs unambigious formats
+        return moment(dt).format("YYYY-MM-DD");        
     };
     obj.displayDate = function(dt) {
         var a = dt.split('-');

@@ -174,31 +174,40 @@ angular.module('WebApp.AssignTraderViewModel', [])
         dataFactory.getAssignmentsByDate(mode, date)
             .then(function(resp) {
                 vm.eventAssignments = resp.data;
-                // pivot assigned traders
-                for (var i = 0, ii = vm.eventAssignments.length; i < ii; i++) {
-                    var assigns = [];
-                    ['Ma', 'Trader'].forEach(function(role) {
-                        var traders = {};
-                        ['Lux', 'Tab', 'Sun'].forEach(function(env) {
-                            var envrole = env + '_' + role;
-                            if (vm.eventAssignments[i][envrole]) {
-                                var a = vm.eventAssignments[i][envrole].split(',');
-                                a.forEach(function(tr) {
-                                    traders[tr] = env + ',';
-                                });
-                            }
-                        });
-                        for (var key in traders) {
-                            assigns.push({
-                                Assigned_Date: vm.eventAssignments[i].Assigned_Date,
-                                Trader: key,
-                                Role: role,
-                                Env: traders[key].slice(0, -1)
-                            });
-                        };
-                        vm.eventAssignments[i].assigns = assigns;
-                    });
+        toastr.info('Got event assignments for: ' + date);
+
+                console.log(resp.data);
+
+                vm.eventAssignments = resp.data.Events;
+
+                for(var i=0;i<vm.eventAssignments.length;i++){
+                    
                 }
+                // // pivot assigned traders
+                // for (var i = 0, ii = vm.eventAssignments.length; i < ii; i++) {
+                //     var assigns = [];
+                //     ['Ma', 'Trader'].forEach(function(role) {
+                //         var traders = {};
+                //         ['Lux', 'Tab', 'Sun'].forEach(function(env) {
+                //             var envrole = env + '_' + role;
+                //             if (vm.eventAssignments[i][envrole]) {
+                //                 var a = vm.eventAssignments[i][envrole].split(',');
+                //                 a.forEach(function(tr) {
+                //                     traders[tr] = env + ',';
+                //                 });
+                //             }
+                //         });
+                //         for (var key in traders) {
+                //             assigns.push({
+                //                 Assigned_Date: vm.eventAssignments[i].Assigned_Date,
+                //                 Trader: key,
+                //                 Role: role,
+                //                 Env: traders[key].slice(0, -1)
+                //             });
+                //         };
+                //         vm.eventAssignments[i].assigns = assigns;
+                //     });
+                // }
                 toastr.clear();
                 defer.resolve(resp.data);
             });

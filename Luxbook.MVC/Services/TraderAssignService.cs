@@ -35,7 +35,7 @@
             List<TraderAssignWithMeta> assignments = _traderAssignRepository.GetAssignmentsByDate(mode, date);
 
 
-            var assignmentsByEvent = assignments.GroupBy(x => new { x.Meeting_Id, x.Event_No, x.Start_Time, x.Meeting_Date, x.Venue, x.EventsInMeeting, x.Country });
+            var assignmentsByEvent = assignments.GroupBy(x => new { x.Meeting_Id, x.Event_No, x.Start_Time, x.Meeting_Date, x.Venue, x.EventsInMeeting, x.Country ,x.Type});
             var result = new EventAssignMetaResponse() { Success = true };
 
             foreach (var eventAssignments in assignmentsByEvent)
@@ -45,10 +45,11 @@
                 @event.Event_No = eventAssignments.Key.Event_No;
                 @event.StartTime = eventAssignments.Key.Start_Time;
                 @event.MeetingDate = eventAssignments.Key.Meeting_Date;
-                @event.Name = eventAssignments.Key.Venue;
+                @event.Venue = eventAssignments.Key.Venue;
                 @event.EventsInMeeting = eventAssignments.Key.EventsInMeeting;
                 @event.Traders = Mapper.Map<List<TraderAssign>>(eventAssignments);
                 @event.Country = eventAssignments.Key.Country;
+                @event.Type = eventAssignments.Key.Type;
                 result.Events.Add(@event);
             }
 

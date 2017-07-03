@@ -18,7 +18,7 @@
                                     <td width="48px"><img src="/img/{{item.Type}}.png" border="0" /></td>
                                     <td width="48px">R{{item.Event_No}}</td>
                                     <td width="200px">{{item.Venue}}</td>
-									<td width="48px">{{item.Start_Time | toDisplayTime}}</td>
+									<td width="48px">{{item.StartTime | toDisplayTime}}</td>
                                 </tr>
                                <tr ng-repeat-end="">
                                     <td colspan="6">
@@ -32,11 +32,11 @@
 												</tr>											
 											</thead>
 											<tbody>
-												<tr ng-repeat="assign in item.assigns">
-													<td>{{assign.Assigned_Date | toShortDisplayDate}}</td>
-													<td>{{assign.Trader}}</td>
-													<td>{{assign.Role}}</td>
-													<td>{{assign.Env}}</td>
+												<tr ng-repeat="assign in item.Traders">
+													<td>{{assign.Assignment_Date | toShortDisplayDate}}</td>
+													<td>{{assign.TraderName}}</td>
+													<td>{{assign.Sun_Ma}}</td>
+													<td>{{assign.Lux_Ma}}</td>
 												</tr>
 											</tbody>
                                         </table>

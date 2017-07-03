@@ -170,8 +170,8 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                 var filteredTraders = new Array(); // only traders with assignments get in
                 for (var i=0, ii=ctrl.vm.traderAssignments.length; i<ii; i++) {
                     var t = ctrl.vm.traderAssignments[i];
-                    t.AssignedDates.forEach(function(dt) {
-                        var date = Helpers.dbDate(dt);
+                    
+                    t.AssignedDates.forEach(function(dt,index, theDates) {                        
                         ['Lux', 'Tab', 'Sun'].forEach(function(env) {      // the object member order must mirror webapi DtoAssignedTraders onject
                             ['Ma', 'Trader'].forEach(function(role) {
                                 var envrole = env+role;
@@ -180,6 +180,7 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                                 }
                             });
                         });
+                        theDates[index] = Helpers.dbDate(dt)
                     });
 
                     if(t.AssignedDates.length > 0 && (t.LuxMa || t.TabMa || t.LuxTrader || t.TabTrader || t.SunMa || t.SunTrader) ){
@@ -252,22 +253,17 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                         if (resp.length == 0) {
                             return;
                         }
+
                         // combine event assignments on different days into 1 record (only 1 rec per event)
-                        for (var i=1, ii=resp.length; i<ii; i++) {
-                            if (resp[i].Meeting_Id == resp[i-1].Meeting_Id && resp[i].Event_No == resp[i-1].Event_No) {
-                                // debugger;
-                                resp[i-1].assigns = resp[i-1].assigns.concat(resp[i].assigns);
-                                resp.splice(i, 1);
-                                i--;
-                                ii--;
-                            } 
+                        for (var i=0; i<resp.length; i++) {
+                          console.log(resp[i]);
                         }
-                        // sort assignments by trader
-                        resp = resp.map(function(row){
-                            row.assigns.sort(function(a, b) { 
-                                return a.Trader.localeCompare(b.Trader);
-                            });
-                        });
+                        // // sort assignments by trader
+                        // resp = resp.map(function(row){
+                        //     row.assigns.sort(function(a, b) { 
+                        //         return a.Trader.localeCompare(b.Trader);
+                        //     });
+                        // });
                     });
             };
 
