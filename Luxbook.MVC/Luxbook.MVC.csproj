@@ -255,6 +255,7 @@
     <Compile Include="Controllers\TradeManagementController.cs" />
     <Compile Include="DTO\JsonResponseBase.cs" />
     <Compile Include="DTO\Liability.cs" />
+    <Compile Include="DTO\TraderAssignForMeetingResponse.cs" />
     <Compile Include="DTO\TraderAssignMetaResponse.cs" />
     <Compile Include="DTO\TraderAssignPostDataDTO.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

@@ -7,6 +7,8 @@ angular.module('WebApp.AssignTraderViewModel', [])
     var vm = { ready: false, busy: true };
     vm.caller = '';
     vm.parent = document.location.href.split('/').slice(-1)[0];
+    vm.dateFormat = "DD/MM/YY";
+    vm.apiDateFormat = "YYYY/MM/DD";
     // options panel data
     vm.options = {
         dates: [],
@@ -74,6 +76,31 @@ angular.module('WebApp.AssignTraderViewModel', [])
         return (data ? data : []);
     };
 
+    // toggle for all traders/ma
+    vm.toggleMa  = function(trader){
+        if(trader.AllMa){
+            trader.SunMa = true;
+            trader.LuxMa = true;
+            trader.TabMa = true;
+        }else{
+            trader.SunMa = false;
+            trader.LuxMa = false;
+            trader.TabMa = false;            
+        }
+    };
+
+     vm.toggleTrader  = function(trader){
+        if(trader.AllTrader){
+            trader.SunTrader = true;
+            trader.LuxTrader = true;
+            trader.TabTrader = true;
+        }else{
+            trader.SunTrader = false;
+            trader.LuxTrader = false;
+            trader.TabTrader = false;            
+        }
+    };
+    
     // load model with data from server
     vm.loadModel = function(resp) {
         vm.dbData = resp.data;
@@ -147,7 +174,9 @@ angular.module('WebApp.AssignTraderViewModel', [])
                 TabMa: false,
                 TabTrader: false,
                 SunMa: false,
-                SunTrader: false
+                SunTrader: false,
+                AllMa: false,
+                AllTrader: false
             });
         }
     };
@@ -155,9 +184,9 @@ angular.module('WebApp.AssignTraderViewModel', [])
     // fetch meetings, events and trader assignments
     vm.getAssignments = function() {
         var defer = $q.defer();
-        var date = Helpers.dbDate(vm.date);
+        var date =  moment(vm.date, vm.dateFormat);
         toastr.info('Fetching meetings for: ' + date);
-        dataFactory.getAssignments(date)
+        dataFactory.getAssignments(date.format(vm.apiDateFormat))
             .then(function(resp) {
                 vm.loadModel(resp);
                 toastr.clear();
@@ -166,12 +195,27 @@ angular.module('WebApp.AssignTraderViewModel', [])
         return defer.promise;
     };
 
+    vm.deleteAssignment = function(assignment, scope, rootScope,ctrl){
+        var defer = $q.defer();
+        console.log(scope);
+        console.log(ctrl);
+        console.log(rootScope);
+        dataFactory.deleteAssignment(assignment.Trader_Assign_Id)
+            .then(function(resp){                
+                toastr.info('Assignment deleted')
+                defer.resolve();
+                vm.getAssignments();
+            });
+
+
+    };
+
     // fetch event assignments by meeting or assigned date
     vm.getAssignmentsByDate = function(mode) {
         var defer = $q.defer();
-        var date = Helpers.dbDate(vm.date);
+        var date = moment(vm.date, vm.dateFormat);
         toastr.info('Fetching event assignments for: ' + date);
-        dataFactory.getAssignmentsByDate(mode, date)
+        dataFactory.getAssignmentsByDate(mode, date.format(vm.apiDateFormat))
             .then(function(resp) {
                 vm.eventAssignments = resp.data;
         toastr.info('Got event assignments for: ' + date);
@@ -181,33 +225,9 @@ angular.module('WebApp.AssignTraderViewModel', [])
                 vm.eventAssignments = resp.data.Events;
 
                 for(var i=0;i<vm.eventAssignments.length;i++){
-                    
+
                 }
-                // // pivot assigned traders
-                // for (var i = 0, ii = vm.eventAssignments.length; i < ii; i++) {
-                //     var assigns = [];
-                //     ['Ma', 'Trader'].forEach(function(role) {
-                //         var traders = {};
-                //         ['Lux', 'Tab', 'Sun'].forEach(function(env) {
-                //             var envrole = env + '_' + role;
-                //             if (vm.eventAssignments[i][envrole]) {
-                //                 var a = vm.eventAssignments[i][envrole].split(',');
-                //                 a.forEach(function(tr) {
-                //                     traders[tr] = env + ',';
-                //                 });
-                //             }
-                //         });
-                //         for (var key in traders) {
-                //             assigns.push({
-                //                 Assigned_Date: vm.eventAssignments[i].Assigned_Date,
-                //                 Trader: key,
-                //                 Role: role,
-                //                 Env: traders[key].slice(0, -1)
-                //             });
-                //         };
-                //         vm.eventAssignments[i].assigns = assigns;
-                //     });
-                // }
+
                 toastr.clear();
                 defer.resolve(resp.data);
             });
@@ -247,16 +267,16 @@ angular.module('WebApp.AssignTraderViewModel', [])
     // init options date array
     vm.initDates = function() {
         vm.options.dates = [];
-        var dt = new Date();
+        var dt = moment();
         var n = 1;
         for (var i = 0; i < n; i++) { // next n days
-            vm.options.dates.push(dt.toLocaleDateString('en-AU'));
-            dt.setDate(dt.getDate() + 1);
+            vm.options.dates.push(dt.format(vm.dateFormat));
+            dt.add(1,'days');
         }
-        var dt = new Date();
+        var dt = moment();
         for (var i = 0; i < n; i++) { // previous n days
-            dt.setDate(dt.getDate() - 1);
-            vm.options.dates.unshift(dt.toLocaleDateString('en-AU'));
+             dt.add(-1,'days');
+            vm.options.dates.unshift(dt.format(vm.dateFormat));
         }
         // vm.options.dates[n] = '04/02/2017';
         vm.date = vm.options.dates[n];
@@ -265,11 +285,12 @@ angular.module('WebApp.AssignTraderViewModel', [])
     // init options date array
     vm.initAssignDates = function() {
         vm.options.assignDates = [];
-        var dt = new Date(Helpers.dbDate(vm.date));
-        dt.setDate(dt.getDate() - 2);
+ 
+        var dt = moment(vm.date, vm.dateFormat);
+        dt.add(-2,'days');
         for (var i = 0; i < 3; i++) { // 3 days prior to meeting date
-            vm.options.assignDates.push(dt.toLocaleDateString('en-AU')); // +' '+['Su','Mo','Tu','We','Th','Fr','Sa'][dt.getDay()]);
-            dt.setDate(dt.getDate() + 1);
+            vm.options.assignDates.push(dt.format(vm.dateFormat)); // +' '+['Su','Mo','Tu','We','Th','Fr','Sa'][dt.getDay()]);
+            dt.add(1,'days');
         }
     };
 

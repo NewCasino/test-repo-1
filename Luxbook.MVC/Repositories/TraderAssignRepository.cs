@@ -13,6 +13,7 @@
         TraderAssignMetaResponse GetAssignments(string meetingDate);
         List<TraderAssignWithMeta> GetAssignmentsByDate(string mode, string date);
         void SaveAssignments(List<TraderAssign> assignments);
+        void DeleteAssignments(int traderAssignId);
     }
 
     public class TraderAssignRepository : ITraderAssignRepository
@@ -147,6 +148,13 @@
 
             _database.Execute(dupeSql, assignments, commandType: CommandType.Text);
 
+        }
+
+        public void DeleteAssignments(int traderAssignId)
+        {
+            var sql = "DELETE FROM TRADER_ASSIGN WHERE TRADER_ASSIGN_ID = @traderAssignId";
+
+            _database.Execute(sql, new { traderAssignId }, commandType: CommandType.Text);
         }
     }
 

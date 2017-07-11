@@ -13,6 +13,7 @@
         TraderAssignMetaResponse GetAssignments(string meetingDate);
         EventAssignMetaResponse GetAssignmentsByDate(string mode, string date);
         TraderAssignMetaResponse SaveAssignments(TraderAssignPostDataDto postData);
+        void DeleteAssignment(int traderAssignId);
     }
 
     public class TraderAssignService : ITraderAssignService
@@ -93,6 +94,11 @@
             return _traderAssignRepository.GetAssignments(postData.MeetingDate);
 
             //TODO is logging required ??
+        }
+
+        public void DeleteAssignment(int traderAssignId)
+        {
+            _traderAssignRepository.DeleteAssignments(traderAssignId);
         }
     }
 }

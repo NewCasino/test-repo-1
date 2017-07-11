@@ -13,6 +13,7 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
             // init controller
             ctrl.init = function() {	
                 ctrl.vm.busy = false;
+                console.log('parent: ' + ctrl.vm.parent);
             };
 			
 			// broadcast date has changed
@@ -149,7 +150,7 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                     .then(function(answer) {
                         if (answer) {
                             var buffer = {
-                                MeetingDate: Helpers.dbDate(ctrl.vm.date),
+                                MeetingDate: moment(ctrl.vm.date,ctrl.vm.dateFormat).format(ctrl.vm.apiDateFormat),
                                 SelectedEvents: resp.data.SelectedEvents,
                                 Assignments: resp.data.Assignments
                             };
@@ -164,6 +165,8 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                         }
                     });
             };
+
+
             // validate trader+ma assignments
             ctrl.validateAssignments = function() {
                 var assign = false;
@@ -180,7 +183,8 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                                 }
                             });
                         });
-                        theDates[index] = Helpers.dbDate(dt)
+                        // need to swap the dates around for the API to understand
+                        t.AssignedDates[index] = moment(dt,ctrl.vm.dateFormat).format(ctrl.vm.apiDateFormat);
                     });
 
                     if(t.AssignedDates.length > 0 && (t.LuxMa || t.TabMa || t.LuxTrader || t.TabTrader || t.SunMa || t.SunTrader) ){
@@ -207,8 +211,6 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                 if (SelectedEvents.length == 0) {
                     return {error:'Please select meetings and events'};
                 }
-                console.log(filteredTraders);
-             
                 return {
                     data: {
                         SelectedEvents: SelectedEvents,
@@ -237,8 +239,8 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
      * list panel
      */
     .directive('listPanel', function() {
-        var controller = ['$scope', '$q', 'assignViewModel', '$rootScope',
-                    function($scope, $q, assignViewModel, $rootScope) {
+        var controller = ['$scope', '$q', 'assignViewModel', '$rootScope', 'dataFactory',
+                    function($scope, $q, assignViewModel, $rootScope,dataFactory) {
             var ctrl = this;          
             ctrl.vm = assignViewModel;
             ctrl.vm.caller = 'listPanel';
@@ -258,17 +260,21 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
                         for (var i=0; i<resp.length; i++) {
                           console.log(resp[i]);
                         }
-                        // // sort assignments by trader
-                        // resp = resp.map(function(row){
-                        //     row.assigns.sort(function(a, b) { 
-                        //         return a.Trader.localeCompare(b.Trader);
-                        //     });
-                        // });
+                
                     });
             };
 
             // start controller
             ctrl.init();	
+
+            ctrl.deleteAssignment = function(assignment){
+                console.log('deleting assignment');
+                dataFactory.deleteAssignment(assignment.Trader_Assign_Id)
+                    .then(function(resp){
+                        ctrl.init();
+                        toastr.info('Assignment deleted');
+                    });
+            };
 
              // listen for assignment save
             $rootScope.$on('MSG_ASSIGNMENTS_SAVE', function (event, args) {
@@ -458,13 +464,15 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
              var ctrl = this;
             ctrl.vm = assignViewModel;
             ctrl.vm.caller = 'meetingView';
-			ctrl.vm.dateText = 'Meeting';			
+			ctrl.vm.dateText = 'Meeting';		
+            ctrl.vm.assignmentDate = ctrl.vm.date;	
             ctrl.options = ctrl.vm.options;
             ctrl.traderFilter = '';
 			ctrl.sort = {R:'1', H:'2', G:'3'};
 
             // init controller
             ctrl.init = function() {
+                console.log('initializing meeting view');
                 ctrl.vm.getAssignmentsByDate('meeting')
                     .then(function(resp) {
                         ctrl.pivotAssignData();				
@@ -474,6 +482,7 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
 			// pivot assign data by meeting, assigndate, event, 
 			ctrl.pivotAssignData = function() {
 				var assigns = ctrl.vm.eventAssignments;
+                console.log(assigns);
 				var dbMeetings = [];        // js db proxy 
 				for (var i=0, ii=assigns.length; i<ii; i++) {
                     ctrl.updateDb(dbMeetings, assigns[i])
@@ -486,7 +495,7 @@ angular.module('WebApp.AssignTraderModule', ['720kb.datepicker'])
             ctrl.updateDb = function(dbMeetings, event) {                
                 var meeting = event.Meeting_Id;
                 var eventNo = event.Event_No;
-                var assignDate = Helpers.utcToDbDate(event.Assigned_Date);
+                var assignDate = event.Assigned_Date;
                 var idx = ctrl.findMeeting(dbMeetings, meeting);                                 
                 if (idx == -1) {
                     dbMeetings.push({

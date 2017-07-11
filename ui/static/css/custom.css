@@ -150,6 +150,36 @@ th, h4 {
 .assigns-table th, .assigns-table td {
     border-left: 1px solid #444;
 }
+
+.assignment-column {
+  width: 54px;
+  text-align:center;
+}
+.assignment-date {
+  width:9%;
+}
+
+.assignment-action {
+  width:7%;
+  text-align: center;
+}
+
+.assignment-trader {
+  width: 19%;
+}
+
+.btn-trash{
+  width: 26px;
+  text-align: center;
+}
+
+.assignment-trader-product {
+  width: 108px;
+  text-align:center;
+  border:1px solid;
+  border-bottom:0px;
+}
+
 .panel-title {
     display:inline-block;
     line-height:2.15em;

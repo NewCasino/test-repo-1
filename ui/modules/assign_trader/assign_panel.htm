@@ -67,8 +67,8 @@
                                         <select multiple class="form-control date-list assigned-date-list" ng-options="option for option in ctrl.vm.options.assignDates" ng-model="item.AssignedDates">
 										</select>
                                     </td>
-                                    <td class="role-checkbox"><label><input type="checkbox" ng-model="item.SunMa" /></label></td>
-                                    <td class="role-checkbox"><label><input type="checkbox" ng-model="item.SunTrader" /></label></td>
+                                    <td class="role-checkbox"><label><input type="checkbox" ng-click="ctrl.vm.toggleMa(item)" ng-model="item.AllMa" /></label></td>
+                                    <td class="role-checkbox"><label><input type="checkbox" ng-click="ctrl.vm.toggleTrader(item)" ng-model="item.AllTrader" /></label></td>
                                     <td class="role-checkbox"><label><input type="checkbox" ng-model="item.SunMa" /></label></td>
                                     <td class="role-checkbox"><label><input type="checkbox" ng-model="item.SunTrader" /></label></td>
                                     <td class="role-checkbox"><label><input type="checkbox" ng-model="item.TabMa" /></label></td>

@@ -22,21 +22,43 @@
                                 </tr>
                                <tr ng-repeat-end="">
                                     <td colspan="6">
-                                        <table class="assigns-table">
+                                         <table style="width:100%; border: 1px;">
+                                               <tr style="height:28px">
+                                                    <td style="width:35%; border:0px">&nbsp;</td>                                                    
+                                                    <td class="assignment-trader-product"><img class="small-badge" src="/img/badge-sun.png" /></td>
+                                                    <td class="assignment-trader-product"><img class="small-badge" src="/img/badge-tab.png" /></td>
+                                                    <td class="assignment-trader-product"><img class="small-badge" src="/img/badge-lux.png" /></td>
+                                                </tr>
+                                        </table>
+                                        <table class="assigns-table" style="width:100%">
 											<thead>
-												<tr>
-													<th>Assign Date</th>
-													<th>Trader</th>
-													<th>Role</th>
-													<th>Products</th>
+												<tr style="border-bottom:1px solid">
+                                                    <th class="assignment-action">&nbsp;</th>
+													<th class="assignment-date">Assign Date</th>
+													<th class="assignment-trader">Trader</th>
+                                                    <th class="assignment-column"> MA</th>
+                                                    <th class="assignment-column"> Trader</th>
+                                                    <th class="assignment-column">MA</th>
+                                                    <th class="assignment-column">Trader</th>
+                                                    <th class="assignment-column">MA</th>
+                                                    <th class="assignment-column">Trader</th>
 												</tr>											
 											</thead>
 											<tbody>
 												<tr ng-repeat="assign in item.Traders">
+                                                    <td class="assignment-action">
+                                                        <button type="button" class="btn btn-xs btn-danger btn-trash" ng-click=" ctrl.deleteAssignment(assign)">
+                                                            <span class="glyphicon glyphicon-trash" >&nbsp;
+                                                        </button>
+                                                    </td>
 													<td>{{assign.Assignment_Date | toShortDisplayDate}}</td>
 													<td>{{assign.TraderName}}</td>
-													<td>{{assign.Sun_Ma}}</td>
-													<td>{{assign.Lux_Ma}}</td>
+													<td><input  class="assignment-column" type="checkbox" ng-model="assign.Sun_Ma" ng-disabled="true"></td>
+                                                    <td><input  class="assignment-column" type="checkbox" ng-model="assign.Sun_Trader" ng-disabled="true"></td>
+													<td><input  class="assignment-column" type="checkbox" ng-model="assign.Tab_Ma" ng-disabled="true"></td>
+                                                    <td><input  class="assignment-column" type="checkbox" ng-model="assign.Tab_Trader" ng-disabled="true"></td>
+													<td><input  class="assignment-column" type="checkbox" ng-model="assign.Lux_Ma" ng-disabled="true"></td>
+                                                    <td><input  class="assignment-column" type="checkbox" ng-model="assign.Lux_Trader" ng-disabled="true"></td>                                                                                
 												</tr>
 											</tbody>
                                         </table>

@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="/ui/static/css/font-awesome.min.css" >
 		<link rel="stylesheet" href="/ui/static/css/toastr.min.css" >
 		<link rel="stylesheet" href="/ui/static/css/custom.css" >
-
+    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.21/angular-datepicker.min.css" />
 		<script src="/ui/static/js/jquery-2.1.4.min.js" ></script>
 		<script src="/ui/static/js/jquery.ajax-cross-origin.min.js" ></script>
 		<script src="/ui/static/js/bootstrap.min.js" ></script>
@@ -25,10 +25,10 @@
 
             <form class="assign-form">
 
-                <div <div class="col-md-1 data-panel filter-panel">
+                <div class="col-md-1 data-panel filter-panel">
                     <options-panel></options-panel>
                 </div>
-                <div <div class="col-md-10 data-panel list-panel">
+                <div class="col-md-10 data-panel list-panel">
                     <meeting-view ng-if="!ctrl.vm.busy"></meeting-view>
                 </div>
 
@@ -41,11 +41,19 @@
 		<script src="/ui/static/js/angular-route.min.js"></script>
 		<script src="/ui/static/js/toastr.min.js"></script>
 		<script src="/ui/static/js/bootbox.min.js" defer async></script>
-
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.21/angular-datepicker.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/en-au.js"></script>
+		<script type="text/javascript">
+			moment.locale('en-Au');
+		</script>
+		
 		<!-- App and Modules -->
-		<script src="/ui/modules/assign_trader/viewmodel.js"></script>			
-		<script src="/ui/modules/assign_trader/module.js"></script>
-		<script src="/ui/assignApp.js"></script>
+
+		<script src="/ui/modules/assign_trader/viewmodel.js"></script>
+    	<script src="/ui/modules/assign_trader/module.js"></script>
+    	<script src="/ui/assignApp.js"></script>
+
 
 	</body>
 </html>

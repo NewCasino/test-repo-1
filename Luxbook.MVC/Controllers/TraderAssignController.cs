@@ -45,5 +45,17 @@
             return _traderAssignService.SaveAssignments(postData);
         }
 
+        [HttpGet]
+        public void AssignmentsForMeeting(DateTime meetingDate)
+        {
+            
+        }
+
+
+        [HttpPost]
+        public void DeleteAssignment([FromBody]int traderAssignId)
+        {
+            _traderAssignService.DeleteAssignment(traderAssignId);
+        }
     }
 }

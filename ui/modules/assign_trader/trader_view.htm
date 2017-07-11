@@ -31,7 +31,7 @@
                                     <td><img src="/img/{{item.Country}}.jpg" border="0" /></td>
                                     <td><img src="/img/{{item.Type}}.png" border="0" /></td>
                                     <td><span class="pointer" ng-class="(!item.showEvents) ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'" ng-click="item.showEvents=!item.showEvents"></span></td>
-                                    <td>{{item.Venue}} - {{item.MeetingDate | utcToDisplayDate}}</td>                                
+                                    <td>{{item.Venue}} - {{item.MeetingDate }}</td>                                
                                 </tr>
                                 <tr ng-if="item.showEvents" ng-repeat-end="">
                                     <td colspan="6">

@@ -10,6 +10,7 @@ var WebApp = angular.module('WebApp', [
     $compileProvider.debugInfoEnabled(false);
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    moment.locale('en-AU');
     $routeProvider
         .when('/Runner/:Action/:RunnerId', {
             templateUrl: '/ui/RunnerEdit.html',
@@ -58,6 +59,11 @@ var WebApp = angular.module('WebApp', [
             headers: { 'Accept': 'application/json' },
             params: { mode: mode, Date: date }
         });
+    };
+
+    dataFactory.deleteAssignment = function(traderAssignId){
+        var url = urlBase + '/TraderAssign/DeleteAssignment';
+        return $http.post(url, traderAssignId, config);
     };
 
     // save trader assignments
@@ -203,18 +209,11 @@ var WebApp = angular.module('WebApp', [
             message: msg,
         });
     };
-    obj.dbDate = function(dt) {
-        // db always needs unambigious formats
-        return moment(dt).format("YYYY-MM-DD");        
-    };
+   
     obj.displayDate = function(dt) {
         var a = dt.split('-');
         return a[0] + '/' + a[1] + '/' + a[2];
     };
-    obj.utcToDbDate = function(dt) {
-        var a = dt.split('T');
-        return a[0];
-    };
-
+   
     return obj;
 }]);
