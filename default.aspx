@@ -136,8 +136,7 @@
 				<li onclick="">Assignments
 				<ul style="width:12em;">
 					<li onclick="MVC('/ui/modules/assign_trader/assign_trader.html')" >Assign Trader</li>
-					<li onclick="MVC('/ui/modules/assign_trader/trader_view.html')" >Trader View</li>
-					<li onclick="MVC('/ui/modules/assign_trader/meeting_view.html')" >Meeting View</li>
+					
 				</ul>
 				</li>				
 			<%	End If  %>
