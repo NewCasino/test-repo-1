@@ -8,6 +8,5 @@ namespace Luxbook.MVC.DTO
     public class TraderAssignForMeetingResponse : JsonResponseBase
     {
 
-        public class 
     }
 }
