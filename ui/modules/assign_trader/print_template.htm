@@ -1,0 +1,40 @@
+<html>
+<head>
+<style type="text/css">
+@media print {
+	@page {
+		size:landscape;
+	}
+	.break-after {
+		page-break-after: always;
+	}
+	.break-before {
+		page-break-before: always;
+	}
+}	
+
+h4 {
+	font-family:tahoma;
+	font-size:0.8em;
+}
+table {
+	width:100%;
+}
+table th, table td {
+	border:1px solid #ccc;
+	padding:0.5em;
+	font-family:monospace;
+	font-size:0.8em;
+}				
+table th {
+	border:0;
+	color:#444;
+	text-align:left;
+}
+</style>
+</head>
+<body>
+<h4>{{title}}</h4>
+{{detail}}
+</body>
+</html>

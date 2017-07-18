@@ -140,7 +140,7 @@ End Function
 
     %>
 	<!DOCTYPE html>
-	<html ng-app="WebApp">
+	<html>
 		<head>
 			<style>
 				html {
@@ -159,7 +159,7 @@ End Function
 			</style>
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 			<link rel="stylesheet" href="/global.css">
-			<link rel="stylesheet" href="/ui/modal.css">
+			<link rel="stylesheet" href="/ui/static/css/modal.css">
 
 			<script src="/js/moment.min.js"> </script>
 			<script src="/js/jquery.min.js"></script> 		
@@ -175,7 +175,7 @@ End Function
 			</script>
 	
 		</head>
-		<body onload=Init()>
+		<body onload=Init() ng-app="WebApp">
 			<WT:Main Type="Chart_Canvas" runat=server/>
 			<WT:Main id=VNL Type="Venue_List" runat=server/>
 			<div id=CNT></div>
@@ -183,18 +183,20 @@ End Function
 			<iframe name=vrtPOST></iframe>
 			<WT:Main Type="Live_Stream" runat=server/>
 
-			<!-- modal window placeholder for edit event+runner popups -->
+			<!-- modal window placeholder for angular ui components -->
 			<div ng-view></div>
 
-			<script src="/ui/angular.min.js"></script>
-			<script src="/ui/angular-route.min.js"></script>
-			<script src="/ui/utilsLibrary.js"></script>
-			<script src="/ui/app.js"></script>
+            <!-- ui libraries -->
+            <script src="/ui/static/js/angular.min.js"></script>
+            <script src="/ui/static/js/angular-route.min.js"></script>
+			<script src="/ui/static/js/utilsLibrary.js"></script>
+            <!-- ui app -->
+            <script src="/ui/mmApp.js"></script>
 
 			<script type="text/javascript">
 				var eventCtrl = {
 					onEventLoad: function() {		// when an event is loaded into main content
-    			  		contextMenuCtrl.initContextMenu();
+                        contextMenuCtrl.initContextMenu();
 					}
 				};
 				jQuery(function() {
@@ -229,7 +231,7 @@ End Function
 
 
 	Dim DC() As String = { "", "", "", "" }
-	Dim CT As String = RM("COUNTRY"), TP As String = RM("TYPE"), ST As String = RV("STATUS"), EventCnt as Byte = RM("EVENTS")
+	Dim CT As String = RM("COUNTRY"), TP As String = RM("TYPE"), ST As String = RV("STATUS"), EventCnt as Byte = If(NOT RM("EVENTS") Is DBNull.Value, RM("EVENTS"), 0)
 	Dim AUS As Boolean = "AU,NZ".Contains(CT), USA As Boolean = FALSE ' "US,SE".Contains(CT)
 
 	Dim CloseTime as String = sNS(RV("CLOSE_TIME"))
@@ -237,7 +239,8 @@ End Function
 	Dim PP As Long = sN0(RV("PM_POOL")), AP As Long = IIf(USA, sN0(RV("HST_PW")) + sN0(RV("HST_PX")), sN0(RV("VIC_PW")) + sN0(RV("NSW_PW")) + sN0(RV("QLD_PW")))
 	Dim MktPer() As Double = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0,0,0,0,0 , 0, 0}
 
-	Dim Limit as string = getResult("SELECT Limit FROM SYS_MIXER WHERE TYPE = '" & RM("TYPE") & "' AND REGION = '" & RV("REGION") & "' AND RANK = " & RV("RANK") & " AND CONF_LVL = '" &  RV("CONF_LVL") & "'")
+    Dim sql as string = "SELECT Limit FROM SYS_MIXER WHERE TYPE = '" & RM("TYPE") & "' AND REGION = '" & RV("REGION") & "' AND RANK = '" & RV("RANK") & "' AND CONF_LVL = '" &  RV("CONF_LVL") & "'"
+	Dim Limit as string = getResult(sql)
 	'video replay ID		' "2014/10/20141028GAWG09"
 	Dim VidTrkCode as string = getResult("EXEC sp_GetVidcode @VENUE = '" & RM("VENUE") & "' , @COUNTRY = '" & CT & "', @Type = " & TP)  
 	Dim RcNo as string = EV(1).ToString 
@@ -301,9 +304,9 @@ End Function
 					
 					<th>Risk<br>$<th>Risk<br>VWM
 					<th>MA
-					<br><label title="Luxbet MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATick"  value=1  <%= If(RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> L</label>
-					<br><label title="SunBets MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickSun" value=1  <%= If(RV("MA_TICK_SUN"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> S</label>
-					<br><label title="TAB MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickTab" value=1  <%= If(RV("MA_TICK_TAB"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> T</label>
+					<br><label title="Luxbet MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATick"  value=1  <%= If(NOT RV("MA_TICK") Is DBNull.Value AndAlso RV("MA_TICK"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> L</label>
+					<br><label title="SunBets MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickSun" value=1  <%= If(NOT RV("MA_TICK_SUN") Is DBNull.Value AndAlso RV("MA_TICK_SUN"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> S</label>
+					<br><label title="TAB MA" class="checkbox-label" ><input type="checkbox" class="MA_tick" name="MATickTab" value=1  <%= If(NOT RV("MA_TICK_TAB") Is DBNull.Value AndAlso RV("MA_TICK_TAB"),"checked='checked'","") %> <%= If(VM,"","disabled") %>/> T</label>
                     <th>&fnof;
 					<th>BOB<th>WOW
 					

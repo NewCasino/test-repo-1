@@ -1,7 +1,11 @@
-var WebApp = angular.module('WebApp', ['ngRoute'])
+// core angular app
+var WebApp = angular.module('WebApp', [
+    'ngRoute'
+    ])
 
 // router
-.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
+    .config(['$routeProvider','$httpProvider','$compileProvider', function($routeProvider, $httpProvider, $compileProvider) {
+		$compileProvider.debugInfoEnabled(false);
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
     $routeProvider
@@ -15,8 +19,13 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         });
 }])
 
+    // application controller (in <html> element)
+    .controller('AppCtrl', ['$scope', '$sce', function($scope, $sce) {
+		$scope.ver = $sce.trustAsHtml('v0.'+(new Date()).getTime());
+    }])
+ 	
 // runner controller
-.controller('RunnerCtrl', ['$scope', '$http', '$routeParams', '$location', 'dataFactory',
+    .controller('RunnerCtrl', ['$scope','$http','$routeParams','$location', 'dataFactory',
     function($scope, $http, $routeParams, $location, dataFactory) {
         document.location.href = '#';
         $scope.params = $routeParams;
@@ -28,7 +37,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
         // init controller
         $scope.init = function() {};
 
-        // scratch runner 
+        // scratch runner
         if ($routeParams.Action == 'Scratch') {
             _utils.confirm("Confirm you want to scratch runner ??\n\nRunner: " + $scope.data.runner_num + ' - ' + $scope.data.runner)
                 .then(function(OK) {
@@ -40,7 +49,7 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
                     }
                 });
         }
-        // un-scratch runner 
+        // un-scratch runner
         if ($routeParams.Action == 'UnScratch') {
             _utils.confirm("Confirm you want to un-scratch runner ??\n\nRunner: " + $scope.data.runner_num + ' - ' + $scope.data.runner)
                 .then(function(OK) {
@@ -107,6 +116,19 @@ var WebApp = angular.module('WebApp', ['ngRoute'])
                 value.Tab_Prop = id1;
                 id1++;
             });
+        };
+
+        // fetch event and runner data
+        $scope.fetchMeetings = function(eventId) {
+            var defer = $q.defer();
+            dataFactory.getEventMeta($scope.data.meeting_id, $scope.data.race_num)
+                .then(function(resp) {
+                    // console.log(resp);
+                    $scope.event = resp.data.Event;
+                    $scope.runners = resp.data.Runners;
+                    defer.resolve();
+                });
+            return defer.promise;
         };
 
         // fetch event and runner data
