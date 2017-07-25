@@ -254,7 +254,7 @@ End Function
 	Dim RT As Byte = getENum("RDC_ST_" & CT & TP)
 
 
-	Dim MATarget = IIf(IsDbnull(RV("MA_TARGET")), 135, RV("MA_TARGET"))
+	Dim MATarget = IIf(IsDbnull(RV("MA_TARGET")), 130, RV("MA_TARGET"))
 
 	Dim WinLiabilities as new DataTable 
 	Dim PlaceLiabilities as new DataTable 
