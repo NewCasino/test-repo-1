@@ -36,7 +36,6 @@ public static partial class Mvc
     public static Luxbook.MVC.Controllers.RulesController Rules = new Luxbook.MVC.Controllers.T4MVC_RulesController();
     public static Luxbook.MVC.Controllers.StakingController Staking = new Luxbook.MVC.Controllers.T4MVC_StakingController();
     public static Luxbook.MVC.Controllers.TradeManagementController TradeManagement = new Luxbook.MVC.Controllers.T4MVC_TradeManagementController();
-    public static Luxbook.MVC.Controllers.TraderAssignmentController TraderAssignment = new Luxbook.MVC.Controllers.T4MVC_TraderAssignmentController();
     public static T4MVC.SharedController Shared = new T4MVC.SharedController();
 }
 

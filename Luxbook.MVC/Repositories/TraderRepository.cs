@@ -10,8 +10,7 @@
     {
         void UpdatePreferences(Trader trader);
         Trader GetTrader(string username);
-        List<Trader> GetAllTraders
-            ();
+        List<Trader> GetAllTraders();
     }
 
     public class TraderRepository : ITraderRepository

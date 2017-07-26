@@ -104,7 +104,7 @@
 				<%	End If    %>
 				   
 				<li onclick="">Manager
-				<ul>
+				<ul style="width:12em;">
 					<%  If Session("LVL") < 10	Then	%>	
 						<li onclick="MVC('Luxbook.MVC/MeetingMatch/Index')"/> Venues	
 					<% End If %>		
@@ -133,6 +133,12 @@
 					<%	End If  %>
 				</ul>
 				</li>
+				<li onclick="">Assignments
+				<ul style="width:12em;">
+					<li onclick="MVC('/ui/modules/assign_trader/assign_trader.html')" >Assign Trader</li>
+					
+				</ul>
+				</li>				
 			<%	End If  %>
 				
 			<li onclick="">Account

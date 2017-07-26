@@ -240,6 +240,7 @@
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\LiabilityController.cs" />
     <Compile Include="Controllers\MaxExposureController.cs" />
+    <Compile Include="Controllers\TraderAssignController.cs" />
     <Compile Include="Controllers\MeetingMatchController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RulesController.cs" />
@@ -252,9 +253,11 @@
     <Compile Include="Controllers\StakingController.cs" />
     <Compile Include="Controllers\TradeController.cs" />
     <Compile Include="Controllers\TradeManagementController.cs" />
-    <Compile Include="Controllers\TraderAssignmentController.cs" />
     <Compile Include="DTO\JsonResponseBase.cs" />
     <Compile Include="DTO\Liability.cs" />
+    <Compile Include="DTO\TraderAssignForMeetingResponse.cs" />
+    <Compile Include="DTO\TraderAssignMetaResponse.cs" />
+    <Compile Include="DTO\TraderAssignPostDataDTO.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -312,6 +315,8 @@
     <Compile Include="Models\Staking.cs" />
     <Compile Include="Models\SystemEnum.cs" />
     <Compile Include="Models\Trader.cs" />
+    <Compile Include="Models\TraderAssign.cs" />
+    <Compile Include="Models\TraderAssignWithMeta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportsController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
@@ -328,6 +333,7 @@
     <Compile Include="Repositories\RuleRepository.cs" />
     <Compile Include="Repositories\RunnerRepository.cs" />
     <Compile Include="Repositories\SystemRepository.cs" />
+    <Compile Include="Repositories\TraderAssignRepository.cs" />
     <Compile Include="Repositories\TraderRepository.cs" />
     <Compile Include="RulesController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
@@ -344,6 +350,7 @@
     <Compile Include="Services\RunnerService.cs" />
     <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\SystemService.cs" />
+    <Compile Include="Services\TraderAssignService.cs" />
     <Compile Include="Services\TraderService.cs" />
     <Compile Include="Services\TradingService.cs" />
     <Compile Include="SharedController.generated.cs">
@@ -358,9 +365,6 @@
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
     <Compile Include="TradeManagementController.generated.cs">
-      <DependentUpon>T4MVC.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TraderAssignmentController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Alerts\IndexViewModel.cs" />
@@ -416,7 +420,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\TraderAssignment\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
